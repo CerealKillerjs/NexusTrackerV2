@@ -1,0 +1,44 @@
+{
+  "name": "nexustrackerv2",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.10.0",
+    "@hookform/resolvers": "^5.1.1",
+    "@prisma/client": "^6.11.1",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/pg": "^8.15.4",
+    "bcryptjs": "^3.0.2",
+    "clsx": "^2.1.1",
+    "i18next": "^25.3.1",
+    "i18next-browser-languagedetector": "^8.2.0",
+    "i18next-localstorage-cache": "^1.1.1",
+    "next": "15.3.5",
+    "next-auth": "^5.0.0-beta.29",
+    "next-i18next": "^15.4.2",
+    "prisma": "^6.11.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.60.0",
+    "react-i18next": "^15.6.0",
+    "tailwind-merge": "^3.3.1",
+    "zod": "^3.25.74"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20.19.4",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.5",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

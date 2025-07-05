@@ -1,0 +1,57 @@
+{
+  "auth": {
+    "signin": {
+      "title": "Iniciar Sesión",
+      "button": "Iniciar Sesión",
+      "subtitle": "Ingresa tus credenciales para acceder",
+      "noAccount": "¿No tienes una cuenta?",
+      "signUpLink": "Regístrate aquí"
+    },
+    "signup": {
+      "title": "Registrarse",
+      "button": "Registrarse",
+      "subtitle": "Crea tu cuenta para comenzar",
+      "hasAccount": "¿Ya tienes una cuenta?",
+      "signInLink": "Inicia sesión aquí"
+    },
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "username": "Nombre de Usuario",
+    "confirmPassword": "Confirmar Contraseña",
+    "logout": "Cerrar Sesión",
+    "placeholders": {
+      "email": "tu@email.com",
+      "password": "••••••••",
+      "username": "tu_usuario"
+    },
+    "errors": {
+      "invalidCredentials": "Credenciales inválidas",
+      "emailRequired": "El correo electrónico es requerido",
+      "passwordRequired": "La contraseña es requerida",
+      "usernameRequired": "El nombre de usuario es requerido",
+      "passwordsDoNotMatch": "Las contraseñas no coinciden",
+      "emailAlreadyExists": "El correo electrónico ya existe",
+      "usernameAlreadyExists": "El nombre de usuario ya existe",
+      "registrationFailed": "Error en el registro",
+      "signInAfterRegistration": "Error al iniciar sesión después del registro",
+      "signInError": "Error al iniciar sesión"
+    },
+    "success": {
+      "registration": "Registro exitoso"
+    },
+    "toast": {
+      "registrationSuccess": "¡Cuenta creada exitosamente! Redirigiendo al login...",
+      "registrationError": "Error al crear la cuenta. Por favor, intenta de nuevo.",
+      "networkError": "Error de conexión. Verifica tu internet e intenta de nuevo."
+    }
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito"
+  },
+  "language": {
+    "spanish": "Español",
+    "english": "English"
+  }
+} 

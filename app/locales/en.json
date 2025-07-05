@@ -1,0 +1,57 @@
+{
+  "auth": {
+    "signin": {
+      "title": "Sign In",
+      "button": "Sign In",
+      "subtitle": "Enter your credentials to access",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up here"
+    },
+    "signup": {
+      "title": "Sign Up",
+      "button": "Sign Up",
+      "subtitle": "Create your account to get started",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in here"
+    },
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "confirmPassword": "Confirm Password",
+    "logout": "Logout",
+    "placeholders": {
+      "email": "your@email.com",
+      "password": "••••••••",
+      "username": "your_username"
+    },
+    "errors": {
+      "invalidCredentials": "Invalid credentials",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "usernameRequired": "Username is required",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "emailAlreadyExists": "Email already exists",
+      "usernameAlreadyExists": "Username already exists",
+      "registrationFailed": "Registration failed",
+      "signInAfterRegistration": "Error signing in after registration",
+      "signInError": "Error signing in"
+    },
+    "success": {
+      "registration": "Registration successful"
+    },
+    "toast": {
+      "registrationSuccess": "Account created successfully! Redirecting to login...",
+      "registrationError": "Error creating account. Please try again.",
+      "networkError": "Connection error. Check your internet and try again."
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "language": {
+    "spanish": "Español",
+    "english": "English"
+  }
+} 
