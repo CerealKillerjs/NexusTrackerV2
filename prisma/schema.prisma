@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,22 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// NextAuth.js Models
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -39,17 +34,65 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  username      String    @unique
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  accounts      Account[]
-  sessions      Session[]
+  id               String         @id @default(cuid())
+  username         String         @unique
+  name             String?
+  email            String         @unique
+  emailVerified    DateTime?
+  image            String?
+  password         String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  uid              String         @unique @default(cuid())
+  role             String         @default("user")
+  banned           Boolean        @default(false)
+  bannedAt         DateTime?
+  bannedBy         String?
+  uploaded         BigInt         @default(0)
+  downloaded       BigInt         @default(0)
+  ratio            Float          @default(0)
+  bonusPoints      Int            @default(0)
+  timezone         String         @default("UTC")
+  lastSeen         DateTime?
+  invitedBy        String?
+  remainingInvites Int            @default(0)
+  totpEnabled      Boolean        @default(false)
+  totpSecret       String?
+  accounts         Account[]
+  sessions         Session[]
+  announcements    Announcement[]
+  bookmarks        Bookmark[]
+  comments         Comment[]
+  groups           Group[]
+  sentInvites      Invite[]       @relation("UserInvites")
+  receivedInvites  Invite[]       @relation("UserInvited")
+  reportsReceived  Report[]       @relation("ReportedUser")
+  reports          Report[]
+  reportsResolved  Report[]       @relation("ReportResolver")
+  requests         Request[]
+  torrents         Torrent[]
+  invitedByUser    User?          @relation("UserInvites", fields: [invitedBy], references: [id])
+  invitedUsers     User[]         @relation("UserInvites")
+  votes            Vote[]
+  wikiPages        WikiPage[]
+
+  @@map("users")
+}
+
+model Invite {
+  id        String    @id @default(cuid())
+  code      String    @unique
+  email     String
+  invitedBy String
+  used      Boolean   @default(false)
+  usedBy    String?
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  expiresAt DateTime?
+  inviter   User      @relation("UserInvites", fields: [invitedBy], references: [id], onDelete: Cascade)
+  user      User?     @relation("UserInvited", fields: [usedBy], references: [id])
+
+  @@map("invites")
 }
 
 model VerificationToken {
@@ -58,4 +101,160 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Torrent {
+  id                String     @id @default(cuid())
+  infoHash          String     @unique
+  name              String
+  description       String?
+  type              String?
+  source            String?
+  binary            String
+  poster            String?
+  uploadedBy        String
+  downloads         Int        @default(0)
+  anonymous         Boolean    @default(false)
+  size              BigInt
+  files             Json
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  freeleech         Boolean    @default(false)
+  tags              String[]
+  groupId           String?
+  mediaInfo         Json?
+  isProtected       Boolean    @default(false)
+  protectedPassword String?
+  protectedLogs     Json[]
+  bookmarks         Bookmark[]
+  comments          Comment[]
+  reports           Report[]
+  user              User       @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+  votes             Vote[]
+
+  @@map("torrents")
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  content   String
+  userId    String
+  torrentId String?
+  parentId  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  requestId String?
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+  request   Request?  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  torrent   Torrent?  @relation(fields: [torrentId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  votes     Vote[]
+
+  @@map("comments")
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  userId    String
+  torrentId String?
+  commentId String?
+  type      String
+  createdAt DateTime @default(now())
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  torrent   Torrent? @relation(fields: [torrentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, torrentId, type])
+  @@unique([userId, commentId, type])
+  @@map("votes")
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  torrentId String
+  createdAt DateTime @default(now())
+  torrent   Torrent  @relation(fields: [torrentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, torrentId])
+  @@map("bookmarks")
+}
+
+model Report {
+  id          String    @id @default(cuid())
+  reporterId  String
+  reportedId  String
+  torrentId   String?
+  commentId   String?
+  reason      String
+  description String?
+  status      String    @default("pending")
+  createdAt   DateTime  @default(now())
+  resolvedAt  DateTime?
+  resolvedBy  String?
+  reported    User      @relation("ReportedUser", fields: [reportedId], references: [id], onDelete: Cascade)
+  reporter    User      @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  resolver    User?     @relation("ReportResolver", fields: [resolvedBy], references: [id])
+  torrent     Torrent?  @relation(fields: [torrentId], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}
+
+model Request {
+  id         String    @id @default(cuid())
+  index      Int       @unique
+  title      String
+  body       String
+  createdBy  String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  status     String    @default("open")
+  bounty     Int       @default(0)
+  candidates Json[]
+  comments   Comment[]
+  user       User      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@map("requests")
+}
+
+model WikiPage {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  revisions Json[]
+  user      User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@map("wiki_pages")
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isPinned  Boolean  @default(false)
+  user      User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@map("announcements")
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  torrentIds  String[]
+  user        User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@map("groups")
 }
