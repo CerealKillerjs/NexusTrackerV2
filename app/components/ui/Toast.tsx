@@ -3,31 +3,59 @@
 import { useState, useEffect } from "react"
 import { cn } from "@/app/lib/utils"
 
+/**
+ * Toast notification component interface
+ * Defines the structure for toast notifications with message, type, and visibility
+ */
 interface ToastProps {
-  message: string
-  type: "success" | "error" | "info"
-  isVisible: boolean
-  onClose: () => void
-  duration?: number
+  message: string // The message to display in the toast
+  type: "success" | "error" | "info" // The type of toast (affects styling and icon)
+  isVisible: boolean // Whether the toast should be displayed
+  onClose: () => void // Callback function to close the toast
+  duration?: number // How long the toast should be visible (in milliseconds)
 }
 
+/**
+ * Toast Component
+ * 
+ * A notification component that displays temporary messages to users.
+ * Features:
+ * - Three types: success (green), error (red), info (blue)
+ * - Automatic dismissal after specified duration
+ * - Smooth slide-in/out animations
+ * - Manual close button
+ * - Responsive design with appropriate icons
+ * 
+ * @param props - ToastProps object containing toast configuration
+ */
 export function Toast({ message, type, isVisible, onClose, duration = 5000 }: ToastProps) {
+  // State to control animation (slide in/out effect)
   const [isAnimating, setIsAnimating] = useState(false)
 
   useEffect(() => {
     if (isVisible) {
+      // Start animation when toast becomes visible
       setIsAnimating(true)
+      
+      // Set timer to automatically close toast after duration
       const timer = setTimeout(() => {
         setIsAnimating(false)
-        setTimeout(onClose, 300) // Wait for animation to complete
+        // Wait for animation to complete before calling onClose
+        setTimeout(onClose, 300)
       }, duration)
 
+      // Cleanup timer if component unmounts or toast becomes invisible
       return () => clearTimeout(timer)
     }
   }, [isVisible, duration, onClose])
 
+  // Don't render anything if toast is not visible
   if (!isVisible) return null
 
+  /**
+   * Returns the appropriate CSS classes based on toast type
+   * Each type has different background, border, and text colors
+   */
   const getToastStyles = () => {
     switch (type) {
       case "success":
@@ -41,6 +69,10 @@ export function Toast({ message, type, isVisible, onClose, duration = 5000 }: To
     }
   }
 
+  /**
+   * Returns the appropriate icon SVG based on toast type
+   * Each type has a different icon that matches the message context
+   */
   const getIcon = () => {
     switch (type) {
       case "success":
@@ -70,19 +102,25 @@ export function Toast({ message, type, isVisible, onClose, duration = 5000 }: To
         className={cn(
           "flex items-center p-4 border rounded-lg shadow-lg transition-all duration-300",
           getToastStyles(),
+          // Animation classes: slide in from right when animating, slide out when not
           isAnimating ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
         )}
       >
+        {/* Icon container */}
         <div className="flex-shrink-0 mr-3">
           {getIcon()}
         </div>
+        
+        {/* Message container */}
         <div className="flex-1">
           <p className="text-sm font-medium">{message}</p>
         </div>
+        
+        {/* Manual close button */}
         <button
           onClick={() => {
             setIsAnimating(false)
-            setTimeout(onClose, 300)
+            setTimeout(onClose, 300) // Wait for animation to complete
           }}
           className="flex-shrink-0 ml-3 text-gray-400 hover:text-gray-600 transition-colors"
         >

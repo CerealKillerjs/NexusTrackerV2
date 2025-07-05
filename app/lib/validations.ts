@@ -1,6 +1,11 @@
 import { z } from "zod"
 
-// Helper function to get validation messages
+/**
+ * Helper function to get validation messages based on language
+ * Returns appropriate error messages in Spanish or English for form validation
+ * @param language - The language code ('es' for Spanish, 'en' for English)
+ * @returns Object containing validation messages in the specified language
+ */
 const getValidationMessages = (language: string = 'es') => {
   const messages = {
     es: {
@@ -19,10 +24,16 @@ const getValidationMessages = (language: string = 'es') => {
     }
   }
   
+  // Return messages for specified language, fallback to Spanish if language not found
   return messages[language as keyof typeof messages] || messages.es
 }
 
-// Create validation schemas with dynamic messages
+/**
+ * Creates a dynamic sign-in validation schema with language-specific error messages
+ * Validates email and password fields for user authentication
+ * @param language - The language code for error messages
+ * @returns Zod schema for sign-in form validation
+ */
 export const createSignInSchema = (language: string = 'es') => {
   const messages = getValidationMessages(language)
   
@@ -32,6 +43,13 @@ export const createSignInSchema = (language: string = 'es') => {
   })
 }
 
+/**
+ * Creates a dynamic sign-up validation schema with language-specific error messages
+ * Validates username, email, password, and confirm password fields for user registration
+ * Includes custom validation to ensure passwords match
+ * @param language - The language code for error messages
+ * @returns Zod schema for sign-up form validation
+ */
 export const createSignUpSchema = (language: string = 'es') => {
   const messages = getValidationMessages(language)
   
@@ -44,13 +62,14 @@ export const createSignUpSchema = (language: string = 'es') => {
     confirmPassword: z.string(),
   }).refine((data) => data.password === data.confirmPassword, {
     message: messages.passwordsDoNotMatch,
-    path: ["confirmPassword"],
+    path: ["confirmPassword"], // Specify which field the error belongs to
   })
 }
 
-// Default schemas (for backward compatibility)
+// Default schemas for backward compatibility (using Spanish as default)
 export const signInSchema = createSignInSchema()
 export const signUpSchema = createSignUpSchema()
 
+// TypeScript types inferred from the validation schemas
 export type SignInInput = z.infer<typeof signInSchema>
 export type SignUpInput = z.infer<typeof signUpSchema> 

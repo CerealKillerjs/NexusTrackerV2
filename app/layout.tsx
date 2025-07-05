@@ -15,11 +15,36 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+/**
+ * Application metadata
+ * 
+ * Defines metadata for the application including title, description, and other SEO-related information.
+ * This metadata is used by search engines and social media platforms.
+ */
 export const metadata: Metadata = {
   title: "NexusTracker V2",
   description: "Sistema de autenticación moderno con Next.js",
 };
 
+/**
+ * Root Layout Component
+ * 
+ * The main layout component that wraps all pages in the application.
+ * Features:
+ * - Global font configuration (Inter)
+ * - Session provider for authentication state management
+ * - Language selector for internationalization
+ * - Responsive design with Tailwind CSS
+ * - SEO metadata configuration
+ * 
+ * This layout provides:
+ * - Consistent styling across all pages
+ * - Authentication context for all components
+ * - Language switching functionality
+ * - Proper HTML structure and accessibility
+ * 
+ * @param children - React components to be rendered within the layout
+ */
 export default function RootLayout({
   children,
 }: Readonly<{

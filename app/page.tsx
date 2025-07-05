@@ -2,9 +2,28 @@ import { auth } from "@/app/lib/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 
+/**
+ * Home Page Component
+ * 
+ * The main landing page that serves as the entry point for the application.
+ * Features:
+ * - Server-side session checking for authentication status
+ * - Automatic redirect to dashboard for authenticated users
+ * - Clean, centered layout with gradient background
+ * - Clear call-to-action buttons for authentication flows
+ * - Repository link for project information
+ * 
+ * This page serves as:
+ * - Entry point for new and returning users
+ * - Authentication flow navigation hub
+ * - Project showcase and information display
+ * - Redirect logic for authenticated users
+ */
 export default async function Home() {
+  // Check if user is authenticated on server-side
   const session = await auth()
 
+  // Redirect authenticated users to dashboard
   if (session) {
     redirect("/dashboard")
   }
