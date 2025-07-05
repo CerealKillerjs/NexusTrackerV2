@@ -50,7 +50,7 @@ export function LogoutButton() {
       variant="outline"
       size="sm"
       onClick={handleLogout}
-      className="text-gray-600 hover:text-gray-800"
+      className="text-foreground-secondary hover:text-foreground"
     >
       {t("auth.logout")}
     </Button>

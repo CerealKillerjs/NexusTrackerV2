@@ -79,7 +79,7 @@ export function LanguageSelector() {
         {/* Main button that toggles the dropdown */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center space-x-2 bg-blue-500 text-white border border-blue-600 rounded-lg px-3 py-2 shadow-lg hover:shadow-xl transition-all duration-200"
+          className="flex items-center space-x-2 bg-accent text-background border border-accent rounded-lg px-3 py-2 shadow-lg hover:shadow-xl transition-all duration-200"
         >
           {/* Language flag emoji */}
           <span className="text-lg">{currentLanguage.flag}</span>
@@ -108,7 +108,7 @@ export function LanguageSelector() {
 
         {/* Dropdown menu with language options */}
         {isOpen && (
-          <div className="absolute bottom-full left-0 mb-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg overflow-hidden min-w-[140px] z-50">
+          <div className="absolute bottom-full left-0 mb-2 bg-background-secondary border border-border rounded-lg shadow-lg overflow-hidden min-w-[140px] z-50">
             {languages.map((language) => (
               <button
                 key={language.code}
@@ -117,21 +117,21 @@ export function LanguageSelector() {
                   handleLanguageChange(language.code)
                 }}
                 className={cn(
-                  "flex items-center space-x-3 w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150",
+                  "flex items-center space-x-3 w-full px-4 py-2 text-left hover:bg-background-tertiary transition-colors duration-150",
                   // Highlight current language
-                  currentLang === language.code && "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                  currentLang === language.code && "bg-accent/10 text-accent"
                 )}
               >
                 {/* Language flag */}
                 <span className="text-lg">{language.flag}</span>
                 {/* Language name */}
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span className="text-sm font-medium text-foreground">
                   {language.name}
                 </span>
                 {/* Checkmark for current language */}
                 {currentLang === language.code && (
                   <svg
-                    className="w-4 h-4 text-blue-600 dark:text-blue-400 ml-auto"
+                    className="w-4 h-4 text-accent ml-auto"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >

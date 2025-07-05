@@ -31,13 +31,13 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       {/* Header section with navigation and user info */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm">
+      <header className="bg-background-secondary shadow-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             {/* Dashboard title */}
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl font-bold text-foreground">
               Dashboard
             </h1>
             
@@ -45,10 +45,10 @@ export default async function DashboardPage() {
             <div className="flex items-center space-x-4">
               {/* User information display */}
               <div className="text-right">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                <p className="text-sm font-medium text-foreground">
                   {session.user.name || session.user.email}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-foreground-muted">
                   {session.user.email}
                 </p>
               </div>
@@ -64,34 +64,34 @@ export default async function DashboardPage() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           {/* Welcome message */}
-          <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+          <div className="bg-background-secondary overflow-hidden shadow rounded-lg border border-border">
             <div className="px-4 py-5 sm:p-6">
-              <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+              <h2 className="text-lg font-medium text-foreground mb-4">
                 Welcome to your Dashboard
               </h2>
               
               {/* User details card */}
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+              <div className="bg-background-tertiary rounded-lg p-4">
+                <h3 className="text-sm font-medium text-foreground mb-2">
                   Account Information
                 </h3>
                 <dl className="space-y-2">
                   {/* Username display */}
                   <div>
-                    <dt className="text-xs text-gray-500 dark:text-gray-400">
+                    <dt className="text-xs text-foreground-muted">
                       Username
                     </dt>
-                    <dd className="text-sm text-gray-900 dark:text-white">
+                    <dd className="text-sm text-foreground">
                       {session.user.name || "Not provided"}
                     </dd>
                   </div>
                   
                   {/* Email display */}
                   <div>
-                    <dt className="text-xs text-gray-500 dark:text-gray-400">
+                    <dt className="text-xs text-foreground-muted">
                       Email
                     </dt>
-                    <dd className="text-sm text-gray-900 dark:text-white">
+                    <dd className="text-sm text-foreground">
                       {session.user.email}
                     </dd>
                   </div>
@@ -104,7 +104,7 @@ export default async function DashboardPage() {
               
               {/* Placeholder for future dashboard content */}
               <div className="mt-6">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-foreground-secondary">
                   This is your personal dashboard. More features and content will be added here.
                 </p>
               </div>

@@ -1,54 +1,85 @@
 {
   "auth": {
-    "signin": {
-      "title": "Sign In",
-      "button": "Sign In",
-      "subtitle": "Enter your credentials to access",
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Login",
+      "forgotPassword": "Forgot Password?",
       "noAccount": "Don't have an account?",
-      "signUpLink": "Sign up here"
+      "register": "Register"
     },
-    "signup": {
-      "title": "Sign Up",
-      "button": "Sign Up",
-      "subtitle": "Create your account to get started",
+    "register": {
+      "title": "Register",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Register",
       "hasAccount": "Already have an account?",
-      "signInLink": "Sign in here"
+      "login": "Login",
+      "errors": {
+        "username": "Username must be between 3 and 20 characters",
+        "email": "Please enter a valid email address",
+        "passwordRequirements": "Password must be at least 6 characters long",
+        "passwordMatch": "Passwords do not match"
+      },
+      "passwordStrength": {
+        "weak": "Weak",
+        "fair": "Fair",
+        "good": "Good",
+        "strong": "Strong"
+      }
     },
-    "email": "Email",
-    "password": "Password",
-    "username": "Username",
-    "confirmPassword": "Confirm Password",
-    "logout": "Logout",
-    "placeholders": {
-      "email": "your@email.com",
-      "password": "••••••••",
-      "username": "your_username"
-    },
-    "errors": {
-      "invalidCredentials": "Invalid credentials",
-      "emailRequired": "Email is required",
-      "passwordRequired": "Password is required",
-      "usernameRequired": "Username is required",
-      "passwordsDoNotMatch": "Passwords do not match",
-      "emailAlreadyExists": "Email already exists",
-      "usernameAlreadyExists": "Username already exists",
-      "registrationFailed": "Registration failed",
-      "signInAfterRegistration": "Error signing in after registration",
-      "signInError": "Error signing in"
-    },
-    "success": {
-      "registration": "Registration successful"
-    },
-    "toast": {
-      "registrationSuccess": "Account created successfully! Redirecting to login...",
-      "registrationError": "Error creating account. Please try again.",
-      "networkError": "Connection error. Check your internet and try again."
+    "notification": {
+      "successLogin": "Login successful!",
+      "successRegister": "Registration successful! Please login.",
+      "error": "An error occurred. Please try again."
     }
   },
   "common": {
-    "loading": "Loading...",
-    "error": "Error",
-    "success": "Success"
+    "loading": "Loading..."
+  },
+  "home": {
+    "subtitle": "The OverPowered Torrent Tracker",
+    "nav": {
+      "browse": "Browse",
+      "recent": "Recent",
+      "top": "Top 100",
+      "stats": "Stats"
+    },
+    "search": {
+      "placeholder": "Search torrents...",
+      "button": "Search",
+      "categories": {
+        "all": "All Categories",
+        "audio": "Audio",
+        "video": "Video",
+        "applications": "Applications",
+        "games": "Games",
+        "other": "Other"
+      }
+    },
+    "footer": {
+      "description": "A modern torrent tracker built with Next.js",
+      "login": "Login",
+      "register": "Register",
+      "about": "About",
+      "stats": "Stats",
+      "api": "API"
+    }
+  },
+  "welcome": {
+    "title": "Welcome to OPTracker",
+    "description": "This is a development version. You can test notifications below.",
+    "buttons": {
+      "success": "Success",
+      "error": "Error"
+    },
+    "notifications": {
+      "success": "This is a success notification!",
+      "error": "This is an error notification!"
+    }
   },
   "language": {
     "spanish": "Español",

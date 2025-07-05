@@ -1,54 +1,85 @@
 {
   "auth": {
-    "signin": {
+    "login": {
       "title": "Iniciar Sesión",
-      "button": "Iniciar Sesión",
-      "subtitle": "Ingresa tus credenciales para acceder",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Iniciar Sesión",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
       "noAccount": "¿No tienes una cuenta?",
-      "signUpLink": "Regístrate aquí"
+      "register": "Registrarse"
     },
-    "signup": {
+    "register": {
       "title": "Registrarse",
-      "button": "Registrarse",
-      "subtitle": "Crea tu cuenta para comenzar",
+      "username": "Usuario",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "submit": "Registrarse",
       "hasAccount": "¿Ya tienes una cuenta?",
-      "signInLink": "Inicia sesión aquí"
+      "login": "Iniciar Sesión",
+      "errors": {
+        "username": "El usuario debe tener entre 3 y 20 caracteres",
+        "email": "Por favor ingresa un correo electrónico válido",
+        "passwordRequirements": "La contraseña debe tener al menos 6 caracteres",
+        "passwordMatch": "Las contraseñas no coinciden"
+      },
+      "passwordStrength": {
+        "weak": "Débil",
+        "fair": "Regular",
+        "good": "Buena",
+        "strong": "Fuerte"
+      }
     },
-    "email": "Correo Electrónico",
-    "password": "Contraseña",
-    "username": "Nombre de Usuario",
-    "confirmPassword": "Confirmar Contraseña",
-    "logout": "Cerrar Sesión",
-    "placeholders": {
-      "email": "tu@email.com",
-      "password": "••••••••",
-      "username": "tu_usuario"
-    },
-    "errors": {
-      "invalidCredentials": "Credenciales inválidas",
-      "emailRequired": "El correo electrónico es requerido",
-      "passwordRequired": "La contraseña es requerida",
-      "usernameRequired": "El nombre de usuario es requerido",
-      "passwordsDoNotMatch": "Las contraseñas no coinciden",
-      "emailAlreadyExists": "El correo electrónico ya existe",
-      "usernameAlreadyExists": "El nombre de usuario ya existe",
-      "registrationFailed": "Error en el registro",
-      "signInAfterRegistration": "Error al iniciar sesión después del registro",
-      "signInError": "Error al iniciar sesión"
-    },
-    "success": {
-      "registration": "Registro exitoso"
-    },
-    "toast": {
-      "registrationSuccess": "¡Cuenta creada exitosamente! Redirigiendo al login...",
-      "registrationError": "Error al crear la cuenta. Por favor, intenta de nuevo.",
-      "networkError": "Error de conexión. Verifica tu internet e intenta de nuevo."
+    "notification": {
+      "successLogin": "¡Inicio de sesión exitoso!",
+      "successRegister": "¡Registro exitoso! Por favor inicia sesión.",
+      "error": "Ocurrió un error. Por favor intenta de nuevo."
     }
   },
   "common": {
-    "loading": "Cargando...",
-    "error": "Error",
-    "success": "Éxito"
+    "loading": "Cargando..."
+  },
+  "home": {
+    "subtitle": "El Rastreador de Torrents SobrePotenciado",
+    "nav": {
+      "browse": "Explorar",
+      "recent": "Recientes",
+      "top": "Top 100",
+      "stats": "Estadísticas"
+    },
+    "search": {
+      "placeholder": "Buscar torrents...",
+      "button": "Buscar",
+      "categories": {
+        "all": "Todas las Categorías",
+        "audio": "Audio",
+        "video": "Video",
+        "applications": "Aplicaciones",
+        "games": "Juegos",
+        "other": "Otros"
+      }
+    },
+    "footer": {
+      "description": "Un rastreador de torrents moderno construido con Next.js",
+      "login": "Iniciar Sesión",
+      "register": "Registrarse",
+      "about": "Acerca de",
+      "stats": "Estadísticas",
+      "api": "API"
+    }
+  },
+  "welcome": {
+    "title": "Bienvenido a OPTracker",
+    "description": "Esta es una versión de desarrollo. Puedes probar las notificaciones abajo.",
+    "buttons": {
+      "success": "Éxito",
+      "error": "Error"
+    },
+    "notifications": {
+      "success": "¡Esta es una notificación de éxito!",
+      "error": "¡Esta es una notificación de error!"
+    }
   },
   "language": {
     "spanish": "Español",

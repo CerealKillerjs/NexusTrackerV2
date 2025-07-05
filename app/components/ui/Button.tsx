@@ -38,17 +38,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const getVariantClasses = () => {
       switch (variant) {
         case "primary":
-          return "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 disabled:bg-blue-300"
+          return "bg-accent text-background hover:bg-accent/90 focus:ring-accent disabled:bg-accent/50"
         case "secondary":
-          return "bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500 disabled:bg-gray-300"
+          return "bg-background-secondary text-foreground hover:bg-background-tertiary focus:ring-accent disabled:bg-background-secondary/50"
         case "outline":
-          return "border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500 disabled:border-gray-200 disabled:text-gray-400"
+          return "border border-border text-foreground hover:bg-background-secondary focus:ring-accent disabled:border-border/50 disabled:text-foreground/50"
         case "ghost":
-          return "text-gray-700 hover:bg-gray-100 focus:ring-gray-500 disabled:text-gray-400"
+          return "text-foreground hover:bg-background-secondary focus:ring-accent disabled:text-foreground/50"
         case "destructive":
-          return "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 disabled:bg-red-300"
+          return "bg-error text-background hover:bg-error/90 focus:ring-error disabled:bg-error/50"
         default:
-          return "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 disabled:bg-blue-300"
+          return "bg-accent text-background hover:bg-accent/90 focus:ring-accent disabled:bg-accent/50"
       }
     }
 
@@ -74,7 +74,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           // Base button styles
           "inline-flex items-center justify-center font-medium rounded-md",
-          "focus:outline-none focus:ring-2 focus:ring-offset-2",
+          "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background",
           "transition-colors duration-200",
           "disabled:cursor-not-allowed disabled:opacity-50",
           // Variant and size specific styles

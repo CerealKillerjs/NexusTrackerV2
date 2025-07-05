@@ -19,7 +19,7 @@ import i18n from "@/app/lib/i18n"
  * - Email and password validation
  * - Dynamic validation schemas based on current language
  * - Integration with NextAuth.js for authentication
- * - Toast notifications for success/error feedback
+ * - Error display for authentication feedback
  * - Responsive design with loading states
  * - Hydration mismatch prevention
  */
@@ -91,18 +91,18 @@ export function SignInForm() {
     return (
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-foreground">
             auth.signin.title
           </h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-foreground-secondary">
             auth.signin.subtitle
           </p>
         </div>
         {/* Loading skeleton while i18n initializes */}
         <div className="space-y-4">
-          <div className="h-10 bg-gray-200 animate-pulse rounded"></div>
-          <div className="h-10 bg-gray-200 animate-pulse rounded"></div>
-          <div className="h-10 bg-gray-200 animate-pulse rounded"></div>
+          <div className="h-10 bg-background-tertiary animate-pulse rounded"></div>
+          <div className="h-10 bg-background-tertiary animate-pulse rounded"></div>
+          <div className="h-10 bg-background-tertiary animate-pulse rounded"></div>
         </div>
       </div>
     )
@@ -112,10 +112,10 @@ export function SignInForm() {
     <div className="w-full max-w-md space-y-6">
       {/* Form header with title and subtitle */}
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-foreground">
           {t("auth.signin.title")}
         </h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <p className="mt-2 text-sm text-foreground-secondary">
           {t("auth.signin.subtitle")}
         </p>
       </div>
@@ -142,8 +142,8 @@ export function SignInForm() {
 
         {/* Error message display */}
         {error && (
-          <div className="rounded-md bg-red-50 p-3">
-            <p className="text-sm text-red-600">{error}</p>
+          <div className="rounded-md bg-error/10 border border-error/20 p-3">
+            <p className="text-sm text-error">{error}</p>
           </div>
         )}
 
@@ -159,11 +159,11 @@ export function SignInForm() {
 
       {/* Link to sign up page for users without accounts */}
       <div className="text-center">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-foreground-secondary">
           {t("auth.signin.noAccount")}{" "}
           <a
             href="/auth/signup"
-            className="font-medium text-blue-600 hover:text-blue-500"
+            className="font-medium text-accent hover:text-accent/80"
           >
             {t("auth.signin.signUpLink")}
           </a>
