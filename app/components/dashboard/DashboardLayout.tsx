@@ -6,6 +6,7 @@
  * - Header with user stats, search, and dropdown
  * - Modern icons and professional design
  * - Responsive and accessible
+ * - Internationalization support
  */
 
 'use client';
@@ -14,6 +15,7 @@ import { ReactNode, useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
+import { useI18n } from '@/app/hooks/useI18n';
 // Icon imports
 import { Home } from '@styled-icons/boxicons-regular/Home';
 import { Upload } from '@styled-icons/boxicons-regular/Upload';
@@ -35,32 +37,34 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-const navItems = [
-  { href: '/dashboard', label: 'Inicio', icon: Home },
-  { href: '/categories', label: 'Categorías', icon: ListUl },
-  { href: '/requests', label: 'Solicitudes', icon: HelpCircle },
-  { href: '/announcements', label: 'Anuncios', icon: News },
-  { href: '/wiki', label: 'Wiki', icon: BookOpen },
-  { href: '/rss', label: 'RSS', icon: Rss },
-  { href: '/bookmarks', label: 'Marcadores', icon: Bookmark },
-];
-
-// Mock user stats (in real app, fetch from API)
-const mockUserStats = {
-  ratio: 2.5,
-  upload: 1024 * 1024 * 1024 * 50, // 50 GB
-  download: 1024 * 1024 * 1024 * 20, // 20 GB
-  hitnruns: 0,
-  bp: 1500,
-};
-
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { data: session, status } = useSession();
+  const { t } = useI18n();
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Navigation items with translations
+  const navItems = [
+    { href: '/dashboard', label: t('sidebar.nav.home'), icon: Home },
+    { href: '/categories', label: t('sidebar.nav.categories'), icon: ListUl },
+    { href: '/requests', label: t('sidebar.nav.requests'), icon: HelpCircle },
+    { href: '/announcements', label: t('sidebar.nav.announcements'), icon: News },
+    { href: '/wiki', label: t('sidebar.nav.wiki'), icon: BookOpen },
+    { href: '/rss', label: t('sidebar.nav.rss'), icon: Rss },
+    { href: '/bookmarks', label: t('sidebar.nav.bookmarks'), icon: Bookmark },
+  ];
+
+  // Mock user stats (in real app, fetch from API)
+  const mockUserStats = {
+    ratio: 2.5,
+    upload: 1024 * 1024 * 1024 * 50, // 50 GB
+    download: 1024 * 1024 * 1024 * 20, // 20 GB
+    hitnruns: 0,
+    bp: 1500,
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -95,7 +99,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-text text-lg">Cargando...</div>
+        <div className="text-text text-lg">{t('common.loading')}</div>
       </div>
     );
   }
@@ -143,7 +147,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <form onSubmit={handleSearch} className="hidden md:block">
               <input
                 type="text"
-                placeholder="Buscar torrents..."
+                placeholder={t('header.search.placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-64 px-4 py-2 bg-background border border-border rounded-lg text-text placeholder-text-secondary focus:outline-none focus:border-primary transition-colors"
@@ -155,7 +159,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               href="/torrents/upload"
               className="hidden md:flex items-center px-4 py-2 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors text-sm font-medium"
             >
-              <Upload size={20} className="mr-2" /> Subir
+              <Upload size={20} className="mr-2" /> {t('header.upload')}
             </Link>
 
             {/* User Dropdown */}
@@ -180,7 +184,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     className="block px-4 py-3 text-text hover:bg-surface-light transition-colors"
                     onClick={() => setUserDropdownOpen(false)}
                   >
-                    <User size={18} className="mr-2 inline" /> Mi Perfil
+                    <User size={18} className="mr-2 inline" /> {t('header.userMenu.profile')}
                   </Link>
                   {user?.role === 'admin' && (
                     <Link 
@@ -188,7 +192,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                       className="block px-4 py-3 text-text hover:bg-surface-light transition-colors"
                       onClick={() => setUserDropdownOpen(false)}
                     >
-                      <Lock size={18} className="mr-2 inline" /> Panel Admin
+                      <Lock size={18} className="mr-2 inline" /> {t('header.userMenu.adminPanel')}
                     </Link>
                   )}
                   {user?.role === 'moderator' && (
@@ -197,14 +201,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                       className="block px-4 py-3 text-text hover:bg-surface-light transition-colors"
                       onClick={() => setUserDropdownOpen(false)}
                     >
-                      <Lock size={18} className="mr-2 inline" /> Panel Moderador
+                      <Lock size={18} className="mr-2 inline" /> {t('header.userMenu.moderatorPanel')}
                     </Link>
                   )}
                   <button
                     onClick={() => signOut({ callbackUrl: '/auth/signin' })}
                     className="w-full text-left px-4 py-3 text-text hover:bg-surface-light transition-colors"
                   >
-                    <LogOutCircle size={18} className="mr-2 inline" /> Cerrar Sesión
+                    <LogOutCircle size={18} className="mr-2 inline" /> {t('header.userMenu.logout')}
                   </button>
                 </div>
               )}

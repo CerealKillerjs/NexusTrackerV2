@@ -130,5 +130,34 @@
       },
       "freeleech": "FL"
     }
+  },
+  "sidebar": {
+    "nav": {
+      "home": "Home",
+      "categories": "Categories",
+      "requests": "Requests",
+      "announcements": "Announcements",
+      "wiki": "Wiki",
+      "rss": "RSS",
+      "bookmarks": "Bookmarks"
+    }
+  },
+  "header": {
+    "search": {
+      "placeholder": "Search torrents..."
+    },
+    "upload": "Upload",
+    "userMenu": {
+      "profile": "My Profile",
+      "adminPanel": "Admin Panel",
+      "moderatorPanel": "Moderator Panel",
+      "logout": "Logout"
+    },
+    "stats": {
+      "uploaded": "Uploaded",
+      "downloaded": "Downloaded",
+      "ratio": "Ratio",
+      "bonusPoints": "Bonus Points"
+    }
   }
 } 
