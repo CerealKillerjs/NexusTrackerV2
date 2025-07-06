@@ -258,5 +258,81 @@
         "3": "Verifica que el torrent funcione correctamente antes de subir"
       }
     }
+  },
+  "torrentDetail": {
+    "loading": "Cargando torrent...",
+    "error": {
+      "title": "Error",
+      "notFound": "Torrent no encontrado",
+      "loadError": "No se pudo cargar el torrent",
+      "fetchError": "Error al cargar el torrent"
+    },
+    "header": {
+      "downloads": "descargas",
+      "freeleech": "Freeleech"
+    },
+    "torrentInfo": {
+      "title": "Información del Torrent",
+      "size": "Tamaño",
+      "type": "Tipo",
+      "source": "Fuente",
+      "files": "Archivos",
+      "tags": "Tags",
+      "description": "Descripción",
+      "image": "Imagen",
+      "nfoFile": "Archivo NFO"
+    },
+    "fileList": {
+      "title": "Lista de Archivos",
+      "count": "Lista de Archivos ({{count}})"
+    },
+    "comments": {
+      "title": "Comentarios",
+      "count": "Comentarios ({{count}})",
+      "comingSoon": "Los comentarios estarán disponibles próximamente"
+    },
+    "actions": {
+      "title": "Acciones",
+      "download": "Descargar Torrent",
+      "downloading": "Descargando...",
+      "addBookmark": "Agregar Marcador",
+      "removeBookmark": "Quitar Marcador",
+      "like": "Me gusta",
+      "dislike": "No me gusta",
+      "copyLink": "Copiar Enlace"
+    },
+    "uploader": {
+      "title": "Subido por",
+      "anonymous": "Anónimo",
+      "user": "Usuario",
+      "ratio": "Ratio: {{ratio}}",
+      "uploaded": "Subido:",
+      "downloaded": "Descargado:"
+    },
+    "statistics": {
+      "title": "Estadísticas",
+      "bookmarks": "Marcadores:",
+      "votes": "Votos:",
+      "comments": "Comentarios:"
+    },
+    "notifications": {
+      "loginRequired": {
+        "download": "Debes iniciar sesión para descargar",
+        "bookmark": "Debes iniciar sesión para marcar",
+        "vote": "Debes iniciar sesión para votar"
+      },
+      "success": {
+        "download": "Descarga iniciada",
+        "bookmarkAdded": "Marcador agregado",
+        "bookmarkRemoved": "Marcador eliminado",
+        "vote": "Voto registrado",
+        "linkCopied": "Enlace copiado al portapapeles"
+      },
+      "error": {
+        "download": "Error al descargar el torrent",
+        "bookmark": "Error al actualizar marcador",
+        "vote": "Error al votar"
+      }
+    }
   }
 } 

@@ -258,5 +258,81 @@
         "3": "Verify that the torrent works correctly before uploading"
       }
     }
+  },
+  "torrentDetail": {
+    "loading": "Loading torrent...",
+    "error": {
+      "title": "Error",
+      "notFound": "Torrent not found",
+      "loadError": "Could not load torrent",
+      "fetchError": "Error loading torrent"
+    },
+    "header": {
+      "downloads": "downloads",
+      "freeleech": "Freeleech"
+    },
+    "torrentInfo": {
+      "title": "Torrent Information",
+      "size": "Size",
+      "type": "Type",
+      "source": "Source",
+      "files": "Files",
+      "tags": "Tags",
+      "description": "Description",
+      "image": "Image",
+      "nfoFile": "NFO File"
+    },
+    "fileList": {
+      "title": "File List",
+      "count": "File List ({{count}})"
+    },
+    "comments": {
+      "title": "Comments",
+      "count": "Comments ({{count}})",
+      "comingSoon": "Comments will be available soon"
+    },
+    "actions": {
+      "title": "Actions",
+      "download": "Download Torrent",
+      "downloading": "Downloading...",
+      "addBookmark": "Add Bookmark",
+      "removeBookmark": "Remove Bookmark",
+      "like": "Like",
+      "dislike": "Dislike",
+      "copyLink": "Copy Link"
+    },
+    "uploader": {
+      "title": "Uploaded by",
+      "anonymous": "Anonymous",
+      "user": "User",
+      "ratio": "Ratio: {{ratio}}",
+      "uploaded": "Uploaded:",
+      "downloaded": "Downloaded:"
+    },
+    "statistics": {
+      "title": "Statistics",
+      "bookmarks": "Bookmarks:",
+      "votes": "Votes:",
+      "comments": "Comments:"
+    },
+    "notifications": {
+      "loginRequired": {
+        "download": "You must be logged in to download",
+        "bookmark": "You must be logged in to bookmark",
+        "vote": "You must be logged in to vote"
+      },
+      "success": {
+        "download": "Download started",
+        "bookmarkAdded": "Bookmark added",
+        "bookmarkRemoved": "Bookmark removed",
+        "vote": "Vote registered",
+        "linkCopied": "Link copied to clipboard"
+      },
+      "error": {
+        "download": "Error downloading torrent",
+        "bookmark": "Error updating bookmark",
+        "vote": "Error voting"
+      }
+    }
   }
 } 

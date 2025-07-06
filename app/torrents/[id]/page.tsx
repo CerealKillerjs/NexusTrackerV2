@@ -16,6 +16,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/app/components/dashboard/DashboardLayout';
+import { useI18n } from '@/app/hooks/useI18n';
 import { showNotification } from '@/app/utils/notifications';
 // Icon imports
 import { Download } from '@styled-icons/boxicons-regular/Download';
@@ -69,6 +70,7 @@ interface TorrentData {
 export default function TorrentDetailPage() {
   const params = useParams();
   const { data: session } = useSession();
+  const { t } = useI18n();
   const [torrent, setTorrent] = useState<TorrentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -88,15 +90,15 @@ export default function TorrentDetailPage() {
       const response = await fetch(`/api/torrent/${torrentId}`);
       
       if (!response.ok) {
-        throw new Error('Torrent no encontrado');
+        throw new Error(t('torrentDetail.error.notFound'));
       }
 
       const data = await response.json();
       setTorrent(data);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error al cargar el torrent';
+      const errorMessage = error instanceof Error ? error.message : t('torrentDetail.error.loadError');
       setError(errorMessage);
-      showNotification.error('Error al cargar el torrent');
+      showNotification.error(t('torrentDetail.error.fetchError'));
     } finally {
       setLoading(false);
     }
@@ -104,7 +106,7 @@ export default function TorrentDetailPage() {
 
   const handleDownload = async () => {
     if (!session) {
-      showNotification.error('Debes iniciar sesión para descargar');
+      showNotification.error(t('torrentDetail.notifications.loginRequired.download'));
       return;
     }
 
@@ -115,7 +117,7 @@ export default function TorrentDetailPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Error al descargar el torrent');
+        throw new Error(t('torrentDetail.notifications.error.download'));
       }
 
       const blob = await response.blob();
@@ -128,10 +130,10 @@ export default function TorrentDetailPage() {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
 
-      showNotification.success('Descarga iniciada');
+      showNotification.success(t('torrentDetail.notifications.success.download'));
     } catch (error) {
       console.error('Download error:', error);
-      showNotification.error('Error al descargar el torrent');
+      showNotification.error(t('torrentDetail.notifications.error.download'));
     } finally {
       setDownloading(false);
     }
@@ -139,7 +141,7 @@ export default function TorrentDetailPage() {
 
   const handleBookmark = async () => {
     if (!session) {
-      showNotification.error('Debes iniciar sesión para marcar');
+      showNotification.error(t('torrentDetail.notifications.loginRequired.bookmark'));
       return;
     }
 
@@ -149,7 +151,7 @@ export default function TorrentDetailPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Error al actualizar marcador');
+        throw new Error(t('torrentDetail.notifications.error.bookmark'));
       }
 
       setTorrent(prev => prev ? {
@@ -164,17 +166,19 @@ export default function TorrentDetailPage() {
       } : null);
 
       showNotification.success(
-        torrent?.isBookmarked ? 'Marcador eliminado' : 'Marcador agregado'
+        torrent?.isBookmarked 
+          ? t('torrentDetail.notifications.success.bookmarkRemoved')
+          : t('torrentDetail.notifications.success.bookmarkAdded')
       );
     } catch (error) {
       console.error('Bookmark error:', error);
-      showNotification.error('Error al actualizar marcador');
+      showNotification.error(t('torrentDetail.notifications.error.bookmark'));
     }
   };
 
   const handleVote = async (voteType: 'up' | 'down') => {
     if (!session) {
-      showNotification.error('Debes iniciar sesión para votar');
+      showNotification.error(t('torrentDetail.notifications.loginRequired.vote'));
       return;
     }
 
@@ -188,7 +192,7 @@ export default function TorrentDetailPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Error al votar');
+        throw new Error(t('torrentDetail.notifications.error.vote'));
       }
 
       setTorrent(prev => prev ? {
@@ -196,10 +200,10 @@ export default function TorrentDetailPage() {
         userVote: prev.userVote === voteType ? null : voteType
       } : null);
 
-      showNotification.success('Voto registrado');
+      showNotification.success(t('torrentDetail.notifications.success.vote'));
     } catch (error) {
       console.error('Vote error:', error);
-      showNotification.error('Error al votar');
+      showNotification.error(t('torrentDetail.notifications.error.vote'));
     }
   };
 
@@ -224,7 +228,7 @@ export default function TorrentDetailPage() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="text-text">Cargando torrent...</div>
+          <div className="text-text">{t('torrentDetail.loading')}</div>
         </div>
       </DashboardLayout>
     );
@@ -236,9 +240,9 @@ export default function TorrentDetailPage() {
         <div className="max-w-4xl mx-auto p-6">
           <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6 text-center">
             <InfoCircle size={48} className="mx-auto text-red-500 mb-4" />
-            <h1 className="text-2xl font-bold text-red-500 mb-2">Error</h1>
+            <h1 className="text-2xl font-bold text-red-500 mb-2">{t('torrentDetail.error.title')}</h1>
             <p className="text-text-secondary">
-              {error || 'No se pudo cargar el torrent'}
+              {error || t('torrentDetail.error.loadError')}
             </p>
           </div>
         </div>
@@ -259,11 +263,11 @@ export default function TorrentDetailPage() {
             </span>
             <span className="flex items-center">
               <Download size={16} className="mr-1" />
-              {torrent.downloads} descargas
+              {torrent.downloads} {t('torrentDetail.header.downloads')}
             </span>
             {torrent.freeleech && (
               <span className="bg-green-500/10 text-green-500 px-2 py-1 rounded text-sm">
-                Freeleech
+                {t('torrentDetail.header.freeleech')}
               </span>
             )}
           </div>
@@ -276,24 +280,24 @@ export default function TorrentDetailPage() {
             <div className="bg-surface rounded-lg border border-border p-6">
               <h2 className="text-xl font-semibold text-text mb-4 flex items-center">
                 <InfoCircle size={20} className="mr-2" />
-                Información del Torrent
+                {t('torrentDetail.torrentInfo.title')}
               </h2>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div>
-                  <span className="text-text-secondary block text-sm">Tamaño</span>
+                  <span className="text-text-secondary block text-sm">{t('torrentDetail.torrentInfo.size')}</span>
                   <span className="text-text font-medium">{formatFileSize(torrent.size)}</span>
                 </div>
                 <div>
-                  <span className="text-text-secondary block text-sm">Tipo</span>
+                  <span className="text-text-secondary block text-sm">{t('torrentDetail.torrentInfo.type')}</span>
                   <span className="text-text font-medium">{torrent.type || 'N/A'}</span>
                 </div>
                 <div>
-                  <span className="text-text-secondary block text-sm">Fuente</span>
+                  <span className="text-text-secondary block text-sm">{t('torrentDetail.torrentInfo.source')}</span>
                   <span className="text-text font-medium">{torrent.source || 'N/A'}</span>
                 </div>
                 <div>
-                  <span className="text-text-secondary block text-sm">Archivos</span>
+                  <span className="text-text-secondary block text-sm">{t('torrentDetail.torrentInfo.files')}</span>
                   <span className="text-text font-medium">{torrent.files.length}</span>
                 </div>
               </div>
@@ -303,7 +307,7 @@ export default function TorrentDetailPage() {
                 <div className="mb-6">
                   <span className="text-text-secondary block text-sm mb-2 flex items-center">
                     <Tag size={16} className="mr-1" />
-                    Tags
+                    {t('torrentDetail.torrentInfo.tags')}
                   </span>
                   <div className="flex flex-wrap gap-2">
                     {torrent.tags.map(tag => (
@@ -321,7 +325,7 @@ export default function TorrentDetailPage() {
               {/* Description */}
               {torrent.description && (
                 <div>
-                  <h3 className="text-lg font-medium text-text mb-2">Descripción</h3>
+                  <h3 className="text-lg font-medium text-text mb-2">{t('torrentDetail.torrentInfo.description')}</h3>
                   <p className="text-text-secondary whitespace-pre-wrap">
                     {torrent.description}
                   </p>
@@ -331,7 +335,7 @@ export default function TorrentDetailPage() {
               {/* Image */}
               {torrent.image && (
                 <div className="mt-6">
-                  <h3 className="text-lg font-medium text-text mb-2">Imagen</h3>
+                  <h3 className="text-lg font-medium text-text mb-2">{t('torrentDetail.torrentInfo.image')}</h3>
                   <div className="flex justify-center">
                     <img
                       src={`data:image/jpeg;base64,${torrent.image}`}
@@ -345,7 +349,7 @@ export default function TorrentDetailPage() {
               {/* NFO File */}
               {torrent.nfo && (
                 <div className="mt-6">
-                  <h3 className="text-lg font-medium text-text mb-2">Archivo NFO</h3>
+                  <h3 className="text-lg font-medium text-text mb-2">{t('torrentDetail.torrentInfo.nfoFile')}</h3>
                   <div className="bg-background border border-border rounded-lg p-4 max-h-96 overflow-y-auto">
                     <pre className="text-text-secondary text-sm whitespace-pre-wrap font-mono">
                       {torrent.nfo}
@@ -359,7 +363,7 @@ export default function TorrentDetailPage() {
             <div className="bg-surface rounded-lg border border-border p-6">
               <h2 className="text-xl font-semibold text-text mb-4 flex items-center">
                 <Folder size={20} className="mr-2" />
-                Lista de Archivos ({torrent.files.length})
+                {t('torrentDetail.fileList.count').replace('{{count}}', torrent.files.length.toString())}
               </h2>
               
               <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -384,12 +388,12 @@ export default function TorrentDetailPage() {
             <div className="bg-surface rounded-lg border border-border p-6">
               <h2 className="text-xl font-semibold text-text mb-4 flex items-center">
                 <Comment size={20} className="mr-2" />
-                Comentarios ({torrent._count?.comments || 0})
+                {t('torrentDetail.comments.count').replace('{{count}}', (torrent._count?.comments || 0).toString())}
               </h2>
               
               <div className="text-center py-8 text-text-secondary">
                 <Comment size={48} className="mx-auto mb-4 opacity-50" />
-                <p>Los comentarios estarán disponibles próximamente</p>
+                <p>{t('torrentDetail.comments.comingSoon')}</p>
               </div>
             </div>
           </div>
@@ -398,7 +402,7 @@ export default function TorrentDetailPage() {
           <div className="space-y-6">
             {/* Action Buttons */}
             <div className="bg-surface rounded-lg border border-border p-6">
-              <h3 className="text-lg font-semibold text-text mb-4">Acciones</h3>
+              <h3 className="text-lg font-semibold text-text mb-4">{t('torrentDetail.actions.title')}</h3>
               
               <div className="space-y-3">
                 <button
@@ -407,7 +411,7 @@ export default function TorrentDetailPage() {
                   className="w-full bg-primary text-background py-3 px-4 rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                 >
                   <Download size={20} />
-                  <span>{downloading ? 'Descargando...' : 'Descargar Torrent'}</span>
+                  <span>{downloading ? t('torrentDetail.actions.downloading') : t('torrentDetail.actions.download')}</span>
                 </button>
 
                 <button
@@ -417,12 +421,12 @@ export default function TorrentDetailPage() {
                   {torrent.isBookmarked ? (
                     <>
                       <BookmarkMinus size={20} />
-                      <span>Quitar Marcador</span>
+                      <span>{t('torrentDetail.actions.removeBookmark')}</span>
                     </>
                   ) : (
                     <>
                       <Bookmark size={20} />
-                      <span>Agregar Marcador</span>
+                      <span>{t('torrentDetail.actions.addBookmark')}</span>
                     </>
                   )}
                 </button>
@@ -437,7 +441,7 @@ export default function TorrentDetailPage() {
                     }`}
                   >
                     <Like size={16} />
-                    <span>Me gusta</span>
+                    <span>{t('torrentDetail.actions.like')}</span>
                   </button>
                   <button
                     onClick={() => handleVote('down')}
@@ -448,19 +452,19 @@ export default function TorrentDetailPage() {
                     }`}
                   >
                     <Dislike size={16} />
-                    <span>No me gusta</span>
+                    <span>{t('torrentDetail.actions.dislike')}</span>
                   </button>
                 </div>
 
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(window.location.href);
-                    showNotification.success('Enlace copiado al portapapeles');
+                    showNotification.success(t('torrentDetail.notifications.success.linkCopied'));
                   }}
                   className="w-full bg-surface-light border border-border text-text py-2 px-4 rounded-lg hover:bg-surface transition-colors flex items-center justify-center space-x-2"
                 >
                   <Copy size={16} />
-                  <span>Copiar Enlace</span>
+                  <span>{t('torrentDetail.actions.copyLink')}</span>
                 </button>
               </div>
             </div>
@@ -469,7 +473,7 @@ export default function TorrentDetailPage() {
             <div className="bg-surface rounded-lg border border-border p-6">
               <h3 className="text-lg font-semibold text-text mb-4 flex items-center">
                 <User size={20} className="mr-2" />
-                Subido por
+                {t('torrentDetail.uploader.title')}
               </h3>
               
               <div className="space-y-3">
@@ -479,11 +483,11 @@ export default function TorrentDetailPage() {
                   </div>
                   <div>
                     <p className="text-text font-medium">
-                      {torrent.anonymous ? 'Anónimo' : torrent.user?.username || 'Usuario'}
+                      {torrent.anonymous ? t('torrentDetail.uploader.anonymous') : torrent.user?.username || t('torrentDetail.uploader.user')}
                     </p>
                     {!torrent.anonymous && torrent.user && (
                       <p className="text-text-secondary text-sm">
-                        Ratio: {torrent.user.ratio.toFixed(2)}
+                        {t('torrentDetail.uploader.ratio').replace('{{ratio}}', torrent.user.ratio.toFixed(2))}
                       </p>
                     )}
                   </div>
@@ -492,11 +496,11 @@ export default function TorrentDetailPage() {
                 {!torrent.anonymous && torrent.user && (
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-text-secondary">Subido:</span>
+                      <span className="text-text-secondary">{t('torrentDetail.uploader.uploaded')}</span>
                       <span className="text-text">{formatFileSize(torrent.user.uploaded)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-text-secondary">Descargado:</span>
+                      <span className="text-text-secondary">{t('torrentDetail.uploader.downloaded')}</span>
                       <span className="text-text">{formatFileSize(torrent.user.downloaded)}</span>
                     </div>
                   </div>
@@ -506,19 +510,19 @@ export default function TorrentDetailPage() {
 
             {/* Statistics */}
             <div className="bg-surface rounded-lg border border-border p-6">
-              <h3 className="text-lg font-semibold text-text mb-4">Estadísticas</h3>
+              <h3 className="text-lg font-semibold text-text mb-4">{t('torrentDetail.statistics.title')}</h3>
               
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-text-secondary">Marcadores:</span>
+                  <span className="text-text-secondary">{t('torrentDetail.statistics.bookmarks')}</span>
                   <span className="text-text">{torrent._count?.bookmarks || 0}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-text-secondary">Votos:</span>
+                  <span className="text-text-secondary">{t('torrentDetail.statistics.votes')}</span>
                   <span className="text-text">{torrent._count?.votes || 0}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-text-secondary">Comentarios:</span>
+                  <span className="text-text-secondary">{t('torrentDetail.statistics.comments')}</span>
                   <span className="text-text">{torrent._count?.comments || 0}</span>
                 </div>
               </div>
