@@ -86,7 +86,7 @@
     }
   },
   "welcome": {
-    "title": "Welcome to OPTracker",
+    "title": "Welcome to NexusTracker V2",
     "description": "This is a development version. You can test notifications below.",
     "buttons": {
       "success": "Success",
@@ -100,5 +100,35 @@
   "language": {
     "spanish": "Español",
     "english": "English"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, {{username}}",
+    "latestTorrents": {
+      "title": "Latest Torrents",
+      "count": "{{count}} torrents",
+      "refresh": "Refresh",
+      "loading": "Loading torrents...",
+      "error": "Error loading torrents",
+      "retry": "Retry",
+      "empty": "No torrents to display",
+      "emptyDescription": "Uploaded torrents will appear here"
+    },
+    "table": {
+      "headers": {
+        "title": "Title",
+        "category": "Category",
+        "size": "Size",
+        "seedersLeechers": "S/L",
+        "stats": "Stats",
+        "uploaded": "Uploaded",
+        "uploader": "Uploader"
+      },
+      "stats": {
+        "downloads": "Downloads",
+        "comments": "Comments"
+      },
+      "freeleech": "FL"
+    }
   }
 } 

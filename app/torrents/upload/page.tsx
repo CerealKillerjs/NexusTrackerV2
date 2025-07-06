@@ -369,58 +369,120 @@ export default function UploadPage() {
 
         {/* Upload Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* File Upload Area */}
-          <div className="bg-surface rounded-lg border-2 border-dashed border-border p-8">
-            <div
-              className={`text-center transition-colors ${
-                isDragOver ? 'border-primary bg-primary/5' : ''
-              }`}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-            >
-              {!uploadedFile ? (
-                <>
-                  <Upload size={64} className="mx-auto text-text-secondary mb-4" />
-                  <h3 className="text-xl font-semibold text-text mb-2">
-                    Arrastra tu archivo .torrent aquí
-                  </h3>
-                  <p className="text-text-secondary mb-4">
-                    O haz clic para seleccionar un archivo
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="px-6 py-3 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors"
-                  >
-                    Seleccionar Archivo
-                  </button>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".torrent"
-                    onChange={handleFileInputChange}
-                    className="hidden"
-                  />
-                </>
-              ) : (
-                <div className="flex items-center justify-center space-x-4">
-                  <File size={48} className="text-green-500" />
-                  <div className="text-left">
-                    <h3 className="text-lg font-semibold text-text">{uploadedFile.name}</h3>
-                    <p className="text-text-secondary">
-                      {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+          {/* File Upload Areas - Side by Side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Torrent File Upload Area */}
+            <div className="bg-surface rounded-lg border-2 border-dashed border-border p-8">
+              <div
+                className={`text-center transition-colors ${
+                  isDragOver ? 'border-primary bg-primary/5' : ''
+                }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                {!uploadedFile ? (
+                  <>
+                    <Upload size={64} className="mx-auto text-text-secondary mb-4" />
+                    <h3 className="text-xl font-semibold text-text mb-2">
+                      Arrastra tu archivo .torrent aquí
+                    </h3>
+                    <p className="text-text-secondary mb-4">
+                      O haz clic para seleccionar un archivo
                     </p>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-6 py-3 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors"
+                    >
+                      Seleccionar Archivo
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".torrent"
+                      onChange={handleFileInputChange}
+                      className="hidden"
+                    />
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center space-x-4">
+                    <File size={48} className="text-green-500" />
+                    <div className="text-left">
+                      <h3 className="text-lg font-semibold text-text">{uploadedFile.name}</h3>
+                      <p className="text-text-secondary">
+                        {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setUploadedFile(null)}
+                      className="p-2 text-text-secondary hover:text-text transition-colors"
+                    >
+                      <X size={20} />
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setUploadedFile(null)}
-                    className="p-2 text-text-secondary hover:text-text transition-colors"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-              )}
+                )}
+              </div>
+            </div>
+
+            {/* Image Upload Area */}
+            <div className="bg-surface rounded-lg border-2 border-dashed border-border p-8">
+              <div className="text-center">
+                {!uploadedImage ? (
+                  <>
+                    <div className="w-16 h-16 mx-auto mb-4 bg-background border-2 border-dashed border-border rounded-lg flex items-center justify-center">
+                      <File size={24} className="text-text-secondary" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-text mb-2">
+                      Imagen (Opcional)
+                    </h3>
+                    <p className="text-text-secondary mb-4">
+                      Selecciona una imagen para el torrent (máximo 5MB)
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => imageInputRef.current?.click()}
+                      className="px-6 py-3 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors"
+                    >
+                      Seleccionar Imagen
+                    </button>
+                    <input
+                      ref={imageInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageInputChange}
+                      className="hidden"
+                    />
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center space-y-4">
+                    {imagePreview && (
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-32 h-32 object-cover rounded-lg shadow-lg"
+                      />
+                    )}
+                    <div className="text-center">
+                      <h3 className="text-lg font-semibold text-text">{uploadedImage.name}</h3>
+                      <p className="text-text-secondary">
+                        {(uploadedImage.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUploadedImage(null);
+                        setImagePreview(null);
+                      }}
+                      className="p-2 text-text-secondary hover:text-text transition-colors"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -632,65 +694,6 @@ export default function UploadPage() {
               {errors.description && (
                 <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
               )}
-            </div>
-
-            {/* Image Upload */}
-            <div className="lg:col-span-2">
-              <label className="block text-sm font-medium text-text mb-2">
-                Imagen (Opcional)
-              </label>
-              <div className="bg-surface rounded-lg border-2 border-dashed border-border p-6">
-                {!uploadedImage ? (
-                  <div className="text-center">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-background border-2 border-dashed border-border rounded-lg flex items-center justify-center">
-                      <File size={24} className="text-text-secondary" />
-                    </div>
-                    <p className="text-text-secondary mb-4">
-                      Selecciona una imagen para el torrent (máximo 5MB)
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => imageInputRef.current?.click()}
-                      className="px-4 py-2 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors"
-                    >
-                      Seleccionar Imagen
-                    </button>
-                    <input
-                      ref={imageInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageInputChange}
-                      className="hidden"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex items-center space-x-4">
-                    {imagePreview && (
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-16 h-16 object-cover rounded-lg"
-                      />
-                    )}
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-text">{uploadedImage.name}</h3>
-                      <p className="text-text-secondary">
-                        {(uploadedImage.size / 1024 / 1024).toFixed(2)} MB
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setUploadedImage(null);
-                        setImagePreview(null);
-                      }}
-                      className="p-2 text-text-secondary hover:text-text transition-colors"
-                    >
-                      <X size={20} />
-                    </button>
-                  </div>
-                )}
-              </div>
             </div>
 
             {/* NFO File Upload */}

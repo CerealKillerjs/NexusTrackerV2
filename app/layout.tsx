@@ -27,7 +27,7 @@ const geistMono = Geist_Mono({
  * This metadata is used by search engines and social media platforms.
  */
 export const metadata: Metadata = {
-  title: "OPTracker",
+  title: "NexusTracker V2",
   description: "The OverPowered Torrent Tracker",
   icons: {
     icon: '/favicon.png',

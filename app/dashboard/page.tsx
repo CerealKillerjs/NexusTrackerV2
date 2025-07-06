@@ -4,6 +4,7 @@
  * - Authentication check with next-auth
  * - Professional table design with enhanced UX
  * - Responsive and accessible
+ * - Internationalization support
  */
 
 'use client';
@@ -12,6 +13,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/app/components/dashboard/DashboardLayout';
+import { useI18n } from '@/app/hooks/useI18n';
 // Icon imports
 import { File } from '@styled-icons/boxicons-regular/File';
 import { ListUl } from '@styled-icons/boxicons-regular/ListUl';
@@ -57,6 +59,7 @@ interface TorrentResponse {
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { t } = useI18n();
   const [torrents, setTorrents] = useState<Torrent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -101,7 +104,7 @@ export default function DashboardPage() {
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-text text-lg">Cargando...</div>
+        <div className="text-text text-lg">{t('common.loading')}</div>
       </div>
     );
   }
@@ -118,10 +121,10 @@ export default function DashboardPage() {
         <div className="mb-8">
           <div>
             <h1 className="text-3xl font-bold text-text mb-2">
-              <Home className="inline mr-2 align-text-bottom" size={22} /> Panel Principal
+              <Home className="inline mr-2 align-text-bottom" size={22} /> {t('dashboard.title')}
             </h1>
             <p className="text-text-secondary">
-              Bienvenido de vuelta, {session.user?.username || session.user?.email}
+              {t('dashboard.welcome', { username: session.user?.username || session.user?.email })}
             </p>
           </div>
         </div>
@@ -130,9 +133,9 @@ export default function DashboardPage() {
         <div className="bg-surface rounded-lg border border-border overflow-hidden">
           <div className="px-6 py-4 border-b border-border bg-surface-light flex justify-between items-center">
             <h2 className="text-xl font-semibold text-text flex items-center">
-              <Download className="mr-2" size={22} /> Últimos Torrents
+              <Download className="mr-2" size={22} /> {t('dashboard.latestTorrents.title')}
               <span className="ml-2 text-sm text-text-secondary">
-                ({torrents.length} torrents)
+                {t('dashboard.latestTorrents.count', { count: torrents.length })}
               </span>
             </h2>
             <button
@@ -141,29 +144,29 @@ export default function DashboardPage() {
               className="flex items-center px-3 py-1 text-sm text-text-secondary hover:text-primary transition-colors disabled:opacity-50"
             >
               <Refresh size={16} className={`mr-1 ${loading ? 'animate-spin' : ''}`} />
-              Actualizar
+              {t('dashboard.latestTorrents.refresh')}
             </button>
           </div>
           
           {loading ? (
             <div className="p-8 text-center">
-              <div className="text-text-secondary">Cargando torrents...</div>
+              <div className="text-text-secondary">{t('dashboard.latestTorrents.loading')}</div>
             </div>
           ) : error ? (
             <div className="p-8 text-center">
-              <div className="text-red-500 mb-4">{error}</div>
+              <div className="text-red-500 mb-4">{t('dashboard.latestTorrents.error')}</div>
               <button
                 onClick={fetchTorrents}
                 className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90 transition-colors"
               >
-                Reintentar
+                {t('dashboard.latestTorrents.retry')}
               </button>
             </div>
           ) : torrents.length === 0 ? (
             <div className="p-8 text-center">
-              <div className="text-text-secondary mb-2">No hay torrents para mostrar</div>
+              <div className="text-text-secondary mb-2">{t('dashboard.latestTorrents.empty')}</div>
               <p className="text-sm text-text-secondary">
-                Los torrents subidos aparecerán aquí
+                {t('dashboard.latestTorrents.emptyDescription')}
               </p>
             </div>
           ) : (
@@ -172,25 +175,25 @@ export default function DashboardPage() {
                 <thead className="bg-surface-light border-b border-border">
                   <tr>
                     <th className="px-6 py-4 text-left text-sm font-medium text-text-secondary">
-                      <File className="inline mr-1 align-text-bottom" size={18} /> Título
+                      <File className="inline mr-1 align-text-bottom" size={18} /> {t('dashboard.table.headers.title')}
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-medium text-text-secondary">
-                      <ListUl className="inline mr-1 align-text-bottom" size={18} /> Categoría
+                      <ListUl className="inline mr-1 align-text-bottom" size={18} /> {t('dashboard.table.headers.category')}
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-medium text-text-secondary">
-                      <Download className="inline mr-1 align-text-bottom" size={18} /> Tamaño
+                      <Download className="inline mr-1 align-text-bottom" size={18} /> {t('dashboard.table.headers.size')}
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-medium text-text-secondary">
-                      <CaretUp className="inline mr-1 text-green-500 align-text-bottom" size={16} />/<CaretDown className="inline ml-1 text-red-500 align-text-bottom" size={16} /> S/L
+                      <CaretUp className="inline mr-1 text-green-500 align-text-bottom" size={16} />/<CaretDown className="inline ml-1 text-red-500 align-text-bottom" size={16} /> {t('dashboard.table.headers.seedersLeechers')}
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-medium text-text-secondary">
-                      <BarChartSquare className="inline mr-1 align-text-bottom" size={18} /> Stats
+                      <BarChartSquare className="inline mr-1 align-text-bottom" size={18} /> {t('dashboard.table.headers.stats')}
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-medium text-text-secondary">
-                      <News className="inline mr-1 align-text-bottom" size={18} /> Subido
+                      <News className="inline mr-1 align-text-bottom" size={18} /> {t('dashboard.table.headers.uploaded')}
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-medium text-text-secondary">
-                      <User className="inline mr-1 align-text-bottom" size={18} /> Subidor
+                      <User className="inline mr-1 align-text-bottom" size={18} /> {t('dashboard.table.headers.uploader')}
                     </th>
                   </tr>
                 </thead>
@@ -211,7 +214,7 @@ export default function DashboardPage() {
                           </a>
                           {torrent.freeleech && (
                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                              FL
+                              {t('dashboard.table.freeleech')}
                             </span>
                           )}
                         </div>
@@ -236,9 +239,15 @@ export default function DashboardPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center space-x-3 text-sm text-text-secondary">
-                          <Download className="inline mr-1 align-text-bottom" size={14} title="Descargas" />{torrent.downloads}
-                          <Chat className="inline mr-1 align-text-bottom" size={14} title="Comentarios" />{torrent.comments}
+                        <div className="flex items-center space-x-2 text-sm text-text-secondary">
+                          <span className="flex items-center">
+                            <Download className="mr-1 align-text-bottom" size={14} title={t('dashboard.table.stats.downloads')} />
+                            {torrent.downloads}
+                          </span>
+                          <span className="flex items-center">
+                            <Chat className="mr-1 align-text-bottom" size={14} title={t('dashboard.table.stats.comments')} />
+                            {torrent.comments}
+                          </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-text-secondary">
