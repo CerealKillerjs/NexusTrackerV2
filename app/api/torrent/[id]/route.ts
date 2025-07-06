@@ -7,6 +7,44 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/app/lib/auth';
 import { prisma } from '@/app/lib/prisma';
 
+// Function to decode file paths properly
+function decodeFilePaths(files: unknown[]): Array<{ path: string; size: number }> {
+  return files.map(file => {
+    const fileObj = file as { path: unknown; size: number };
+    let path = fileObj.path;
+    const size = fileObj.size;
+
+    // If path is an array of numbers (bytes), convert to string
+    if (Array.isArray(path)) {
+      path = path.map((p: unknown) => {
+        if (typeof p === 'number') {
+          return String.fromCharCode(p);
+        } else if (Buffer.isBuffer(p)) {
+          return p.toString('utf8');
+        } else {
+          return String(p);
+        }
+      }).join('/');
+    } else if (typeof path === 'string') {
+      // If it's already a string, check if it contains byte values
+      if (path.includes(',')) {
+        try {
+          const bytes = path.split(',').map(b => parseInt(b.trim()));
+          path = bytes.map(b => String.fromCharCode(b)).join('');
+        } catch {
+          // If conversion fails, keep original path
+          console.warn('Failed to decode path:', path);
+        }
+      }
+    }
+
+    return {
+      path: String(path) || 'unknown',
+      size: size || 0
+    };
+  });
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -89,8 +127,9 @@ export async function GET(
       isBookmarked = !!bookmark;
     }
 
-    // Parse files JSON
-    const files = Array.isArray(torrent.files) ? torrent.files : [];
+    // Parse and decode files JSON
+    const rawFiles = Array.isArray(torrent.files) ? torrent.files : [];
+    const files = decodeFilePaths(rawFiles);
 
     // Format response
     const response = {

@@ -22,7 +22,10 @@ export async function POST(request: NextRequest) {
     // Check authentication
     const session = await auth();
     if (!session?.user) {
-      return new NextResponse('Unauthorized', { status: 401 });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
     }
 
     // Check upload permissions
@@ -32,7 +35,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user || (user.role !== 'user' && user.role !== 'moderator' && user.role !== 'admin')) {
-      return new NextResponse('Forbidden - Insufficient permissions', { status: 403 });
+      return NextResponse.json(
+        { error: 'Forbidden - Insufficient permissions' },
+        { status: 403 }
+      );
     }
 
     // Parse form data
@@ -54,7 +60,10 @@ export async function POST(request: NextRequest) {
       }
     } catch (error) {
       console.error('Error parsing tags:', error);
-      return new NextResponse('Invalid tags format', { status: 400 });
+      return NextResponse.json(
+        { error: 'Invalid tags format' },
+        { status: 400 }
+      );
     }
     
     const anonymous = formData.get('anonymous') === 'true';
@@ -68,17 +77,26 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!torrentFile || !name || !description || !category || !source) {
-      return new NextResponse('Missing required fields', { status: 400 });
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
     }
 
     // Validate file type
     if (!torrentFile.name.endsWith('.torrent')) {
-      return new NextResponse('Invalid file type. Only .torrent files are allowed', { status: 400 });
+      return NextResponse.json(
+        { error: 'Invalid file type. Only .torrent files are allowed' },
+        { status: 400 }
+      );
     }
 
     // Validate file size (10MB limit)
     if (torrentFile.size > 10 * 1024 * 1024) {
-      return new NextResponse('File too large. Maximum size is 10MB', { status: 400 });
+      return NextResponse.json(
+        { error: 'File too large. Maximum size is 10MB' },
+        { status: 400 }
+      );
     }
 
     // Read and parse torrent file
@@ -88,13 +106,19 @@ export async function POST(request: NextRequest) {
     try {
       torrentInfo = bencode.decode(torrentBuffer);
     } catch {
-      return new NextResponse('Invalid torrent file format', { status: 400 });
+      return NextResponse.json(
+        { error: 'Invalid torrent file format' },
+        { status: 400 }
+      );
     }
 
     // Extract torrent metadata
     const info = torrentInfo.info;
     if (!info) {
-      return new NextResponse('Invalid torrent file - missing info', { status: 400 });
+      return NextResponse.json(
+        { error: 'Invalid torrent file - missing info' },
+        { status: 400 }
+      );
     }
 
     // Calculate info hash
@@ -108,7 +132,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingTorrent) {
-      return new NextResponse('Torrent already exists', { status: 409 });
+      return NextResponse.json(
+        { error: 'Torrent already exists' },
+        { status: 409 }
+      );
     }
 
     // Process image file if provided
@@ -116,10 +143,16 @@ export async function POST(request: NextRequest) {
     if (imageFile) {
       // Validate image file
       if (!imageFile.type.startsWith('image/')) {
-        return new NextResponse('Invalid image file type', { status: 400 });
+        return NextResponse.json(
+          { error: 'Invalid image file type' },
+          { status: 400 }
+        );
       }
       if (imageFile.size > 5 * 1024 * 1024) {
-        return new NextResponse('Image file too large. Maximum size is 5MB', { status: 400 });
+        return NextResponse.json(
+          { error: 'Image file too large. Maximum size is 5MB' },
+          { status: 400 }
+        );
       }
       
       // Convert image to base64
@@ -132,10 +165,16 @@ export async function POST(request: NextRequest) {
     if (nfoFile) {
       // Validate NFO file
       if (!nfoFile.name.endsWith('.nfo')) {
-        return new NextResponse('Invalid NFO file type', { status: 400 });
+        return NextResponse.json(
+          { error: 'Invalid NFO file type' },
+          { status: 400 }
+        );
       }
       if (nfoFile.size > 1 * 1024 * 1024) {
-        return new NextResponse('NFO file too large. Maximum size is 1MB', { status: 400 });
+        return NextResponse.json(
+          { error: 'NFO file too large. Maximum size is 1MB' },
+          { status: 400 }
+        );
       }
       
       // Read NFO content
@@ -147,13 +186,39 @@ export async function POST(request: NextRequest) {
     let files: Array<{ path: string; size: number }> = [];
     let totalSize = 0;
 
+    // Función para convertir objeto numérico a string
+    function objectToBuffer(obj: any): Buffer {
+      if (Buffer.isBuffer(obj)) {
+        return obj;
+      }
+      
+      if (typeof obj === 'object' && obj !== null) {
+        // Es un objeto con propiedades numéricas, convertirlo a Buffer
+        const bytes: number[] = [];
+        for (let i = 0; i < Object.keys(obj).length; i++) {
+          if (obj[i] !== undefined) {
+            bytes.push(obj[i]);
+          }
+        }
+        return Buffer.from(bytes);
+      }
+      
+      return Buffer.from(String(obj));
+    }
+
     if (info.files) {
       // Multi-file torrent
-      files = info.files.map((file: { length: number; path: Buffer[] }) => {
+      files = info.files.map((file: { length: number; path: any[] }) => {
         const fileSize = file.length;
         totalSize += fileSize;
+        
+        const pathParts = file.path.map((p: any) => {
+          const buffer = objectToBuffer(p);
+          return buffer.toString('utf8');
+        });
+        
         return {
-          path: file.path.map((p: Buffer) => p.toString()).join('/'),
+          path: pathParts.join('/'),
           size: fileSize
         };
       });
@@ -161,11 +226,14 @@ export async function POST(request: NextRequest) {
       // Single file torrent
       const fileSize = info.length;
       totalSize = fileSize;
+      const name = info.name ? objectToBuffer(info.name).toString('utf8') : 'unknown';
       files = [{
-        path: info.name ? info.name.toString() : 'unknown',
+        path: name,
         size: fileSize
       }];
     }
+
+    console.log('Final files array:', files);
 
     // Create torrent in database
     const torrent = await prisma.torrent.create({
@@ -210,9 +278,15 @@ export async function POST(request: NextRequest) {
     console.error('Error uploading torrent:', error);
     
     if (error instanceof Error) {
-      return new NextResponse(`Upload failed: ${error.message}`, { status: 500 });
+      return NextResponse.json(
+        { error: `Upload failed: ${error.message}` },
+        { status: 500 }
+      );
     }
     
-    return new NextResponse('Internal server error', { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 } 

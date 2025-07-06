@@ -283,8 +283,13 @@
       "nfoFile": "NFO File"
     },
     "fileList": {
-      "title": "File List",
-      "count": "File List ({{count}})"
+      "count": "Files ({{count}})",
+      "search": "Search files...",
+      "expandAll": "Expand all",
+      "collapseAll": "Collapse all",
+      "noFiles": "No files to display",
+      "noResults": "No files found",
+      "summary": "{{files}} files • {{totalSize}} total"
     },
     "comments": {
       "title": "Comments",

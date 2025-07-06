@@ -283,8 +283,11 @@
       "nfoFile": "Archivo NFO"
     },
     "fileList": {
-      "title": "Lista de Archivos",
-      "count": "Lista de Archivos ({{count}})"
+      "count": "Archivos ({{count}})",
+      "search": "Buscar archivos...",
+      "noFiles": "No hay archivos para mostrar",
+      "noResults": "No se encontraron archivos",
+      "summary": "{{files}} archivos • {{totalSize}} total"
     },
     "comments": {
       "title": "Comentarios",

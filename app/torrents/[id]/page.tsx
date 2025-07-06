@@ -18,6 +18,7 @@ import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/app/components/dashboard/DashboardLayout';
 import { useI18n } from '@/app/hooks/useI18n';
 import CommentsSection from '@/app/components/comments/CommentsSection';
+import FileTree from '@/app/components/torrents/FileTree';
 import { showNotification } from '@/app/utils/notifications';
 // Icon imports
 import { Download } from '@styled-icons/boxicons-regular/Download';
@@ -367,22 +368,7 @@ export default function TorrentDetailPage() {
                 {t('torrentDetail.fileList.count').replace('{{count}}', torrent.files.length.toString())}
               </h2>
               
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {torrent.files.map((file, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-background rounded border border-border"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <File size={16} className="text-text-secondary" />
-                      <span className="text-text text-sm">{file.path}</span>
-                    </div>
-                    <span className="text-text-secondary text-sm">
-                      {formatFileSize(file.size)}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              <FileTree files={torrent.files} />
             </div>
 
             {/* Comments Section */}
