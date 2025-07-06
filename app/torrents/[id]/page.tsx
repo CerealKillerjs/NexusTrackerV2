@@ -285,6 +285,19 @@ export default function TorrentDetailPage() {
                 {t('torrentDetail.torrentInfo.title')}
               </h2>
               
+              {/* Torrent Image */}
+              {torrent.image && (
+                <div className="mb-6">
+                  <div className="flex justify-center">
+                    <img
+                      src={`data:image/jpeg;base64,${torrent.image}`}
+                      alt="Torrent preview"
+                      className="max-w-full max-h-96 rounded-lg shadow-lg"
+                    />
+                  </div>
+                </div>
+              )}
+              
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div>
                   <span className="text-text-secondary block text-sm">{t('torrentDetail.torrentInfo.size')}</span>
@@ -331,20 +344,6 @@ export default function TorrentDetailPage() {
                   <p className="text-text-secondary whitespace-pre-wrap">
                     {torrent.description}
                   </p>
-                </div>
-              )}
-
-              {/* Image */}
-              {torrent.image && (
-                <div className="mt-6">
-                  <h3 className="text-lg font-medium text-text mb-2">{t('torrentDetail.torrentInfo.image')}</h3>
-                  <div className="flex justify-center">
-                    <img
-                      src={`data:image/jpeg;base64,${torrent.image}`}
-                      alt="Torrent preview"
-                      className="max-w-full max-h-96 rounded-lg shadow-lg"
-                    />
-                  </div>
                 </div>
               )}
 
