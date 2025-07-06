@@ -294,6 +294,8 @@ export default function UploadPage() {
       formData.append('anonymous', data.anonymous.toString());
       formData.append('freeleech', data.freeleech.toString());
       
+
+      
       // Add optional image and NFO files
       if (uploadedImage) {
         formData.append('image', uploadedImage);

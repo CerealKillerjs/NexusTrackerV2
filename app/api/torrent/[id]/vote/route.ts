@@ -9,7 +9,7 @@ import { prisma } from '@/app/lib/prisma';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -17,7 +17,7 @@ export async function POST(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const torrentId = params.id;
+    const { id: torrentId } = await params;
     const { type } = await request.json();
 
     if (!type || !['up', 'down'].includes(type)) {
@@ -25,7 +25,7 @@ export async function POST(
     }
 
     // Check if torrent exists
-    const torrent = await prisma.torrents.findUnique({
+    const torrent = await prisma.torrent.findUnique({
       where: { id: torrentId },
       select: { id: true },
     });
@@ -35,7 +35,7 @@ export async function POST(
     }
 
     // Check if user already voted
-    const existingVote = await prisma.votes.findUnique({
+    const existingVote = await prisma.vote.findUnique({
       where: {
         userId_torrentId_type: {
           userId: session.user.id,
@@ -47,7 +47,7 @@ export async function POST(
 
     if (existingVote) {
       // Remove existing vote (toggle)
-      await prisma.votes.delete({
+      await prisma.vote.delete({
         where: {
           userId_torrentId_type: {
             userId: session.user.id,
@@ -61,7 +61,7 @@ export async function POST(
 
     // Remove any existing vote of the opposite type
     const oppositeType = type === 'up' ? 'down' : 'up';
-    await prisma.votes.deleteMany({
+    await prisma.vote.deleteMany({
       where: {
         userId: session.user.id,
         torrentId: torrentId,
@@ -70,7 +70,7 @@ export async function POST(
     });
 
     // Create new vote
-    await prisma.votes.create({
+    await prisma.vote.create({
       data: {
         userId: session.user.id,
         torrentId: torrentId,

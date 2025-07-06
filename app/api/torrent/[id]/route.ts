@@ -9,14 +9,14 @@ import { prisma } from '@/app/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
-    const torrentId = params.id;
+    const { id: torrentId } = await params;
 
     // Get torrent with related data
-    const torrent = await prisma.torrents.findUnique({
+    const torrent = await prisma.torrent.findUnique({
       where: { id: torrentId },
       include: {
         user: {
@@ -50,7 +50,7 @@ export async function GET(
 
     if (session?.user?.id) {
       // Get user's vote
-      const vote = await prisma.votes.findUnique({
+      const vote = await prisma.vote.findUnique({
         where: {
           userId_torrentId_type: {
             userId: session.user.id,
@@ -63,7 +63,7 @@ export async function GET(
       if (vote) {
         userVote = 'up';
       } else {
-        const downVote = await prisma.votes.findUnique({
+        const downVote = await prisma.vote.findUnique({
           where: {
             userId_torrentId_type: {
               userId: session.user.id,
@@ -78,7 +78,7 @@ export async function GET(
       }
 
       // Get bookmark status
-      const bookmark = await prisma.bookmarks.findUnique({
+      const bookmark = await prisma.bookmark.findUnique({
         where: {
           userId_torrentId: {
             userId: session.user.id,
@@ -109,7 +109,12 @@ export async function GET(
       anonymous: torrent.anonymous,
       image: torrent.image || undefined,
       nfo: torrent.nfo || undefined,
-      user: torrent.anonymous ? undefined : torrent.user,
+      user: torrent.anonymous ? undefined : (torrent.user ? {
+        username: torrent.user.username,
+        ratio: Number(torrent.user.ratio),
+        uploaded: Number(torrent.user.uploaded),
+        downloaded: Number(torrent.user.downloaded),
+      } : undefined),
       _count: torrent._count,
       userVote,
       isBookmarked,

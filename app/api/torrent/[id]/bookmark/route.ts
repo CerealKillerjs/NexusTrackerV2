@@ -9,7 +9,7 @@ import { prisma } from '@/app/lib/prisma';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -17,10 +17,10 @@ export async function POST(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const torrentId = params.id;
+    const { id: torrentId } = await params;
 
     // Check if torrent exists
-    const torrent = await prisma.torrents.findUnique({
+    const torrent = await prisma.torrent.findUnique({
       where: { id: torrentId },
       select: { id: true },
     });
@@ -30,7 +30,7 @@ export async function POST(
     }
 
     // Create bookmark
-    await prisma.bookmarks.create({
+    await prisma.bookmark.create({
       data: {
         userId: session.user.id,
         torrentId: torrentId,
@@ -51,7 +51,7 @@ export async function POST(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -59,10 +59,10 @@ export async function DELETE(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const torrentId = params.id;
+    const { id: torrentId } = await params;
 
     // Delete bookmark
-    await prisma.bookmarks.delete({
+    await prisma.bookmark.delete({
       where: {
         userId_torrentId: {
           userId: session.user.id,

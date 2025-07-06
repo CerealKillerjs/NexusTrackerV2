@@ -9,7 +9,7 @@ import { prisma } from '@/app/lib/prisma';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -17,10 +17,10 @@ export async function POST(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const torrentId = params.id;
+    const { id: torrentId } = await params;
 
     // Get torrent
-    const torrent = await prisma.torrents.findUnique({
+    const torrent = await prisma.torrent.findUnique({
       where: { id: torrentId },
       select: {
         id: true,
@@ -35,7 +35,7 @@ export async function POST(
     }
 
     // Increment download count
-    await prisma.torrents.update({
+    await prisma.torrent.update({
       where: { id: torrentId },
       data: {
         downloads: {

@@ -38,19 +38,33 @@ export async function POST(request: NextRequest) {
     // Parse form data
     const formData = await request.formData();
     
-    // Extract form fields
+    // Extract form fields with better error handling
     const torrentFile = formData.get('torrent') as File;
     const name = formData.get('name') as string;
     const description = formData.get('description') as string;
     const category = formData.get('category') as string;
     const source = formData.get('source') as string;
-    const tags = JSON.parse(formData.get('tags') as string) as string[];
+    
+    // Handle tags parsing with error handling
+    let tags: string[] = [];
+    try {
+      const tagsString = formData.get('tags') as string;
+      if (tagsString) {
+        tags = JSON.parse(tagsString) as string[];
+      }
+    } catch (error) {
+      console.error('Error parsing tags:', error);
+      return new NextResponse('Invalid tags format', { status: 400 });
+    }
+    
     const anonymous = formData.get('anonymous') === 'true';
     const freeleech = formData.get('freeleech') === 'true';
     
     // Extract optional files
     const imageFile = formData.get('image') as File | null;
     const nfoFile = formData.get('nfo') as File | null;
+    
+
 
     // Validate required fields
     if (!torrentFile || !name || !description || !category || !source) {
@@ -89,7 +103,7 @@ export async function POST(request: NextRequest) {
     const infoHash = crypto.createHash('sha1').update(infoBuffer).digest('hex');
 
     // Check if torrent already exists
-    const existingTorrent = await prisma.torrents.findUnique({
+    const existingTorrent = await prisma.torrent.findUnique({
       where: { infoHash }
     });
 
@@ -154,7 +168,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create torrent in database
-    const torrent = await prisma.torrents.create({
+    const torrent = await prisma.torrent.create({
       data: {
         infoHash,
         name,
