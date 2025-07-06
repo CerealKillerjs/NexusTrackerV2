@@ -199,6 +199,7 @@ export default function DashboardPage() {
                     <tr 
                       key={torrent.id} 
                       className="hover:bg-surface-light transition-colors duration-150"
+                      onClick={() => window.location.href = `/torrents/${torrent.id}`} // Click anywhere on the row to go to the torrent page
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-2">
