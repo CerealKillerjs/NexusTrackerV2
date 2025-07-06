@@ -16,7 +16,7 @@ import i18n from "@/app/lib/i18n"
  * 
  * A form component for user authentication that handles sign-in functionality.
  * Features:
- * - Email and password validation
+ * - Email/username and password validation
  * - Dynamic validation schemas based on current language
  * - Integration with NextAuth.js for authentication
  * - Error display for authentication feedback
@@ -56,7 +56,7 @@ export function SignInForm() {
   /**
    * Handles form submission for user authentication
    * Validates credentials and attempts to sign in the user
-   * @param data - Form data containing email and password
+   * @param data - Form data containing login (email or username) and password
    */
   const onSubmit = async (data: SignInInput) => {
     setIsLoading(true)
@@ -65,7 +65,7 @@ export function SignInForm() {
     try {
       // Attempt to sign in using NextAuth.js credentials provider
       const result = await signIn("credentials", {
-        email: data.email,
+        login: data.login,
         password: data.password,
         redirect: false, // Don't redirect automatically, handle it manually
       })
@@ -122,13 +122,13 @@ export function SignInForm() {
 
       {/* Sign-in form with validation */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Email input field */}
+        {/* Login input field (email or username) */}
         <Input
-          label={t("auth.email")}
-          type="email"
-          placeholder={t("auth.placeholders.email")}
-          error={errors.email?.message}
-          {...register("email")}
+          label={t("auth.login")}
+          type="text"
+          placeholder={t("auth.placeholders.login")}
+          error={errors.login?.message}
+          {...register("login")}
         />
 
         {/* Password input field */}

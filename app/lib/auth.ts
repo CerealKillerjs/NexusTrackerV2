@@ -2,20 +2,21 @@ import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/app/lib/prisma"
+import { UserRole } from "@/app/types/user"
 
 /**
  * NextAuth.js Configuration
  * 
  * This file configures NextAuth.js for user authentication using credentials provider.
  * Features:
- * - Email/password authentication with bcrypt password hashing
+ * - Email/username and password authentication with bcrypt password hashing
  * - Database integration with Prisma ORM
  * - Custom session handling
  * - Secure password comparison
  * - User data validation
  * 
  * The configuration includes:
- * - Credentials provider for email/password login
+ * - Credentials provider for email/username and password login
  * - Session strategy and callbacks
  * - Database queries for user lookup
  * - Error handling for authentication failures
@@ -26,7 +27,7 @@ export const authOptions = {
     /**
      * Credentials Provider
      * 
-     * Handles email/password authentication by:
+     * Handles email/username and password authentication by:
      * - Validating user credentials against database
      * - Comparing hashed passwords securely
      * - Returning user data for session creation
@@ -34,7 +35,7 @@ export const authOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        login: { label: "Email or Username", type: "text" },
         password: { label: "Password", type: "password" }
       },
       
@@ -43,25 +44,28 @@ export const authOptions = {
        * 
        * This function is called during sign-in to verify user credentials.
        * It performs the following steps:
-       * 1. Find user by email in database
+       * 1. Find user by email or username in database
        * 2. Compare provided password with stored hash
        * 3. Return user data if authentication succeeds
        * 4. Return null if authentication fails
        * 
-       * @param credentials - Object containing email and password
+       * @param credentials - Object containing login (email or username) and password
        * @returns User object if authentication succeeds, null otherwise
        */
       async authorize(credentials) {
         // Validate that credentials are provided
-        if (!credentials?.email || !credentials?.password) {
+        if (!credentials?.login || !credentials?.password) {
           return null
         }
 
         try {
-          // Find user by email in database
-          const user = await prisma.user.findUnique({
+          // Find user by email or username in database
+          const user = await prisma.user.findFirst({
             where: {
-              email: credentials.email as string
+              OR: [
+                { email: credentials.login as string },
+                { username: credentials.login as string }
+              ]
             }
           })
 
@@ -92,7 +96,7 @@ export const authOptions = {
             email: user.email,
             username: user.username,
             name: user.username, // Use username as display name
-            role: user.role, // Include user role
+            role: user.role as UserRole, // Include user role
           }
         } catch (error) {
           // Log error for debugging

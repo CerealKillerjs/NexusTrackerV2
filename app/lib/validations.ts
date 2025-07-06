@@ -10,6 +10,7 @@ const getValidationMessages = (language: string = 'es') => {
   const messages = {
     es: {
       invalidEmail: "Email inválido",
+      invalidLogin: "Ingresa un email válido o un nombre de usuario",
       passwordMin: "La contraseña debe tener al menos 6 caracteres",
       usernameMin: "El nombre de usuario debe tener al menos 3 caracteres",
       usernameMax: "El nombre de usuario no puede tener más de 20 caracteres",
@@ -17,6 +18,7 @@ const getValidationMessages = (language: string = 'es') => {
     },
     en: {
       invalidEmail: "Invalid email",
+      invalidLogin: "Please enter a valid email or username",
       passwordMin: "Password must be at least 6 characters",
       usernameMin: "Username must be at least 3 characters",
       usernameMax: "Username cannot be more than 20 characters",
@@ -30,7 +32,7 @@ const getValidationMessages = (language: string = 'es') => {
 
 /**
  * Creates a dynamic sign-in validation schema with language-specific error messages
- * Validates email and password fields for user authentication
+ * Validates login (email or username) and password fields for user authentication
  * @param language - The language code for error messages
  * @returns Zod schema for sign-in form validation
  */
@@ -38,7 +40,7 @@ export const createSignInSchema = (language: string = 'es') => {
   const messages = getValidationMessages(language)
   
   return z.object({
-    email: z.string().email(messages.invalidEmail),
+    login: z.string().min(1, messages.invalidLogin),
     password: z.string().min(6, messages.passwordMin),
   })
 }

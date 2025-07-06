@@ -1,13 +1,27 @@
 {
   "auth": {
-    "login": {
+    "login": "Correo electrónico o Usuario",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "placeholders": {
+      "login": "Ingresa tu correo electrónico o usuario",
+      "email": "Ingresa tu correo electrónico",
+      "password": "Ingresa tu contraseña"
+    },
+    "signin": {
       "title": "Iniciar Sesión",
-      "email": "Correo electrónico",
-      "password": "Contraseña",
-      "submit": "Iniciar Sesión",
-      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "subtitle": "¡Bienvenido de vuelta! Por favor inicia sesión en tu cuenta",
+      "button": "Iniciar Sesión",
       "noAccount": "¿No tienes una cuenta?",
-      "register": "Registrarse"
+      "signUpLink": "Registrarse",
+      "forgotPassword": "¿Olvidaste tu contraseña?"
+    },
+    "signup": {
+      "title": "Registrarse",
+      "subtitle": "Crea tu cuenta",
+      "button": "Registrarse",
+      "hasAccount": "¿Ya tienes una cuenta?",
+      "signInLink": "Iniciar Sesión"
     },
     "register": {
       "title": "Registrarse",
@@ -22,7 +36,9 @@
         "username": "El usuario debe tener entre 3 y 20 caracteres",
         "email": "Por favor ingresa un correo electrónico válido",
         "passwordRequirements": "La contraseña debe tener al menos 6 caracteres",
-        "passwordMatch": "Las contraseñas no coinciden"
+        "passwordMatch": "Las contraseñas no coinciden",
+        "invalidCredentials": "Correo electrónico/usuario o contraseña inválidos",
+        "signInError": "Ocurrió un error durante el inicio de sesión"
       },
       "passwordStrength": {
         "weak": "Débil",

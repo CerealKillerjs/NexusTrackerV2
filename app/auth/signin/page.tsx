@@ -19,7 +19,7 @@ export default function LoginPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const [formData, setFormData] = useState({
-    email: '',
+    login: '',
     password: ''
   });
   const [loading, setLoading] = useState(false);
@@ -30,13 +30,13 @@ export default function LoginPage() {
 
     try {
       const result = await signIn('credentials', {
-        email: formData.email,
+        login: formData.login,
         password: formData.password,
         redirect: false,
       });
       
       if (result?.error) {
-        showNotification.error(t('auth.notification.error'));
+        showNotification.error(t('auth.register.errors.invalidCredentials'));
       } else {
         showNotification.success(t('auth.notification.successLogin'));
         router.push('/dashboard');
@@ -50,18 +50,18 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthCard title={t('auth.login.title')}>
+    <AuthCard title={t('auth.signin.title')}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <AuthInput
-          label={t('auth.login.email')}
-          type="email"
-          value={formData.email}
-          onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+          label={t('auth.login')}
+          type="text"
+          value={formData.login}
+          onChange={(e) => setFormData(prev => ({ ...prev, login: e.target.value }))}
           required
           autoFocus
         />
         <AuthInput
-          label={t('auth.login.password')}
+          label={t('auth.password')}
           type="password"
           value={formData.password}
           onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
@@ -75,7 +75,7 @@ export default function LoginPage() {
                    hover:bg-primary-dark transition-colors font-medium
                    disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? t('common.loading') : t('auth.login.submit')}
+          {loading ? t('common.loading') : t('auth.signin.button')}
         </button>
       </form>
 
@@ -84,19 +84,19 @@ export default function LoginPage() {
           href="/auth/forgot-password"
           className="text-primary hover:text-primary-dark transition-colors"
         >
-          {t('auth.login.forgotPassword')}
+          {t('auth.signin.forgotPassword')}
         </Link>
       </div>
 
       <div className="mt-4 text-center text-sm">
         <span className="text-text-secondary">
-          {t('auth.login.noAccount')}{' '}
+          {t('auth.signin.noAccount')}{' '}
         </span>
         <Link 
           href="/auth/signup"
           className="text-primary hover:text-primary-dark transition-colors"
         >
-          {t('auth.login.register')}
+          {t('auth.signin.signUpLink')}
         </Link>
       </div>
     </AuthCard>

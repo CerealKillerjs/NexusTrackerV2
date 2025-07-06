@@ -1,13 +1,27 @@
 {
   "auth": {
-    "login": {
-      "title": "Login",
-      "email": "Email",
-      "password": "Password",
-      "submit": "Login",
-      "forgotPassword": "Forgot Password?",
+    "login": "Email or Username",
+    "email": "Email",
+    "password": "Password",
+    "placeholders": {
+      "login": "Enter your email or username",
+      "email": "Enter your email",
+      "password": "Enter your password"
+    },
+    "signin": {
+      "title": "Sign In",
+      "subtitle": "Welcome back! Please sign in to your account",
+      "button": "Sign In",
       "noAccount": "Don't have an account?",
-      "register": "Register"
+      "signUpLink": "Sign up",
+      "forgotPassword": "Forgot Password?"
+    },
+    "signup": {
+      "title": "Sign Up",
+      "subtitle": "Create your account",
+      "button": "Sign Up",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in"
     },
     "register": {
       "title": "Register",
@@ -22,7 +36,9 @@
         "username": "Username must be between 3 and 20 characters",
         "email": "Please enter a valid email address",
         "passwordRequirements": "Password must be at least 6 characters long",
-        "passwordMatch": "Passwords do not match"
+        "passwordMatch": "Passwords do not match",
+        "invalidCredentials": "Invalid email/username or password",
+        "signInError": "An error occurred during sign in"
       },
       "passwordStrength": {
         "weak": "Weak",
