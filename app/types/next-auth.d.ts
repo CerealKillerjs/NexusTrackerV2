@@ -1,4 +1,5 @@
 import "next-auth"
+import { UserRole } from './user'
 
 /**
  * TypeScript module augmentation for next-auth
@@ -17,6 +18,7 @@ declare module "next-auth" {
       username?: string | null
       name?: string | null
       image?: string | null
+      role: UserRole
     }
   }
 
@@ -26,6 +28,7 @@ declare module "next-auth" {
     username?: string | null
     name?: string | null
     image?: string | null
+    role: UserRole
   }
 }
 
@@ -33,5 +36,6 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string
     username?: string
+    role: UserRole
   }
 } 

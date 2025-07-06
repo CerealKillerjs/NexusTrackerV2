@@ -1,7 +1,7 @@
 node_modules
 
 /app/generated/prisma
-
+/ExternalAssets
 # Docker
 docker-compose.override.yml
 .next/

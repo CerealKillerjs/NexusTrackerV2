@@ -191,6 +191,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                       <Lock size={18} className="mr-2 inline" /> Panel Admin
                     </Link>
                   )}
+                  {user?.role === 'moderator' && (
+                    <Link 
+                      href="/moderator"
+                      className="block px-4 py-3 text-text hover:bg-surface-light transition-colors"
+                      onClick={() => setUserDropdownOpen(false)}
+                    >
+                      <Lock size={18} className="mr-2 inline" /> Panel Moderador
+                    </Link>
+                  )}
                   <button
                     onClick={() => signOut({ callbackUrl: '/auth/signin' })}
                     className="w-full text-left px-4 py-3 text-text hover:bg-surface-light transition-colors"

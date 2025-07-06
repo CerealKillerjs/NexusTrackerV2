@@ -46,10 +46,19 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  role          String    @default("user") // user, guest, admin, moderator
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  uploaded      BigInt    @default(0)
+  downloaded    BigInt    @default(0)
+  ratio         Float     @default(0)
+  bonusPoints   Int       @default(0)
   accounts      Account[]
   sessions      Session[]
+  torrents      Torrent[]
+  comments      Comment[]
+  bookmarks     Bookmark[]
+  votes         Vote[]
 }
 
 model VerificationToken {
@@ -58,4 +67,73 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Torrent {
+  id          String   @id @default(cuid())
+  infoHash    String   @unique
+  name        String
+  description String?
+  type        String?
+  source      String?
+  binary      String   @db.Text
+  uploadedBy  String
+  downloads   Int      @default(0)
+  size        BigInt
+  files       Json
+  image       String?  // Base64 encoded image
+  nfo         String?  // NFO file content
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  freeleech   Boolean  @default(false)
+  tags        String[]
+  anonymous   Boolean  @default(false)
+  user        User     @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+  comments    Comment[]
+  bookmarks   Bookmark[]
+  votes       Vote[]
+
+  @@map("torrents")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  userId    String
+  torrentId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  torrent   Torrent? @relation(fields: [torrentId], references: [id], onDelete: Cascade)
+  votes     Vote[]
+
+  @@map("comments")
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  userId    String
+  torrentId String?
+  commentId String?
+  type      String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  torrent   Torrent? @relation(fields: [torrentId], references: [id], onDelete: Cascade)
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, torrentId, type])
+  @@unique([userId, commentId, type])
+  @@map("votes")
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  torrentId String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  torrent   Torrent  @relation(fields: [torrentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, torrentId])
+  @@map("bookmarks")
 }

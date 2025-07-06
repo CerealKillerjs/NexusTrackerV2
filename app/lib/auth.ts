@@ -61,7 +61,7 @@ export const authOptions = {
           // Find user by email in database
           const user = await prisma.user.findUnique({
             where: {
-              email: credentials.email
+              email: credentials.email as string
             }
           })
 
@@ -70,8 +70,12 @@ export const authOptions = {
             return null
           }
 
+          // Check if user has a password (should always be true for credentials auth)
+          if (!user.password) {
+            return null
+          }
+          
           // Compare provided password with stored hash using bcrypt
-          // Type assertion to ensure password is string
           const isPasswordValid = await bcrypt.compare(
             credentials.password as string,
             user.password
@@ -88,6 +92,7 @@ export const authOptions = {
             email: user.email,
             username: user.username,
             name: user.username, // Use username as display name
+            role: user.role, // Include user role
           }
         } catch (error) {
           // Log error for debugging
@@ -121,6 +126,7 @@ export const authOptions = {
       if (user) {
         token.id = user.id
         token.username = user.username
+        token.role = user.role
       }
       return token
     },
@@ -141,6 +147,7 @@ export const authOptions = {
       if (token) {
         session.user.id = token.id as string
         session.user.username = token.username as string
+        session.user.role = token.role as string
       }
       return session
     }
