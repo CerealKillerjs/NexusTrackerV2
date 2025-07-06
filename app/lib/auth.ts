@@ -66,6 +66,14 @@ export const authOptions = {
                 { email: credentials.login as string },
                 { username: credentials.login as string }
               ]
+            },
+            select: {
+              id: true,
+              email: true,
+              username: true,
+              password: true,
+              role: true,
+              passkey: true,
             }
           })
 
@@ -97,6 +105,7 @@ export const authOptions = {
             username: user.username,
             name: user.username, // Use username as display name
             role: user.role as UserRole, // Include user role
+            passkey: user.passkey, // Include passkey for announce URLs
           }
         } catch (error) {
           // Log error for debugging
@@ -131,6 +140,7 @@ export const authOptions = {
         token.id = user.id
         token.username = user.username
         token.role = user.role
+        token.passkey = user.passkey
       }
       return token
     },
@@ -152,6 +162,7 @@ export const authOptions = {
         session.user.id = token.id as string
         session.user.username = token.username as string
         session.user.role = token.role as string
+        session.user.passkey = token.passkey as string
       }
       return session
     }

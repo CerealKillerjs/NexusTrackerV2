@@ -46,6 +46,7 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  passkey       String    @unique @default(cuid()) // Unique passkey for announce URLs
   role          String    @default("user") // user, guest, admin, moderator
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

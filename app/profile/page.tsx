@@ -40,10 +40,22 @@ const mockProfile: UserProfile = {
   }
 };
 
+// Extensión del tipo de usuario de sesión para incluir passkey
+interface SessionUser {
+  id: string;
+  email: string;
+  username?: string | null;
+  name?: string | null;
+  image?: string | null;
+  role: string;
+  passkey?: string;
+}
+
 export default function ProfilePage() {
   const { t } = useI18n();
   const { currentLanguage } = useLanguage();
   const { data: session } = useSession();
+  const user = session?.user as SessionUser | undefined;
   const [profile, setProfile] = useState<UserProfile>(mockProfile);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -67,9 +79,9 @@ export default function ProfilePage() {
     }
   }, [currentLanguage]);
 
-  // Generate announce URL for torrent clients (placeholder)
-  const announceUrl = session?.user?.id 
-    ? `${process.env.NEXT_PUBLIC_TRACKER_URL || 'http://tracker.example.com'}/announce?passkey=${session.user.id}`
+  // Generate announce URL para el usuario autenticado
+  const announceUrl = user?.passkey
+    ? `${typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'https' : 'http'}://${typeof window !== 'undefined' ? window.location.host : (process.env.NEXT_PUBLIC_TRACKER_URL?.replace(/^https?:\/\//, '') || 'localhost:3001')}/announce?passkey=${user.passkey}`
     : '';
 
   // Copy announce URL to clipboard
@@ -161,11 +173,11 @@ export default function ProfilePage() {
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-text-secondary">{t('profile.fields.username')}</span>
-                      <span className="font-medium">{session?.user?.username || ''}</span>
+                      <span className="font-medium">{user?.username || ''}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-text-secondary">{t('profile.fields.email')}</span>
-                      <span className="font-medium">{session?.user?.email || ''}</span>
+                      <span className="font-medium">{user?.email || ''}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-text-secondary">{t('profile.fields.ratio')}</span>
