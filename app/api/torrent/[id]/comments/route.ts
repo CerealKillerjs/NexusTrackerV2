@@ -75,7 +75,7 @@ export async function GET(
       const votes = await prisma.vote.findMany({
         where: {
           userId: session.user.id,
-          commentId: { in: comments.map((c: any) => c.id) },
+          commentId: { in: comments.map((c: { id: string }) => c.id) },
         },
         select: {
           commentId: true,
@@ -83,15 +83,17 @@ export async function GET(
         },
       });
 
-      userVotes = votes.reduce((acc: Record<string, 'up' | 'down'>, vote: any) => {
-        acc[vote.commentId!] = vote.type as 'up' | 'down';
+      userVotes = votes.reduce((acc: Record<string, 'up' | 'down'>, vote: { commentId: string | null; type: string }) => {
+        if (vote.commentId) {
+          acc[vote.commentId] = vote.type as 'up' | 'down';
+        }
         return acc;
       }, {} as Record<string, 'up' | 'down'>);
     }
 
     // Calculate vote counts for each comment
     const commentsWithVotes = await Promise.all(
-      comments.map(async (comment: any) => {
+      comments.map(async (comment: { id: string; [key: string]: unknown }) => {
         const [upVotes, downVotes] = await Promise.all([
           prisma.vote.count({
             where: {

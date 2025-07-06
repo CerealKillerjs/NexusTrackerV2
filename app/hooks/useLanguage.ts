@@ -14,7 +14,7 @@ export function useLanguage() {
       const initialLang = savedLang || i18n.language || 'es'
       setCurrentLanguage(initialLang)
     }
-  }, [])
+  }, [i18n.language])
 
   // Update when i18n language changes
   useEffect(() => {

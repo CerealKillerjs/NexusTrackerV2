@@ -29,6 +29,7 @@ import { detectCategory } from '@/app/utils/categoryDetection';
 import { generateTagSuggestions } from '@/app/utils/tagSuggestions';
 import { showNotification } from '@/app/utils/notifications';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 // Icon imports
 import { Upload } from '@styled-icons/boxicons-regular/Upload';
 import { File } from '@styled-icons/boxicons-regular/File';
@@ -472,9 +473,11 @@ export default function UploadPage() {
                 ) : (
                   <div className="flex flex-col items-center space-y-4">
                     {imagePreview && (
-                      <img
+                      <Image
                         src={imagePreview}
                         alt="Preview"
+                        width={128}
+                        height={128}
                         className="w-32 h-32 object-cover rounded-lg shadow-lg"
                       />
                     )}

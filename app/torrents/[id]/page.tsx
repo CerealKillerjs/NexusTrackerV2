@@ -12,7 +12,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/app/components/dashboard/DashboardLayout';
@@ -28,13 +28,13 @@ import { Like } from '@styled-icons/boxicons-regular/Like';
 import { Dislike } from '@styled-icons/boxicons-regular/Dislike';
 import { User } from '@styled-icons/boxicons-regular/User';
 import { Calendar } from '@styled-icons/boxicons-regular/Calendar';
-import { File } from '@styled-icons/boxicons-regular/File';
 import { Folder } from '@styled-icons/boxicons-regular/Folder';
 import { Tag } from '@styled-icons/boxicons-regular/Tag';
 import { InfoCircle } from '@styled-icons/boxicons-regular/InfoCircle';
 import { Comment } from '@styled-icons/boxicons-regular/Comment';
 import { Copy } from '@styled-icons/boxicons-regular/Copy';
 import { Plus } from '@styled-icons/boxicons-regular/Plus';
+import Image from 'next/image';
 
 interface TorrentData {
   id: string;
@@ -81,13 +81,7 @@ export default function TorrentDetailPage() {
 
   const torrentId = params?.id as string;
 
-  useEffect(() => {
-    if (torrentId) {
-      fetchTorrentData();
-    }
-  }, [torrentId]);
-
-  const fetchTorrentData = async () => {
+  const fetchTorrentData = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/torrent/${torrentId}`);
@@ -105,7 +99,13 @@ export default function TorrentDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [torrentId, t]);
+
+  useEffect(() => {
+    if (torrentId) {
+      fetchTorrentData();
+    }
+  }, [torrentId, fetchTorrentData]);
 
   const handleDownload = async () => {
     if (!session) {
@@ -290,9 +290,11 @@ export default function TorrentDetailPage() {
               {torrent.image && (
                 <div className="mb-6">
                   <div className="flex justify-center">
-                    <img
+                    <Image
                       src={`data:image/jpeg;base64,${torrent.image}`}
                       alt="Torrent preview"
+                      width={384}
+                      height={384}
                       className="max-w-full max-h-96 rounded-lg shadow-lg"
                     />
                   </div>
