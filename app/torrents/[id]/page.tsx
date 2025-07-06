@@ -34,6 +34,7 @@ import { InfoCircle } from '@styled-icons/boxicons-regular/InfoCircle';
 import { Comment } from '@styled-icons/boxicons-regular/Comment';
 import { Copy } from '@styled-icons/boxicons-regular/Copy';
 import { Plus } from '@styled-icons/boxicons-regular/Plus';
+import { Magnet } from '@styled-icons/boxicons-regular/Magnet';
 import Image from 'next/image';
 
 interface TorrentData {
@@ -78,6 +79,7 @@ export default function TorrentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
+  const [generatingMagnet, setGeneratingMagnet] = useState(false);
 
   const torrentId = params?.id as string;
 
@@ -139,6 +141,34 @@ export default function TorrentDetailPage() {
       showNotification.error(t('torrentDetail.notifications.error.download'));
     } finally {
       setDownloading(false);
+    }
+  };
+
+  const handleMagnet = async () => {
+    if (!session) {
+      showNotification.error(t('torrentDetail.notifications.loginRequired.download'));
+      return;
+    }
+
+    try {
+      setGeneratingMagnet(true);
+      const response = await fetch(`/api/torrent/${torrentId}/magnet`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Error generating magnet link');
+      }
+
+      const data = await response.json();
+      
+      // Abrir el enlace magnet en una nueva pestaña
+      window.location.href = data.magnetLink;
+    } catch (error) {
+      console.error('Magnet generation error:', error);
+      showNotification.error('Error generating magnet link');
+    } finally {
+      setGeneratingMagnet(false);
     }
   };
 
@@ -407,14 +437,26 @@ export default function TorrentDetailPage() {
               <h3 className="text-lg font-semibold text-text mb-4">{t('torrentDetail.actions.title')}</h3>
               
               <div className="space-y-3">
-                <button
-                  onClick={handleDownload}
-                  disabled={downloading}
-                  className="w-full bg-primary text-background py-3 px-4 rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-                >
-                  <Download size={20} />
-                  <span>{downloading ? t('torrentDetail.actions.downloading') : t('torrentDetail.actions.download')}</span>
-                </button>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={handleDownload}
+                    disabled={downloading}
+                    className="flex-1 bg-primary text-background py-3 px-4 rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  >
+                    <Download size={20} />
+                    <span>{downloading ? t('torrentDetail.actions.downloading') : 'Torrent'}</span>
+                  </button>
+
+                  <button
+                    onClick={handleMagnet}
+                    disabled={generatingMagnet}
+                    className="flex-1 bg-red-500 text-white py-3 px-4 rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                    title={generatingMagnet ? t('torrentDetail.actions.generating') : t('torrentDetail.actions.magnet')}
+                  >
+                    <Magnet size={20} />
+                    <span>Magnet</span>
+                  </button>
+                </div>
 
                 <button
                   onClick={handleBookmark}

@@ -381,6 +381,8 @@
       "title": "Actions",
       "download": "Download Torrent",
       "downloading": "Downloading...",
+      "magnet": "Magnet Link",
+      "generating": "Generating...",
       "addBookmark": "Add Bookmark",
       "removeBookmark": "Remove Bookmark",
       "like": "Like",
@@ -409,6 +411,7 @@
       },
       "success": {
         "download": "Download started",
+        "magnetGenerated": "Magnet link generated and copied to clipboard",
         "bookmarkAdded": "Bookmark added",
         "bookmarkRemoved": "Bookmark removed",
         "vote": "Vote registered",
