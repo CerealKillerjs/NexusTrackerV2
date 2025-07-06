@@ -159,5 +159,104 @@
       "ratio": "Ratio",
       "bonusPoints": "Puntos Bonus"
     }
+  },
+  "upload": {
+    "title": "Subir Torrent",
+    "subtitle": "Comparte contenido con la comunidad. Asegúrate de que el contenido cumple con las reglas del sitio.",
+    "torrentUpload": {
+      "title": "Arrastra tu archivo .torrent aquí",
+      "subtitle": "O haz clic para seleccionar un archivo",
+      "selectButton": "Seleccionar Archivo",
+      "error": {
+        "invalidFile": "Por favor selecciona un archivo .torrent válido",
+        "fileTooLarge": "El archivo es demasiado grande. Máximo 10MB"
+      }
+    },
+    "imageUpload": {
+      "title": "Imagen (Opcional)",
+      "subtitle": "Selecciona una imagen para el torrent (máximo 5MB)",
+      "selectButton": "Seleccionar Imagen",
+      "error": {
+        "invalidFile": "Por favor selecciona un archivo de imagen válido",
+        "fileTooLarge": "La imagen es demasiado grande. Máximo 5MB"
+      }
+    },
+    "nfoUpload": {
+      "title": "Archivo NFO (Opcional)",
+      "subtitle": "Selecciona un archivo .nfo (máximo 1MB)",
+      "selectButton": "Seleccionar NFO",
+      "error": {
+        "invalidFile": "Por favor selecciona un archivo .nfo válido",
+        "fileTooLarge": "El archivo NFO es demasiado grande. Máximo 1MB"
+      }
+    },
+    "form": {
+      "name": {
+        "label": "Nombre del Torrent *",
+        "placeholder": "Ej: Ubuntu 22.04 LTS Desktop",
+        "errors": {
+          "required": "El nombre es requerido",
+          "tooLong": "El nombre es demasiado largo"
+        }
+      },
+      "category": {
+        "label": "Categoría *",
+        "placeholder": "Seleccionar categoría",
+        "autoDetected": "Detectada automáticamente"
+      },
+      "source": {
+        "label": "Fuente *",
+        "placeholder": "Seleccionar fuente"
+      },
+      "tags": {
+        "label": "Tags * ({{count}}/10)",
+        "placeholder": "Agregar tag personalizado",
+        "addButton": "Agregar",
+        "suggestedTags": "Tags sugeridas automáticamente:",
+        "popularTags": "Tags populares:",
+        "errors": {
+          "required": "Al menos un tag es requerido",
+          "tooMany": "Máximo 10 tags"
+        }
+      },
+      "description": {
+        "label": "Descripción *",
+        "placeholder": "Describe el contenido del torrent, incluye información sobre la calidad, idioma, subtítulos, etc.",
+        "errors": {
+          "tooShort": "La descripción debe tener al menos 10 caracteres",
+          "tooLong": "La descripción es demasiado larga"
+        }
+      },
+      "options": {
+        "anonymous": "Subir anónimamente",
+        "freeleech": "Marcar como Freeleech"
+      }
+    },
+    "actions": {
+      "cancel": "Cancelar",
+      "upload": "Subir Torrent",
+      "uploading": "Subiendo..."
+    },
+    "status": {
+      "loading": "Cargando...",
+      "uploading": "Subiendo torrent...",
+      "success": "¡Torrent subido exitosamente! Redirigiendo...",
+      "error": "Error al subir el torrent"
+    },
+    "permissions": {
+      "denied": {
+        "title": "Acceso Denegado",
+        "message": "No tienes permisos para subir torrents. Contacta a un administrador si crees que esto es un error."
+      }
+    },
+    "tips": {
+      "title": "Consejos para una buena subida",
+      "list": {
+        "0": "Asegúrate de que el contenido cumple con las reglas del sitio",
+        "1": "Incluye una descripción detallada y útil",
+        "2": "Usa tags relevantes para facilitar la búsqueda",
+        "3": "Verifica que el torrent funcione correctamente antes de subir"
+      }
+    }
   }
 } 

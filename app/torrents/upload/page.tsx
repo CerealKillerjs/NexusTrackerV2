@@ -24,6 +24,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import DashboardLayout from '@/app/components/dashboard/DashboardLayout';
 import { usePermissions } from '@/app/hooks/usePermissions';
+import { useI18n } from '@/app/hooks/useI18n';
 import { detectCategory } from '@/app/utils/categoryDetection';
 import { generateTagSuggestions } from '@/app/utils/tagSuggestions';
 import { showNotification } from '@/app/utils/notifications';
@@ -37,18 +38,26 @@ import { InfoCircle } from '@styled-icons/boxicons-regular/InfoCircle';
 import { CheckCircle } from '@styled-icons/boxicons-regular/CheckCircle';
 import { ErrorCircle } from '@styled-icons/boxicons-regular/ErrorCircle';
 
-// Upload form validation schema
-const uploadSchema = z.object({
-  name: z.string().min(1, 'El nombre es requerido').max(255, 'El nombre es demasiado largo'),
-  description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres').max(2000, 'La descripción es demasiado larga'),
+// Upload form validation schema - will be created with translations
+const createUploadSchema = (t: (key: string, options?: Record<string, unknown>) => string) => z.object({
+  name: z.string().min(1, t('upload.form.name.errors.required')).max(255, t('upload.form.name.errors.tooLong')),
+  description: z.string().min(10, t('upload.form.description.errors.tooShort')).max(2000, t('upload.form.description.errors.tooLong')),
   category: z.enum(['Movies', 'TV', 'Music', 'Books', 'Games', 'Software', 'Other']),
   source: z.string().min(1, 'La fuente es requerida'),
-  tags: z.array(z.string()).min(1, 'Al menos un tag es requerido').max(10, 'Máximo 10 tags'),
+  tags: z.array(z.string()).min(1, t('upload.form.tags.errors.required')).max(10, t('upload.form.tags.errors.tooMany')),
   anonymous: z.boolean(),
   freeleech: z.boolean(),
 });
 
-type UploadFormData = z.infer<typeof uploadSchema>;
+type UploadFormData = {
+  name: string;
+  description: string;
+  category: 'Movies' | 'TV' | 'Music' | 'Books' | 'Games' | 'Software' | 'Other';
+  source: string;
+  tags: string[];
+  anonymous: boolean;
+  freeleech: boolean;
+};
 
 // Available categories and sources
 const CATEGORIES = {
@@ -72,6 +81,11 @@ export default function UploadPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { canUpload } = usePermissions();
+  const { t } = useI18n();
+  
+  // Create schema with translations
+  const uploadSchema = createUploadSchema(t);
+
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
@@ -107,12 +121,12 @@ export default function UploadPage() {
   // File upload handlers - moved before early returns
   const handleFileSelect = useCallback((file: File) => {
     if (file.type !== 'application/x-bittorrent' && !file.name.endsWith('.torrent')) {
-      setUploadError('Por favor selecciona un archivo .torrent válido');
+      setUploadError(t('upload.torrentUpload.error.invalidFile'));
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) { // 10MB limit
-      setUploadError('El archivo es demasiado grande. Máximo 10MB');
+      setUploadError(t('upload.torrentUpload.error.fileTooLarge'));
       return;
     }
 
@@ -134,7 +148,7 @@ export default function UploadPage() {
     // Auto-fill name from filename (remove .torrent extension)
     const torrentName = file.name.replace(/\.torrent$/, '');
     setValue('name', torrentName);
-  }, [setValue]);
+  }, [setValue, t]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -161,7 +175,7 @@ export default function UploadPage() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="text-text">Cargando...</div>
+          <div className="text-text">{t('upload.status.loading')}</div>
         </div>
       </DashboardLayout>
     );
@@ -178,9 +192,9 @@ export default function UploadPage() {
         <div className="max-w-4xl mx-auto p-6">
           <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6 text-center">
             <ErrorCircle size={48} className="mx-auto text-red-500 mb-4" />
-            <h1 className="text-2xl font-bold text-red-500 mb-2">Acceso Denegado</h1>
+            <h1 className="text-2xl font-bold text-red-500 mb-2">{t('upload.permissions.denied.title')}</h1>
             <p className="text-text-secondary">
-              No tienes permisos para subir torrents. Contacta a un administrador si crees que esto es un error.
+              {t('upload.permissions.denied.message')}
             </p>
           </div>
         </div>
@@ -199,12 +213,12 @@ export default function UploadPage() {
   const handleImageSelect = (file: File) => {
     // Validate image file
     if (!file.type.startsWith('image/')) {
-      setUploadError('Por favor selecciona un archivo de imagen válido');
+      setUploadError(t('upload.imageUpload.error.invalidFile'));
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) { // 5MB limit for images
-      setUploadError('La imagen es demasiado grande. Máximo 5MB');
+      setUploadError(t('upload.imageUpload.error.fileTooLarge'));
       return;
     }
 
@@ -230,12 +244,12 @@ export default function UploadPage() {
   const handleNfoSelect = (file: File) => {
     // Validate NFO file
     if (!file.name.endsWith('.nfo')) {
-      setUploadError('Por favor selecciona un archivo .nfo válido');
+      setUploadError(t('upload.nfoUpload.error.invalidFile'));
       return;
     }
 
     if (file.size > 1 * 1024 * 1024) { // 1MB limit for NFO files
-      setUploadError('El archivo NFO es demasiado grande. Máximo 1MB');
+      setUploadError(t('upload.nfoUpload.error.fileTooLarge'));
       return;
     }
 
@@ -271,7 +285,7 @@ export default function UploadPage() {
   // Form submission
   const onSubmit = async (data: UploadFormData) => {
     if (!uploadedFile) {
-      showNotification.error('Por favor selecciona un archivo .torrent');
+      showNotification.error(t('upload.torrentUpload.error.invalidFile'));
       return;
     }
 
@@ -280,7 +294,7 @@ export default function UploadPage() {
     setUploadError(null);
 
     // Show loading notification
-    const loadingToast = showNotification.loading('Subiendo torrent...');
+    const loadingToast = showNotification.loading(t('upload.status.uploading'));
 
     try {
       // Create FormData
@@ -325,7 +339,7 @@ export default function UploadPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Error al subir el torrent');
+        throw new Error(errorData.error || t('upload.status.error'));
       }
 
       setUploadProgress(100);
@@ -333,7 +347,7 @@ export default function UploadPage() {
 
       // Dismiss loading and show success
       toast.dismiss(loadingToast);
-      showNotification.success('¡Torrent subido exitosamente!');
+      showNotification.success(t('upload.status.success'));
 
       // Get response data and redirect to the uploaded torrent after a delay
       const result = await response.json();
@@ -344,7 +358,7 @@ export default function UploadPage() {
     } catch (error) {
       // Dismiss loading and show error
       toast.dismiss(loadingToast);
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      const errorMessage = error instanceof Error ? error.message : t('upload.status.error');
       showNotification.error(errorMessage);
       setUploadError(errorMessage);
       setUploadProgress(0);
@@ -360,10 +374,10 @@ export default function UploadPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-text mb-2">
             <Upload className="inline mr-2 align-text-bottom" size={28} />
-            Subir Torrent
+            {t('upload.title')}
           </h1>
           <p className="text-text-secondary">
-            Comparte contenido con la comunidad. Asegúrate de que el contenido cumple con las reglas del sitio.
+            {t('upload.subtitle')}
           </p>
         </div>
 
@@ -385,17 +399,17 @@ export default function UploadPage() {
                   <>
                     <Upload size={64} className="mx-auto text-text-secondary mb-4" />
                     <h3 className="text-xl font-semibold text-text mb-2">
-                      Arrastra tu archivo .torrent aquí
+                      {t('upload.torrentUpload.title')}
                     </h3>
                     <p className="text-text-secondary mb-4">
-                      O haz clic para seleccionar un archivo
+                      {t('upload.torrentUpload.subtitle')}
                     </p>
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       className="px-6 py-3 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors"
                     >
-                      Seleccionar Archivo
+                      {t('upload.torrentUpload.selectButton')}
                     </button>
                     <input
                       ref={fileInputRef}
@@ -435,17 +449,17 @@ export default function UploadPage() {
                       <File size={24} className="text-text-secondary" />
                     </div>
                     <h3 className="text-xl font-semibold text-text mb-2">
-                      Imagen (Opcional)
+                      {t('upload.imageUpload.title')}
                     </h3>
                     <p className="text-text-secondary mb-4">
-                      Selecciona una imagen para el torrent (máximo 5MB)
+                      {t('upload.imageUpload.subtitle')}
                     </p>
                     <button
                       type="button"
                       onClick={() => imageInputRef.current?.click()}
                       className="px-6 py-3 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors"
                     >
-                      Seleccionar Imagen
+                      {t('upload.imageUpload.selectButton')}
                     </button>
                     <input
                       ref={imageInputRef}
@@ -499,7 +513,7 @@ export default function UploadPage() {
             <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 flex items-center space-x-3">
               <CheckCircle size={20} className="text-green-500" />
               <span className="text-green-500">
-                ¡Torrent subido exitosamente! Redirigiendo...
+                {t('upload.status.success')}
               </span>
             </div>
           )}
@@ -508,7 +522,7 @@ export default function UploadPage() {
           {isUploading && (
             <div className="bg-surface rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-text">Subiendo torrent...</span>
+                <span className="text-text">{t('upload.status.uploading')}</span>
                 <span className="text-text-secondary">{uploadProgress}%</span>
               </div>
               <div className="w-full bg-border rounded-full h-2">
@@ -525,13 +539,13 @@ export default function UploadPage() {
             {/* Name */}
             <div className="lg:col-span-2">
               <label className="block text-sm font-medium text-text mb-2">
-                Nombre del Torrent *
+                {t('upload.form.name.label')}
               </label>
               <input
                 {...register('name')}
                 type="text"
                 className="w-full px-4 py-3 bg-background border border-border rounded-lg text-text placeholder-text-secondary focus:outline-none focus:border-primary transition-colors"
-                placeholder="Ej: Ubuntu 22.04 LTS Desktop"
+                placeholder={t('upload.form.name.placeholder')}
               />
               {errors.name && (
                 <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
@@ -541,10 +555,10 @@ export default function UploadPage() {
             {/* Category */}
             <div>
               <label className="block text-sm font-medium text-text mb-2">
-                Categoría *
+                {t('upload.form.category.label')}
                 {uploadedFile && watchedCategory && watchedCategory !== 'Other' && (
                   <span className="ml-2 text-xs text-blue-500 bg-blue-500/10 px-2 py-1 rounded">
-                    Detectada automáticamente
+                    {t('upload.form.category.autoDetected')}
                   </span>
                 )}
               </label>
@@ -552,7 +566,7 @@ export default function UploadPage() {
                 {...register('category')}
                 className="w-full px-4 py-3 bg-background border border-border rounded-lg text-text focus:outline-none focus:border-primary transition-colors"
               >
-                <option value="">Seleccionar categoría</option>
+                <option value="">{t('upload.form.category.placeholder')}</option>
                 {Object.keys(CATEGORIES).map(category => (
                   <option key={category} value={category}>{category}</option>
                 ))}
@@ -565,14 +579,14 @@ export default function UploadPage() {
             {/* Source */}
             <div>
               <label className="block text-sm font-medium text-text mb-2">
-                Fuente *
+                {t('upload.form.source.label')}
               </label>
               <select
                 {...register('source')}
                 className="w-full px-4 py-3 bg-background border border-border rounded-lg text-text focus:outline-none focus:border-primary transition-colors"
                 disabled={!watchedCategory}
               >
-                <option value="">Seleccionar fuente</option>
+                <option value="">{t('upload.form.source.placeholder')}</option>
                 {watchedCategory && CATEGORIES[watchedCategory as keyof typeof CATEGORIES]?.map(source => (
                   <option key={source} value={source}>{source}</option>
                 ))}
@@ -585,12 +599,12 @@ export default function UploadPage() {
             {/* Tags */}
             <div className="lg:col-span-2">
               <label className="block text-sm font-medium text-text mb-2">
-                Tags * ({watchedTags.length}/10)
+                {t('upload.form.tags.label').replace('{{count}}', watchedTags.length.toString())}
               </label>
               
               {/* Selected Tags */}
               <div className="flex flex-wrap gap-2 mb-3">
-                {watchedTags.map(tag => (
+                {watchedTags.map((tag: string) => (
                   <span
                     key={tag}
                     className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary/10 text-primary"
@@ -610,12 +624,12 @@ export default function UploadPage() {
               {/* Auto-suggested Tags */}
               {uploadedFile && watchedCategory && (
                 <div className="mb-3">
-                  <p className="text-sm text-text-secondary mb-2">Tags sugeridas automáticamente:</p>
+                  <p className="text-sm text-text-secondary mb-2">{t('upload.form.tags.suggestedTags')}</p>
                   <div className="flex flex-wrap gap-2">
                     {generateTagSuggestions(watchedCategory as 'Movies' | 'TV' | 'Music' | 'Books' | 'Games' | 'Software' | 'Other', uploadedFile.name)
                       .filter(tag => !watchedTags.includes(tag))
                       .slice(0, 8)
-                      .map(tag => (
+                      .map((tag: string) => (
                         <button
                           key={tag}
                           type="button"
@@ -632,9 +646,9 @@ export default function UploadPage() {
 
               {/* Popular Tags */}
               <div className="mb-3">
-                <p className="text-sm text-text-secondary mb-2">Tags populares:</p>
+                <p className="text-sm text-text-secondary mb-2">{t('upload.form.tags.popularTags')}</p>
                 <div className="flex flex-wrap gap-2">
-                  {POPULAR_TAGS.map(tag => (
+                  {POPULAR_TAGS.map((tag: string) => (
                     <button
                       key={tag}
                       type="button"
@@ -652,7 +666,7 @@ export default function UploadPage() {
               <div className="flex space-x-2">
                 <input
                   type="text"
-                  placeholder="Agregar tag personalizado"
+                  placeholder={t('upload.form.tags.placeholder')}
                   className="flex-1 px-4 py-2 bg-background border border-border rounded-lg text-text placeholder-text-secondary focus:outline-none focus:border-primary transition-colors"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
@@ -683,13 +697,13 @@ export default function UploadPage() {
             {/* Description */}
             <div className="lg:col-span-2">
               <label className="block text-sm font-medium text-text mb-2">
-                Descripción *
+                {t('upload.form.description.label')}
               </label>
               <textarea
                 {...register('description')}
                 rows={6}
                 className="w-full px-4 py-3 bg-background border border-border rounded-lg text-text placeholder-text-secondary focus:outline-none focus:border-primary transition-colors resize-vertical"
-                placeholder="Describe el contenido del torrent, incluye información sobre la calidad, idioma, subtítulos, etc."
+                placeholder={t('upload.form.description.placeholder')}
               />
               {errors.description && (
                 <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
@@ -699,7 +713,7 @@ export default function UploadPage() {
             {/* NFO File Upload */}
             <div className="lg:col-span-2">
               <label className="block text-sm font-medium text-text mb-2">
-                Archivo NFO (Opcional)
+                {t('upload.nfoUpload.title')}
               </label>
               <div className="bg-surface rounded-lg border-2 border-dashed border-border p-6">
                 {!uploadedNfo ? (
@@ -708,14 +722,14 @@ export default function UploadPage() {
                       <File size={24} className="text-text-secondary" />
                     </div>
                     <p className="text-text-secondary mb-4">
-                      Selecciona un archivo .nfo (máximo 1MB)
+                      {t('upload.nfoUpload.subtitle')}
                     </p>
                     <button
                       type="button"
                       onClick={() => nfoInputRef.current?.click()}
                       className="px-4 py-2 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors"
                     >
-                      Seleccionar NFO
+                      {t('upload.nfoUpload.selectButton')}
                     </button>
                     <input
                       ref={nfoInputRef}
@@ -755,7 +769,7 @@ export default function UploadPage() {
                     type="checkbox"
                     className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary focus:ring-2"
                   />
-                  <span className="text-text">Subir anónimamente</span>
+                  <span className="text-text">{t('upload.form.options.anonymous')}</span>
                 </label>
                 <label className="flex items-center space-x-2">
                   <input
@@ -763,7 +777,7 @@ export default function UploadPage() {
                     type="checkbox"
                     className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary focus:ring-2"
                   />
-                  <span className="text-text">Marcar como Freeleech</span>
+                  <span className="text-text">{t('upload.form.options.freeleech')}</span>
                 </label>
               </div>
             </div>
@@ -776,7 +790,7 @@ export default function UploadPage() {
               onClick={() => router.back()}
               className="px-6 py-3 border border-border text-text rounded-lg hover:bg-surface-light transition-colors"
             >
-              Cancelar
+              {t('upload.actions.cancel')}
             </button>
             <button
               type="submit"
@@ -784,7 +798,7 @@ export default function UploadPage() {
               className="px-6 py-3 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
             >
               <Upload size={20} />
-              <span>{isUploading ? 'Subiendo...' : 'Subir Torrent'}</span>
+              <span>{isUploading ? t('upload.actions.uploading') : t('upload.actions.upload')}</span>
             </button>
           </div>
         </form>
@@ -794,13 +808,12 @@ export default function UploadPage() {
           <div className="flex items-start space-x-3">
             <InfoCircle size={20} className="text-blue-500 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-text mb-1">Consejos para una buena subida</h3>
+              <h3 className="font-semibold text-text mb-1">{t('upload.tips.title')}</h3>
               <ul className="text-sm text-text-secondary space-y-1">
-                <li>• Asegúrate de que el contenido cumple con las reglas del sitio</li>
-                <li>• Incluye una descripción detallada y útil</li>
-                <li>• Usa tags relevantes para facilitar la búsqueda</li>
-                <li>• Verifica que el torrent funcione correctamente antes de subir</li>
-                <li>• Mantén el torrent activo para que otros usuarios puedan descargarlo</li>
+                <li>• {t('upload.tips.list.0')}</li>
+                <li>• {t('upload.tips.list.1')}</li>
+                <li>• {t('upload.tips.list.2')}</li>
+                <li>• {t('upload.tips.list.3')}</li>
               </ul>
             </div>
           </div>

@@ -159,5 +159,104 @@
       "ratio": "Ratio",
       "bonusPoints": "Bonus Points"
     }
+  },
+  "upload": {
+    "title": "Upload Torrent",
+    "subtitle": "Share content with the community. Make sure the content complies with site rules.",
+    "torrentUpload": {
+      "title": "Drag your .torrent file here",
+      "subtitle": "Or click to select a file",
+      "selectButton": "Select File",
+      "error": {
+        "invalidFile": "Please select a valid .torrent file",
+        "fileTooLarge": "File is too large. Maximum 10MB"
+      }
+    },
+    "imageUpload": {
+      "title": "Image (Optional)",
+      "subtitle": "Select an image for the torrent (maximum 5MB)",
+      "selectButton": "Select Image",
+      "error": {
+        "invalidFile": "Please select a valid image file",
+        "fileTooLarge": "Image is too large. Maximum 5MB"
+      }
+    },
+    "nfoUpload": {
+      "title": "NFO File (Optional)",
+      "subtitle": "Select a .nfo file (maximum 1MB)",
+      "selectButton": "Select NFO",
+      "error": {
+        "invalidFile": "Please select a valid .nfo file",
+        "fileTooLarge": "NFO file is too large. Maximum 1MB"
+      }
+    },
+    "form": {
+      "name": {
+        "label": "Torrent Name *",
+        "placeholder": "e.g. Ubuntu 22.04 LTS Desktop",
+        "errors": {
+          "required": "Name is required",
+          "tooLong": "Name is too long"
+        }
+      },
+      "category": {
+        "label": "Category *",
+        "placeholder": "Select category",
+        "autoDetected": "Auto-detected"
+      },
+      "source": {
+        "label": "Source *",
+        "placeholder": "Select source"
+      },
+      "tags": {
+        "label": "Tags * ({{count}}/10)",
+        "placeholder": "Add custom tag",
+        "addButton": "Add",
+        "suggestedTags": "Auto-suggested tags:",
+        "popularTags": "Popular tags:",
+        "errors": {
+          "required": "At least one tag is required",
+          "tooMany": "Maximum 10 tags"
+        }
+      },
+      "description": {
+        "label": "Description *",
+        "placeholder": "Describe the torrent content, include information about quality, language, subtitles, etc.",
+        "errors": {
+          "tooShort": "Description must be at least 10 characters",
+          "tooLong": "Description is too long"
+        }
+      },
+      "options": {
+        "anonymous": "Upload anonymously",
+        "freeleech": "Mark as Freeleech"
+      }
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "upload": "Upload Torrent",
+      "uploading": "Uploading..."
+    },
+    "status": {
+      "loading": "Loading...",
+      "uploading": "Uploading torrent...",
+      "success": "Torrent uploaded successfully! Redirecting...",
+      "error": "Error uploading torrent"
+    },
+    "permissions": {
+      "denied": {
+        "title": "Access Denied",
+        "message": "You don't have permission to upload torrents. Contact an administrator if you believe this is an error."
+      }
+    },
+    "tips": {
+      "title": "Tips for a good upload",
+      "list": {
+        "0": "Make sure the content complies with site rules",
+        "1": "Include a detailed and helpful description",
+        "2": "Use relevant tags to facilitate search",
+        "3": "Verify that the torrent works correctly before uploading"
+      }
+    }
   }
 } 
