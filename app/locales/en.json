@@ -289,7 +289,39 @@
     "comments": {
       "title": "Comments",
       "count": "Comments ({{count}})",
-      "comingSoon": "Comments will be available soon"
+      "comingSoon": "Comments will be available soon",
+      "loading": "Loading comments...",
+      "empty": "No comments yet. Be the first to comment!",
+      "placeholder": "Write your comment here...",
+      "addComment": "Add comment",
+      "roles": {
+        "admin": "Admin",
+        "moderator": "Moderator",
+        "user": "User",
+        "guest": "Guest"
+      },
+      "score": "Score: {{score}}",
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page {{current}} of {{total}}"
+      },
+      "modal": {
+        "title": "Add comment",
+        "send": "Send",
+        "sending": "Sending...",
+        "cancel": "Cancel"
+      },
+      "error": {
+        "load": "Error loading comments",
+        "loginRequired": "You must be logged in to comment",
+        "empty": "Comment cannot be empty",
+        "tooLong": "Comment is too long (maximum 280 characters)"
+      },
+      "success": {
+        "created": "Comment created successfully",
+        "vote": "Vote registered"
+      }
     },
     "actions": {
       "title": "Actions",

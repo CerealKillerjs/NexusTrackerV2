@@ -17,6 +17,7 @@ import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/app/components/dashboard/DashboardLayout';
 import { useI18n } from '@/app/hooks/useI18n';
+import CommentsSection from '@/app/components/comments/CommentsSection';
 import { showNotification } from '@/app/utils/notifications';
 // Icon imports
 import { Download } from '@styled-icons/boxicons-regular/Download';
@@ -32,6 +33,7 @@ import { Tag } from '@styled-icons/boxicons-regular/Tag';
 import { InfoCircle } from '@styled-icons/boxicons-regular/InfoCircle';
 import { Comment } from '@styled-icons/boxicons-regular/Comment';
 import { Copy } from '@styled-icons/boxicons-regular/Copy';
+import { Plus } from '@styled-icons/boxicons-regular/Plus';
 
 interface TorrentData {
   id: string;
@@ -386,15 +388,28 @@ export default function TorrentDetailPage() {
 
             {/* Comments Section */}
             <div className="bg-surface rounded-lg border border-border p-6">
-              <h2 className="text-xl font-semibold text-text mb-4 flex items-center">
-                <Comment size={20} className="mr-2" />
-                {t('torrentDetail.comments.count').replace('{{count}}', (torrent._count?.comments || 0).toString())}
-              </h2>
-              
-              <div className="text-center py-8 text-text-secondary">
-                <Comment size={48} className="mx-auto mb-4 opacity-50" />
-                <p>{t('torrentDetail.comments.comingSoon')}</p>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-text flex items-center">
+                  <Comment size={20} className="mr-2" />
+                  {t('torrentDetail.comments.count').replace('{{count}}', (torrent._count?.comments || 0).toString())}
+                </h2>
+                
+                {session && (
+                  <button
+                    onClick={() => {
+                      // Esta función se manejará en el componente CommentsSection
+                      const event = new CustomEvent('openCommentModal');
+                      window.dispatchEvent(event);
+                    }}
+                    className="bg-primary text-background px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors flex items-center space-x-2"
+                  >
+                    <Plus size={16} />
+                    <span>{t('torrentDetail.comments.addComment')}</span>
+                  </button>
+                )}
               </div>
+              
+              <CommentsSection torrentId={torrentId} />
             </div>
           </div>
 

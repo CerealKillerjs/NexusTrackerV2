@@ -289,7 +289,39 @@
     "comments": {
       "title": "Comentarios",
       "count": "Comentarios ({{count}})",
-      "comingSoon": "Los comentarios estarán disponibles próximamente"
+      "comingSoon": "Los comentarios estarán disponibles próximamente",
+      "loading": "Cargando comentarios...",
+      "empty": "No hay comentarios aún. ¡Sé el primero en comentar!",
+      "placeholder": "Escribe tu comentario aquí...",
+      "addComment": "Añadir comentario",
+      "roles": {
+        "admin": "Admin",
+        "moderator": "Moderador",
+        "user": "Usuario",
+        "guest": "Invitado"
+      },
+      "score": "Puntuación: {{score}}",
+      "pagination": {
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "page": "Página {{current}} de {{total}}"
+      },
+      "modal": {
+        "title": "Añadir comentario",
+        "send": "Enviar",
+        "sending": "Enviando...",
+        "cancel": "Cancelar"
+      },
+      "error": {
+        "load": "Error al cargar los comentarios",
+        "loginRequired": "Debes iniciar sesión para comentar",
+        "empty": "El comentario no puede estar vacío",
+        "tooLong": "El comentario es demasiado largo (máximo 280 caracteres)"
+      },
+      "success": {
+        "created": "Comentario creado exitosamente",
+        "vote": "Voto registrado"
+      }
     },
     "actions": {
       "title": "Acciones",
