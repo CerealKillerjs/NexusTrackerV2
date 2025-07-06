@@ -20,6 +20,7 @@
     "bcryptjs": "^3.0.2",
     "bencode": "^4.0.0",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "i18next": "^25.3.1",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-localstorage-cache": "^1.1.1",

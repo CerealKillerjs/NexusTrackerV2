@@ -54,7 +54,8 @@
     }
   },
   "common": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "copy": "Copy"
   },
   "home": {
     "subtitle": "The OverPowered Torrent Tracker",
@@ -158,6 +159,54 @@
       "downloaded": "Downloaded",
       "ratio": "Ratio",
       "bonusPoints": "Bonus Points"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "actions": {
+      "uploadAvatar": "Upload Avatar",
+      "removeAvatar": "Remove"
+    },
+    "fields": {
+      "username": "Username",
+      "email": "Email",
+      "ratio": "Ratio",
+      "points": "Points",
+      "rank": "Rank",
+      "joinDate": "Join Date",
+      "uploaded": "Uploaded",
+      "downloaded": "Downloaded",
+      "announceUrl": "Announce URL"
+    },
+    "sections": {
+      "stats": "Statistics",
+      "preferences": "Preferences"
+    },
+    "preferences": {
+      "notifications": "Notifications",
+      "privateProfile": "Private Profile"
+    },
+    "activity": {
+      "title": "Recent Activity",
+      "types": {
+        "download": {
+          "title": "Started new download"
+        },
+        "achievement": {
+          "title": "New achievement unlocked"
+        },
+        "ratio": {
+          "title": "Ratio milestone reached"
+        },
+        "seeding": {
+          "title": "Started seeding"
+        }
+      }
+    },
+    "notification": {
+      "announceCopied": "Announce URL copied to clipboard",
+      "copyError": "Error copying URL",
+      "invalidImage": "Please select a valid image file"
     }
   },
   "upload": {

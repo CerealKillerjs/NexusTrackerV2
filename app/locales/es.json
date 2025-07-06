@@ -54,7 +54,8 @@
     }
   },
   "common": {
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "copy": "Copiar"
   },
   "home": {
     "subtitle": "El Rastreador de Torrents SobrePotenciado",
@@ -158,6 +159,54 @@
       "downloaded": "Descargado",
       "ratio": "Ratio",
       "bonusPoints": "Puntos Bonus"
+    }
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "actions": {
+      "uploadAvatar": "Subir Avatar",
+      "removeAvatar": "Eliminar"
+    },
+    "fields": {
+      "username": "Usuario",
+      "email": "Correo",
+      "ratio": "Ratio",
+      "points": "Puntos",
+      "rank": "Rango",
+      "joinDate": "Fecha de Registro",
+      "uploaded": "Subido",
+      "downloaded": "Descargado",
+      "announceUrl": "URL de Anuncio"
+    },
+    "sections": {
+      "stats": "Estadísticas",
+      "preferences": "Preferencias"
+    },
+    "preferences": {
+      "notifications": "Notificaciones",
+      "privateProfile": "Perfil Privado"
+    },
+    "activity": {
+      "title": "Actividad Reciente",
+      "types": {
+        "download": {
+          "title": "Nueva descarga iniciada"
+        },
+        "achievement": {
+          "title": "Logro desbloqueado"
+        },
+        "ratio": {
+          "title": "Hito de ratio alcanzado"
+        },
+        "seeding": {
+          "title": "Seeding iniciado"
+        }
+      }
+    },
+    "notification": {
+      "announceCopied": "URL de anuncio copiada al portapapeles",
+      "copyError": "Error al copiar la URL",
+      "invalidImage": "Por favor selecciona un archivo de imagen válido"
     }
   },
   "upload": {
