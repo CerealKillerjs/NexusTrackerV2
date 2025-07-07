@@ -38,6 +38,12 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum UserStatus {
+  ACTIVE
+  BANNED
+  PENDING
+}
+
 model User {
   id            String    @id @default(cuid())
   username      String    @unique
@@ -47,7 +53,8 @@ model User {
   image         String?
   password      String?
   passkey       String    @unique @default(cuid()) // Unique passkey for announce URLs
-  role          String    @default("user") // user, guest, admin, moderator
+  role          String    @default("USER") // USER, GUEST, ADMIN, MODERATOR
+  status        UserStatus @default(ACTIVE)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   uploaded      BigInt    @default(0)
