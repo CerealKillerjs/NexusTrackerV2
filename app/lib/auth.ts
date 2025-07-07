@@ -74,6 +74,7 @@ export const authOptions = {
               password: true,
               role: true,
               passkey: true,
+              status: true,
             }
           })
 

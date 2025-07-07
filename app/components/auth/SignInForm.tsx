@@ -63,6 +63,23 @@ export function SignInForm() {
     setError("")
 
     try {
+      // First, check if the user exists and their status
+      const statusResponse = await fetch(`/api/auth/check-user-status?login=${encodeURIComponent(data.login)}`)
+      
+      if (statusResponse.ok) {
+        const statusData = await statusResponse.json()
+        
+        // If user exists and is banned, show specific message
+        if (statusData.exists && statusData.status === 'BANNED') {
+          const message = t("auth.errors.userBanned");
+          const currentLang = i18n.language || 'es';
+          const fallbackMessage = currentLang === 'en' ? 'Your account is permanently banned' : 'Tu cuenta está permanentemente baneada';
+          setError(message === 'auth.errors.userBanned' ? fallbackMessage : message);
+          setIsLoading(false);
+          return;
+        }
+      }
+
       // Attempt to sign in using NextAuth.js credentials provider
       const result = await signIn("credentials", {
         login: data.login,

@@ -38,6 +38,7 @@
         "passwordRequirements": "Password must be at least 6 characters long",
         "passwordMatch": "Passwords do not match",
         "invalidCredentials": "Invalid email/username or password",
+        "userBanned": "Your account is permanently banned",
         "signInError": "An error occurred during sign in"
       },
       "passwordStrength": {

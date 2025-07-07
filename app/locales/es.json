@@ -38,6 +38,7 @@
         "passwordRequirements": "La contraseña debe tener al menos 6 caracteres",
         "passwordMatch": "Las contraseñas no coinciden",
         "invalidCredentials": "Correo electrónico/usuario o contraseña inválidos",
+        "userBanned": "Tu cuenta está permanentemente baneada",
         "signInError": "Ocurrió un error durante el inicio de sesión"
       },
       "passwordStrength": {

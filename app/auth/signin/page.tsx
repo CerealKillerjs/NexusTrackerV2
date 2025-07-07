@@ -7,16 +7,17 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useI18n } from '@/app/hooks/useI18n';
 import Link from 'next/link';
 import AuthCard from '../../components/auth/AuthCard';
 import AuthInput from '../../components/auth/AuthInput';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { showNotification } from '@/app/utils/notifications';
+import i18n from '@/app/lib/i18n';
 
 export default function LoginPage() {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const router = useRouter();
   const [formData, setFormData] = useState({
     login: '',
@@ -29,6 +30,24 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      // First, check if the user exists and their status
+      const statusResponse = await fetch(`/api/auth/check-user-status?login=${encodeURIComponent(formData.login)}`);
+      
+      if (statusResponse.ok) {
+        const statusData = await statusResponse.json();
+        
+        // If user exists and is banned, show specific message
+        if (statusData.exists && statusData.status === 'BANNED') {
+          const message = t('auth.errors.userBanned');
+          const currentLang = i18n.language || 'es';
+          const fallbackMessage = currentLang === 'en' ? 'Your account is permanently banned' : 'Tu cuenta está permanentemente baneada';
+          showNotification.error(message === 'auth.errors.userBanned' ? fallbackMessage : message);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Proceed with normal login
       const result = await signIn('credentials', {
         login: formData.login,
         password: formData.password,
