@@ -507,6 +507,43 @@
       "actions": {
         "edit": "Editar Usuario",
         "delete": "Eliminar Usuario"
+      },
+      "edit": {
+        "title": "Editar Usuario",
+        "username": "Usuario",
+        "email": "Correo Electrónico",
+        "role": "Rol",
+        "status": "Estado",
+        "emailVerification": "Verificación de Email",
+        "emailVerificationDesc": "Activa o desactiva la verificación manual del email del usuario",
+        "userStats": "Estadísticas del Usuario",
+        "joined": "Registrado",
+        "uploaded": "Subido",
+        "downloaded": "Descargado",
+        "ratio": "Ratio",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "userNotFound": "Usuario no encontrado"
+      },
+      "delete": {
+        "title": "Eliminar Usuario",
+        "confirmTitle": "¿Estás seguro?",
+        "confirmMessage": "Esta acción no se puede deshacer. El usuario y todos sus datos serán eliminados permanentemente.",
+        "userInfo": "Información del Usuario",
+        "username": "Usuario",
+        "email": "Correo",
+        "role": "Rol",
+        "status": "Estado",
+        "uploads": "Subidas",
+        "warningTitle": "Esta acción eliminará:",
+        "warningUploads": "Todos los torrents subidos por el usuario",
+        "warningComments": "Todos los comentarios del usuario",
+        "warningBookmarks": "Todos los marcadores del usuario",
+        "warningVotes": "Todos los votos del usuario",
+        "cancel": "Cancelar",
+        "confirm": "Eliminar Usuario",
+        "deleting": "Eliminando..."
       }
     }
   }

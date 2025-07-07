@@ -509,6 +509,43 @@
       "actions": {
         "edit": "Edit User",
         "delete": "Delete User"
+      },
+      "edit": {
+        "title": "Edit User",
+        "username": "Username",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "emailVerification": "Email Verification",
+        "emailVerificationDesc": "Manually verify or unverify the user's email",
+        "userStats": "User Statistics",
+        "joined": "Joined",
+        "uploaded": "Uploaded",
+        "downloaded": "Downloaded",
+        "ratio": "Ratio",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving...",
+        "userNotFound": "User not found"
+      },
+      "delete": {
+        "title": "Delete User",
+        "confirmTitle": "Are you sure?",
+        "confirmMessage": "This action cannot be undone. The user and all their data will be permanently deleted.",
+        "userInfo": "User Information",
+        "username": "Username",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "uploads": "Uploads",
+        "warningTitle": "This action will delete:",
+        "warningUploads": "All torrents uploaded by the user",
+        "warningComments": "All comments by the user",
+        "warningBookmarks": "All bookmarks by the user",
+        "warningVotes": "All votes by the user",
+        "cancel": "Cancel",
+        "confirm": "Delete User",
+        "deleting": "Deleting..."
       }
     }
   }

@@ -85,11 +85,10 @@ export async function GET(request: NextRequest) {
         role: true,
         status: true,
         createdAt: true,
-        lastLogin: true,
         uploaded: true,
         downloaded: true,
         passkey: true,
-        isEmailVerified: true,
+        emailVerified: true,
         _count: {
           select: {
             torrents: true // Count of uploaded torrents
@@ -116,12 +115,11 @@ export async function GET(request: NextRequest) {
         role: user.role,
         status: user.status,
         createdAt: user.createdAt.toISOString(),
-        lastLogin: user.lastLogin?.toISOString() || null,
-        uploaded,
-        downloaded,
+        uploaded: uploaded.toString(),
+        downloaded: downloaded.toString(),
         ratio,
         passkey: user.passkey,
-        isEmailVerified: user.isEmailVerified,
+        isEmailVerified: !!user.emailVerified,
         uploadCount: user._count.torrents,
         downloadCount: 0 // TODO: Implement download count tracking
       }

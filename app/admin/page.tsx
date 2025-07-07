@@ -68,8 +68,8 @@ export default function AdminDashboardPage() {
   // Show loading while checking authentication and admin status
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-gray-900 dark:text-white text-lg">{t('common.loading')}</div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-text text-lg">{t('common.loading')}</div>
       </div>
     );
   }
@@ -85,23 +85,23 @@ export default function AdminDashboardPage() {
         {/* Header */}
         <div className="mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-3xl font-bold text-text mb-2">
               <Shield className="inline mr-2 align-text-bottom" size={22} /> {t('admin.dashboard.title')}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-text-secondary">
               {t('admin.dashboard.welcome', { username: session.user?.username || session.user?.email })}
             </p>
           </div>
         </div>
 
         {/* Admin Dashboard Content */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8">
+        <div className="bg-surface border border-border rounded-lg p-8">
           <div className="text-center">
-            <Home className="mx-auto mb-4 text-gray-400 dark:text-gray-500" size={48} />
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            <Home className="mx-auto mb-4 text-text-secondary" size={48} />
+            <h2 className="text-xl font-semibold text-text mb-2">
               {t('admin.dashboard.comingSoon.title')}
             </h2>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-text-secondary">
               {t('admin.dashboard.comingSoon.description')}
             </p>
           </div>
