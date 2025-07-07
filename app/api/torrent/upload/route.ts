@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
     // Check upload permissions
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
-      // @ts-expect-error: 'role' must exist in your User model
       select: { role: true }
     });
 
@@ -128,7 +127,6 @@ export async function POST(request: NextRequest) {
     const infoHash = crypto.createHash('sha1').update(infoBuffer).digest('hex');
 
     // Check if torrent already exists
-    // @ts-expect-error: 'torrent' must exist in your Prisma schema
     const existingTorrent = await prisma.torrent.findUnique({
       where: { infoHash }
     });
@@ -234,7 +232,6 @@ export async function POST(request: NextRequest) {
     console.log('Final files array:', files);
 
     // Create torrent in database
-    // @ts-expect-error: 'torrent' must exist in your Prisma schema
     const torrent = await prisma.torrent.create({
       data: {
         infoHash,
@@ -258,7 +255,6 @@ export async function POST(request: NextRequest) {
     // TODO: Make sure your Prisma User model includes the 'uploaded' field. If not, add it to your schema and migrate.
     await prisma.user.update({
       where: { id: session.user.id },
-      // @ts-expect-error: 'uploaded' must exist in your User model
       data: {
         uploaded: {
           increment: BigInt(totalSize)

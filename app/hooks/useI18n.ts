@@ -48,7 +48,7 @@ export function useI18n() {
   return {
     // Return translation function only if component is mounted and i18next is ready
     // Otherwise return a fallback function that just returns the key
-    t: (mounted && isReady) ? t : (key: string) => key,
+    t: (mounted && isReady) ? t : ((key: string, options?: any) => key) as typeof t,
     // Only consider ready if both mounted and i18next is initialized
     isReady: mounted && isReady,
     // Track if component has mounted on client
