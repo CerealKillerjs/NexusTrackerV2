@@ -72,6 +72,41 @@ export const createSignUpSchema = (language: string = 'es') => {
 export const signInSchema = createSignInSchema()
 export const signUpSchema = createSignUpSchema()
 
+/**
+ * Creates a password reset request validation schema
+ * Validates email/username field for password reset requests
+ * @param language - The language code for error messages
+ * @returns Zod schema for password reset request validation
+ */
+export const createPasswordResetRequestSchema = (language: string = 'es') => {
+  const messages = getValidationMessages(language)
+  
+  return z.object({
+    login: z.string().min(1, messages.invalidLogin),
+  })
+}
+
+/**
+ * Creates a password reset validation schema
+ * Validates new password and confirm password fields
+ * @param language - The language code for error messages
+ * @returns Zod schema for password reset validation
+ */
+export const createPasswordResetSchema = (language: string = 'es') => {
+  const messages = getValidationMessages(language)
+  
+  return z.object({
+    token: z.string().min(1, "Token is required"),
+    password: z.string().min(6, messages.passwordMin),
+    confirmPassword: z.string(),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: messages.passwordsDoNotMatch,
+    path: ["confirmPassword"],
+  })
+}
+
 // TypeScript types inferred from the validation schemas
 export type SignInInput = z.infer<typeof signInSchema>
-export type SignUpInput = z.infer<typeof signUpSchema> 
+export type SignUpInput = z.infer<typeof signUpSchema>
+export type PasswordResetRequestInput = z.infer<ReturnType<typeof createPasswordResetRequestSchema>>
+export type PasswordResetInput = z.infer<ReturnType<typeof createPasswordResetSchema>> 

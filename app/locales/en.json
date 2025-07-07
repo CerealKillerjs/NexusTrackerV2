@@ -51,6 +51,21 @@
       "successLogin": "Login successful!",
       "successRegister": "Registration successful! Please login.",
       "error": "An error occurred. Please try again."
+    },
+    "forgotPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your email or username to receive a password reset link",
+      "button": "Send Reset Link",
+      "success": "If an account with that email/username exists, a password reset link has been sent.",
+      "error": "Failed to send password reset email. Please try again later."
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your new password",
+      "button": "Reset Password",
+      "success": "Password has been reset successfully. You can now sign in with your new password.",
+      "error": "Invalid or expired reset token",
+      "expired": "Reset token has expired. Please request a new one."
     }
   },
   "common": {

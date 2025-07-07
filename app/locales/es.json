@@ -51,6 +51,21 @@
       "successLogin": "¡Inicio de sesión exitoso!",
       "successRegister": "¡Registro exitoso! Por favor inicia sesión.",
       "error": "Ocurrió un error. Por favor intenta de nuevo."
+    },
+    "forgotPassword": {
+      "title": "Restablecer Contraseña",
+      "subtitle": "Ingresa tu correo electrónico o usuario para recibir un enlace de restablecimiento",
+      "button": "Enviar Enlace de Restablecimiento",
+      "success": "Si existe una cuenta con ese correo/usuario, se ha enviado un enlace de restablecimiento de contraseña.",
+      "error": "Error al enviar el correo de restablecimiento. Por favor intenta de nuevo más tarde."
+    },
+    "resetPassword": {
+      "title": "Restablecer Contraseña",
+      "subtitle": "Ingresa tu nueva contraseña",
+      "button": "Restablecer Contraseña",
+      "success": "La contraseña ha sido restablecida exitosamente. Ahora puedes iniciar sesión con tu nueva contraseña.",
+      "error": "Token de restablecimiento inválido o expirado",
+      "expired": "El token de restablecimiento ha expirado. Por favor solicita uno nuevo."
     }
   },
   "common": {
