@@ -436,5 +436,78 @@
         "vote": "Error al votar"
       }
     }
+  },
+  "admin": {
+    "title": "Panel de Administración",
+    "role": "Administrador",
+    "signOut": "Cerrar Sesión",
+    "backToSite": "Volver al Sitio",
+    "search": {
+      "placeholder": "Buscar en el panel..."
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "users": "Usuarios",
+      "torrents": "Torrents",
+      "settings": "Configuración"
+    },
+    "dashboard": {
+      "title": "Dashboard de Administración",
+      "welcome": "Bienvenido al panel de administración, {{username}}",
+      "comingSoon": {
+        "title": "Funcionalidades Próximas",
+        "description": "El panel de administración completo estará disponible próximamente. Por ahora, puedes gestionar usuarios desde la sección correspondiente."
+      }
+    },
+    "users": {
+      "title": "Gestión de Usuarios",
+      "description": "Administra usuarios, roles y permisos del sitio",
+      "search": {
+        "placeholder": "Buscar por usuario o email..."
+      },
+      "filters": {
+        "allRoles": "Todos los Roles",
+        "allStatus": "Todos los Estados"
+      },
+      "refresh": "Actualizar",
+      "loading": "Cargando usuarios...",
+      "error": "Error al cargar los usuarios",
+      "retry": "Reintentar",
+      "empty": "No hay usuarios para mostrar",
+      "emptyDescription": "Los usuarios registrados aparecerán aquí",
+      "roles": {
+        "user": "Usuario",
+        "moderator": "Moderador",
+        "admin": "Administrador"
+      },
+      "status": {
+        "active": "Activo",
+        "banned": "Baneado",
+        "pending": "Pendiente"
+      },
+      "emailNotVerified": "Email no verificado",
+      "list": {
+        "title": "Lista de Usuarios",
+        "count": "{{count}} usuarios"
+      },
+      "table": {
+        "headers": {
+          "user": "Usuario",
+          "role": "Rol",
+          "status": "Estado",
+          "stats": "Estadísticas",
+          "joined": "Registrado",
+          "actions": "Acciones"
+        },
+        "uploaded": "Subido",
+        "downloaded": "Descargado",
+        "ratio": "Ratio",
+        "lastLogin": "Último acceso"
+      },
+      "actions": {
+        "edit": "Editar Usuario",
+        "delete": "Eliminar Usuario"
+      }
+    }
   }
 } 

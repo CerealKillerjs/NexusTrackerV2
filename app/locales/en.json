@@ -438,5 +438,78 @@
         "vote": "Error voting"
       }
     }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "role": "Administrator",
+    "signOut": "Sign Out",
+    "backToSite": "Back to Site",
+    "search": {
+      "placeholder": "Search in panel..."
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "torrents": "Torrents",
+      "settings": "Settings"
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "welcome": "Welcome to the admin panel, {{username}}",
+      "comingSoon": {
+        "title": "Coming Soon",
+        "description": "The complete admin panel will be available soon. For now, you can manage users from the corresponding section."
+      }
+    },
+    "users": {
+      "title": "User Management",
+      "description": "Manage users, roles and site permissions",
+      "search": {
+        "placeholder": "Search by username or email..."
+      },
+      "filters": {
+        "allRoles": "All Roles",
+        "allStatus": "All Status"
+      },
+      "refresh": "Refresh",
+      "loading": "Loading users...",
+      "error": "Error loading users",
+      "retry": "Retry",
+      "empty": "No users to display",
+      "emptyDescription": "Registered users will appear here",
+      "roles": {
+        "user": "User",
+        "moderator": "Moderator",
+        "admin": "Administrator"
+      },
+      "status": {
+        "active": "Active",
+        "banned": "Banned",
+        "pending": "Pending"
+      },
+      "emailNotVerified": "Email not verified",
+      "list": {
+        "title": "User List",
+        "count": "{{count}} users"
+      },
+      "table": {
+        "headers": {
+          "user": "User",
+          "role": "Role",
+          "status": "Status",
+          "stats": "Statistics",
+          "joined": "Joined",
+          "actions": "Actions"
+        },
+        "uploaded": "Uploaded",
+        "downloaded": "Downloaded",
+        "ratio": "Ratio",
+        "lastLogin": "Last login"
+      },
+      "actions": {
+        "edit": "Edit User",
+        "delete": "Delete User"
+      }
+    }
   }
 } 

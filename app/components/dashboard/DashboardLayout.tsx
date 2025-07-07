@@ -186,7 +186,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   >
                     <User size={18} className="mr-2 inline" /> {t('header.userMenu.profile')}
                   </Link>
-                  {user?.role === 'admin' && (
+                  {user?.role === 'ADMIN' && (
                     <Link 
                       href="/admin"
                       className="block px-4 py-3 text-text hover:bg-surface-light transition-colors"
@@ -195,7 +195,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                       <Lock size={18} className="mr-2 inline" /> {t('header.userMenu.adminPanel')}
                     </Link>
                   )}
-                  {user?.role === 'moderator' && (
+                  {user?.role === 'MODERATOR' && (
                     <Link 
                       href="/moderator"
                       className="block px-4 py-3 text-text hover:bg-surface-light transition-colors"

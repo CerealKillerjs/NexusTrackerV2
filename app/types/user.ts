@@ -6,11 +6,11 @@
  */
 
 // User role types
-export type UserRole = 'user' | 'guest' | 'admin' | 'moderator'
+export type UserRole = 'USER' | 'GUEST' | 'ADMIN' | 'MODERATOR'
 
 // Role permissions
 export const ROLE_PERMISSIONS = {
-  guest: {
+  GUEST: {
     canViewTorrents: true,
     canSearch: true,
     canViewWiki: true,
@@ -20,7 +20,7 @@ export const ROLE_PERMISSIONS = {
     canReport: false,
     canAccessAdmin: false,
   },
-  user: {
+  USER: {
     canViewTorrents: true,
     canSearch: true,
     canViewWiki: true,
@@ -30,7 +30,7 @@ export const ROLE_PERMISSIONS = {
     canReport: true,
     canAccessAdmin: false,
   },
-  moderator: {
+  MODERATOR: {
     canViewTorrents: true,
     canSearch: true,
     canViewWiki: true,
@@ -41,7 +41,7 @@ export const ROLE_PERMISSIONS = {
     canModerate: true,
     canAccessAdmin: false,
   },
-  admin: {
+  ADMIN: {
     canViewTorrents: true,
     canSearch: true,
     canViewWiki: true,
@@ -55,18 +55,18 @@ export const ROLE_PERMISSIONS = {
 } as const
 
 // Helper function to check permissions
-export function hasPermission(role: UserRole, permission: keyof typeof ROLE_PERMISSIONS.admin): boolean {
+export function hasPermission(role: UserRole, permission: keyof typeof ROLE_PERMISSIONS.ADMIN): boolean {
   return ROLE_PERMISSIONS[role]?.[permission] ?? false
 }
 
 // Helper function to check if user is admin
 export function isAdmin(role: UserRole): boolean {
-  return role === 'admin'
+  return role === 'ADMIN'
 }
 
 // Helper function to check if user is moderator or admin
 export function isModerator(role: UserRole): boolean {
-  return role === 'moderator' || role === 'admin'
+  return role === 'MODERATOR' || role === 'ADMIN'
 }
 
 // Helper function to check if user can access admin panel

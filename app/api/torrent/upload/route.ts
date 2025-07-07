@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       select: { role: true }
     });
 
-    if (!user || (user.role !== 'user' && user.role !== 'moderator' && user.role !== 'admin')) {
+    if (!user || (user.role !== 'USER' && user.role !== 'MODERATOR' && user.role !== 'ADMIN')) {
       return NextResponse.json(
         { error: 'Forbidden - Insufficient permissions' },
         { status: 403 }
