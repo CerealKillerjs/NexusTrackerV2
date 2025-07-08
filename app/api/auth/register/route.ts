@@ -71,12 +71,17 @@ export async function POST(request: NextRequest) {
     // Hash password using bcrypt with salt rounds of 12 for security
     const hashedPassword = await bcrypt.hash(validatedData.password, 12)
     
+    // Check if this is the first user
+    const userCount = await prisma.user.count()
+    const isFirstUser = userCount === 0
+
     // Create new user in database with hashed password
     const user = await prisma.user.create({
       data: {
         username: validatedData.username,
         email: validatedData.email,
         password: hashedPassword,
+        role: isFirstUser ? 'ADMIN' : undefined, // Assign ADMIN role to first user
       },
       // Only return safe user data (exclude password)
       select: {
@@ -84,6 +89,7 @@ export async function POST(request: NextRequest) {
         username: true,
         email: true,
         createdAt: true,
+        role: true,
       }
     })
     
