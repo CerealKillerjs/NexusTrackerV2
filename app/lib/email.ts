@@ -1,26 +1,43 @@
 import nodemailer from 'nodemailer';
+import { prisma } from '@/app/lib/prisma';
 
 /**
  * Email configuration and utility functions
  * Handles sending password reset emails and other email notifications
  */
 
-// Create reusable transporter object using SMTP transport
-const createTransporter = () => {
-  // Get environment variables
-  const config = {
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-    from: process.env.SMTP_FROM
+/**
+ * Fetch SMTP config from the database
+ */
+async function getSmtpConfig() {
+  const keys = [
+    'SMTP_HOST',
+    'SMTP_PORT',
+    'SMTP_USER',
+    'SMTP_PASS',
+    'SMTP_FROM',
+  ];
+  const configs = await prisma.configuration.findMany({
+    where: { key: { in: keys } },
+  });
+  const configMap = Object.fromEntries(configs.map((c: { key: string, value: string }) => [c.key, c.value]));
+  return {
+    host: configMap.SMTP_HOST,
+    port: parseInt(configMap.SMTP_PORT || '587'),
+    user: configMap.SMTP_USER,
+    pass: configMap.SMTP_PASS,
+    from: configMap.SMTP_FROM,
   };
-  
-  // Validate required environment variables
+}
+
+/**
+ * Create reusable transporter object using SMTP transport
+ */
+async function createTransporter() {
+  const config = await getSmtpConfig();
   if (!config.host || !config.user || !config.pass) {
-    throw new Error('Missing required SMTP environment variables: SMTP_HOST, SMTP_USER, SMTP_PASS');
+    throw new Error('Missing required SMTP configuration values: SMTP_HOST, SMTP_USER, SMTP_PASS');
   }
-  
   console.log('Creating SMTP transporter with config:', {
     host: config.host,
     port: config.port,
@@ -28,7 +45,6 @@ const createTransporter = () => {
     from: config.from,
     passLength: config.pass ? config.pass.length : 0
   });
-  
   return nodemailer.createTransport({
     host: config.host,
     port: config.port,
@@ -42,7 +58,7 @@ const createTransporter = () => {
       rejectUnauthorized: false
     }
   });
-};
+}
 
 /**
  * Send password reset email
@@ -57,10 +73,9 @@ export const sendPasswordResetEmail = async (
   username: string,
   language: string = 'en'
 ) => {
-  const transporter = createTransporter();
-  
+  const config = await getSmtpConfig();
+  const transporter = await createTransporter();
   const resetUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/reset-password?token=${resetToken}`;
-  
   const emailContent = {
     en: {
       subject: 'Password Reset Request - NexusTracker',
@@ -109,16 +124,13 @@ export const sendPasswordResetEmail = async (
       `
     }
   };
-
   const content = emailContent[language as keyof typeof emailContent] || emailContent.en;
-
   const mailOptions = {
-    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    from: config.from || config.user,
     to,
     subject: content.subject,
     html: content.html,
   };
-
   try {
     await transporter.sendMail(mailOptions);
     console.log('Password reset email sent successfully to:', to);

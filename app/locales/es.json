@@ -58,7 +58,8 @@
       "subtitle": "Ingresa tu correo electrónico o usuario para recibir un enlace de restablecimiento",
       "button": "Enviar Enlace de Restablecimiento",
       "success": "Si existe una cuenta con ese correo/usuario, se ha enviado un enlace de restablecimiento de contraseña.",
-      "error": "Error al enviar el correo de restablecimiento. Por favor intenta de nuevo más tarde."
+      "error": "Error al enviar el correo de restablecimiento. Por favor intenta de nuevo más tarde.",
+      "resetPasswordError": "No es posible restablecer la contraseña (función deshabilitada). Por favor, contacta al administrador si crees que esto es un error."
     },
     "resetPassword": {
       "title": "Restablecer Contraseña",

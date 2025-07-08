@@ -155,3 +155,10 @@ model Bookmark {
   @@unique([userId, torrentId])
   @@map("bookmarks")
 }
+
+model Configuration {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}

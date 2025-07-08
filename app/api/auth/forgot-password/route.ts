@@ -3,6 +3,8 @@ import { prisma } from "@/app/lib/prisma"
 import { createPasswordResetRequestSchema } from "@/app/lib/validations"
 import { sendPasswordResetEmail } from "@/app/lib/email"
 import crypto from "crypto"
+import i18next from 'i18next'
+
 
 /**
  * POST /api/auth/forgot-password
@@ -57,6 +59,17 @@ export async function POST(request: NextRequest) {
       )
     }
     
+    // Check if email sending is enabled
+    const emailEnabledConfig = await prisma.configuration.findUnique({ where: { key: 'EMAIL_ENABLED' } })
+    const emailEnabled = !emailEnabledConfig || String(emailEnabledConfig.value).toLowerCase() !== 'false'
+    if (!emailEnabled) {
+      const errorMessage = i18next.t('auth.forgotPassword.resetPasswordError', { lng: language })
+      return NextResponse.json(
+        { error: errorMessage },
+        { status: 403 }
+      )
+    }
+    
     // Generate a secure random token
     const resetToken = crypto.randomBytes(32).toString('hex')
     
@@ -90,13 +103,8 @@ export async function POST(request: NextRequest) {
       await prisma.passwordResetToken.delete({
         where: { token: resetToken }
       })
-      
       console.error('Email sending failed:', emailError)
-      
-      const errorMessage = language === 'en' 
-        ? "Failed to send password reset email. Please try again later." 
-        : "Error al enviar el correo de restablecimiento. Por favor intenta de nuevo más tarde."
-      
+      const errorMessage = i18next.t('auth.forgotPassword.error', { lng: language })
       return NextResponse.json(
         { error: errorMessage },
         { status: 500 }
