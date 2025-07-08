@@ -82,6 +82,7 @@ export default function AdminSettingsPage() {
   // Group settings (example: SMTP, Tracker, etc.)
   const smtpKeys = ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM"]
   const trackerKeys = ["NEXT_PUBLIC_TRACKER_URL"]
+  const registrationKeys = ["REGISTRATION_MODE", "INVITE_EXPIRY_HOURS", "MAX_INVITES_PER_USER"]
   const emailEnabledKey = "EMAIL_ENABLED"
   const emailEnabled = config[emailEnabledKey] !== "false"
   const supportEmailKey = "SUPPORT_EMAIL"
@@ -162,6 +163,50 @@ export default function AdminSettingsPage() {
                     onChange={e => handleChange(supportEmailKey, e.target.value)}
                     className="w-full text-white"
                     type="email"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Registration Section */}
+            <div>
+              <h2 className="text-xl font-semibold text-text mb-4 mt-6">Registration & Invites</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block font-medium mb-1 text-white" htmlFor="REGISTRATION_MODE">Registration Mode</label>
+                  <select
+                    id="REGISTRATION_MODE"
+                    value={config["REGISTRATION_MODE"] || 'open'}
+                    onChange={e => handleChange("REGISTRATION_MODE", e.target.value)}
+                    className="w-full px-3 py-2 bg-surface border border-border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="open">Open Registration</option>
+                    <option value="invite_only">Invite Only</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-medium mb-1 text-white" htmlFor="INVITE_EXPIRY_HOURS">Invite Expiry (hours)</label>
+                  <Input
+                    id="INVITE_EXPIRY_HOURS"
+                    value={config["INVITE_EXPIRY_HOURS"] || '6'}
+                    onChange={e => handleChange("INVITE_EXPIRY_HOURS", e.target.value)}
+                    className="w-full text-white"
+                    type="number"
+                    min="1"
+                    max="168"
+                  />
+                </div>
+                <div>
+                  <label className="block font-medium mb-1 text-white" htmlFor="MAX_INVITES_PER_USER">Max Invites Per User</label>
+                  <Input
+                    id="MAX_INVITES_PER_USER"
+                    value={config["MAX_INVITES_PER_USER"] || '5'}
+                    onChange={e => handleChange("MAX_INVITES_PER_USER", e.target.value)}
+                    className="w-full text-white"
+                    type="number"
+                    min="1"
+                    max="50"
                   />
                 </div>
               </div>

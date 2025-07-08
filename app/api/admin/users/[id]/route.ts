@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/app/lib/auth"
 import { prisma } from "@/app/lib/prisma"
 
+// Helper function to generate unique invite codes
+function generateInviteCode(): string {
+  return [...Array(8)].map(() => Math.random().toString(36)[2]).join('').toUpperCase()
+}
+
 /**
  * GET /api/admin/users/[id]
  * 
@@ -58,6 +63,7 @@ export async function GET(
         ratio: true,
         bonusPoints: true,
         passkey: true,
+        availableInvites: true,
         _count: {
           select: {
             torrents: true
@@ -73,6 +79,41 @@ export async function GET(
       )
     }
 
+    // Get invitation statistics
+    const now = new Date()
+    
+    // Get total created invitations
+    const totalCreated = await prisma.inviteCode.count({
+      where: { createdBy: userId }
+    })
+    
+    // Get active invitations (not used, not expired, and isActive)
+    const active = await prisma.inviteCode.count({
+      where: {
+        createdBy: userId,
+        isActive: true,
+        usedBy: null,
+        expiresAt: { gt: now }
+      }
+    })
+    
+    // Get used invitations
+    const used = await prisma.inviteCode.count({
+      where: {
+        createdBy: userId,
+        usedBy: { not: null }
+      }
+    })
+    
+    // Get expired invitations (expired and not used)
+    const expired = await prisma.inviteCode.count({
+      where: {
+        createdBy: userId,
+        expiresAt: { lte: now },
+        usedBy: null
+      }
+    })
+
     // Format user data
     const formattedUser = {
       id: user.id,
@@ -87,7 +128,8 @@ export async function GET(
       ratio: user.ratio,
       bonusPoints: user.bonusPoints,
       passkey: user.passkey,
-      uploadCount: user._count.torrents
+      uploadCount: user._count.torrents,
+      availableInvites: user.availableInvites
     }
 
     return NextResponse.json(formattedUser)
@@ -241,6 +283,11 @@ export async function PUT(
       } else if (!body.isEmailVerified && existingUser.emailVerified) {
         updateData.emailVerified = null;
       }
+    }
+
+    // Handle available invitations update
+    if (typeof body.availableInvites === 'number' && body.availableInvites >= 0) {
+      updateData.availableInvites = body.availableInvites
     }
 
     // Update user

@@ -6,7 +6,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useI18n } from '@/app/hooks/useI18n';
 import Link from 'next/link';
 import AuthCard from '../../components/auth/AuthCard';
@@ -24,6 +24,27 @@ export default function LoginPage() {
     password: ''
   });
   const [loading, setLoading] = useState(false);
+  const [registrationMode, setRegistrationMode] = useState<string>('open');
+  const [configLoading, setConfigLoading] = useState(true);
+
+  // Get registration mode on component mount
+  useEffect(() => {
+    const fetchRegistrationMode = async () => {
+      try {
+        const response = await fetch('/api/config/registration-mode');
+        if (response.ok) {
+          const data = await response.json();
+          setRegistrationMode(data.registrationMode || 'open');
+        }
+      } catch (error) {
+        console.error('Error fetching registration mode:', error);
+      } finally {
+        setConfigLoading(false);
+      }
+    };
+
+    fetchRegistrationMode();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,17 +132,20 @@ export default function LoginPage() {
         </Link>
       </div>
 
-      <div className="mt-4 text-center text-sm">
-        <span className="text-text-secondary">
-          {t('auth.signin.noAccount')}{' '}
-        </span>
-        <Link 
-          href="/auth/signup"
-          className="text-primary hover:text-primary-dark transition-colors"
-        >
-          {t('auth.signin.signUpLink')}
-        </Link>
-      </div>
+      {/* Only show registration link if registration is not closed */}
+      {registrationMode !== 'closed' && (
+        <div className="mt-4 text-center text-sm">
+          <span className="text-text-secondary">
+            {t('auth.signin.noAccount')}{' '}
+          </span>
+          <Link 
+            href="/auth/signup"
+            className="text-primary hover:text-primary-dark transition-colors"
+          >
+            {t('auth.signin.signUpLink')}
+          </Link>
+        </div>
+      )}
     </AuthCard>
   );
 } 

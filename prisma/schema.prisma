@@ -61,6 +61,7 @@ model User {
   downloaded          BigInt               @default(0)
   ratio               Float                @default(0)
   bonusPoints         Int                  @default(0)
+  availableInvites    Int                  @default(0) // Number of available invitations
   accounts            Account[]
   sessions            Session[]
   torrents            Torrent[]
@@ -68,6 +69,8 @@ model User {
   bookmarks           Bookmark[]
   votes               Vote[]
   passwordResetTokens PasswordResetToken[]
+  createdInvites      InviteCode[]         @relation("CreatedInvites")
+  usedInvite          InviteCode?          @relation("UsedInvite")
 }
 
 model VerificationToken {
@@ -176,3 +179,22 @@ model Configuration {
 // - EMAIL_ENABLED
 // - NEXT_PUBLIC_TRACKER_URL
 // - SUPPORT_EMAIL (for support contact in notification emails)
+// - REGISTRATION_MODE (open, invite_only, closed)
+// - INVITE_EXPIRY_HOURS
+// - MAX_INVITES_PER_USER
+
+model InviteCode {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  createdBy String
+  usedBy    String?  @unique
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  isActive  Boolean  @default(true)
+  
+  creator   User     @relation("CreatedInvites", fields: [createdBy], references: [id], onDelete: Cascade)
+  user      User?    @relation("UsedInvite", fields: [usedBy], references: [id], onDelete: SetNull)
+  
+  @@map("invite_codes")
+}

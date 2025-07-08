@@ -46,7 +46,19 @@
         "fair": "Regular",
         "good": "Buena",
         "strong": "Fuerte"
-      }
+      },
+      "success": {
+        "firstUser": "Usuario registrado exitosamente. Eres el administrador y tu correo ha sido verificado automáticamente.",
+        "withVerification": "Usuario registrado exitosamente. Por favor revisa tu correo para verificar tu cuenta."
+      },
+      "invite": {
+        "required": "Se requiere un código de invitación",
+        "invalid": "Código de invitación inválido",
+        "used": "Esta invitación ya ha sido utilizada",
+        "deactivated": "Esta invitación ha sido desactivada",
+        "expired": "Esta invitación ha expirado"
+      },
+      "registrationClosed": "El registro está cerrado actualmente"
     },
     "notification": {
       "successLogin": "¡Inicio de sesión exitoso!",
@@ -68,6 +80,29 @@
       "success": "La contraseña ha sido restablecida exitosamente. Ahora puedes iniciar sesión con tu nueva contraseña.",
       "error": "Token de restablecimiento inválido o expirado",
       "expired": "El token de restablecimiento ha expirado. Por favor solicita uno nuevo."
+    },
+    "emailVerification": {
+      "title": "Verificar Email",
+      "unverified": {
+        "title": "Email No Verificado",
+        "message": "Email no verificado. Por favor verifica tu email para acceder a tu cuenta.",
+        "resendButton": "Reenviar Email de Verificación",
+        "resending": "Reenviando...",
+        "resendSuccess": "Email de verificación reenviado. Por favor revisa tu bandeja de entrada.",
+        "resendError": "Error al reenviar email de verificación.",
+        "alreadyVerified": "¿Ya verificado?",
+        "goToSignIn": "Ir a Iniciar Sesión"
+      },
+      "verify": {
+        "title": "Verificar Email",
+        "verifying": "Verificando...",
+        "success": "Email verificado exitosamente.",
+        "error": "Error en la verificación.",
+        "missingToken": "Token de verificación faltante.",
+        "verificationFailed": "La verificación falló. Por favor intenta de nuevo más tarde.",
+        "goToSignIn": "Ir a Iniciar Sesión",
+        "goToSignUp": "Ir a Registrarse"
+      }
     }
   },
   "common": {
@@ -224,6 +259,62 @@
       "announceCopied": "URL de anuncio copiada al portapapeles",
       "copyError": "Error al copiar la URL",
       "invalidImage": "Por favor selecciona un archivo de imagen válido"
+    },
+    "invitations": {
+      "title": "Invitaciones",
+      "stats": {
+        "unlimited": "Invitaciones Ilimitadas",
+        "available": "Invitaciones Disponibles"
+      },
+      "create": {
+        "title": "Crear Nueva Invitación",
+        "button": "Generar Enlace",
+        "creating": "Creando...",
+        "success": "Invitación creada exitosamente",
+        "error": "Error al crear invitación"
+      },
+      "generated": {
+        "title": "Enlace de Invitación Generado",
+        "copyButton": "Copiar Enlace",
+        "openButton": "Abrir Enlace",
+        "clearButton": "Limpiar",
+        "expiryInfo": "Este enlace expira en 6 horas y solo puede ser usado una vez.",
+        "copied": "Enlace de invitación copiado",
+        "copyError": "Error al copiar enlace"
+      },
+      "active": {
+        "title": "Invitaciones Activas",
+        "expired": "Expirada",
+        "expiresIn": "Expira en {{hours}}h {{minutes}}m",
+        "cancelButton": "Cancelar",
+        "canceling": "Cancelando...",
+        "cancelSuccess": "Invitación cancelada exitosamente",
+        "cancelError": "Error al cancelar invitación",
+        "copyButton": "Copiar",
+        "copied": "Enlace copiado",
+        "copyError": "Error al copiar enlace",
+        "createdOn": "Creada el {{date}}",
+        "tip": "💡 Puedes cancelar invitaciones no utilizadas para recuperar tu invitación disponible."
+      },
+      "status": {
+        "inviteOnlyWarning": "⚠️ Las invitaciones solo están disponibles en modo \"Solo por invitación\"",
+        "closedWarning": "❌ El registro está cerrado. Solo los administradores pueden crear invitaciones.",
+        "noInvitesWarning": "❌ No tienes invitaciones disponibles. Contacta a un administrador.",
+        "canCreate": "✅ Puedes crear {{count}} invitación{{plural}}"
+      },
+      "registrationMode": {
+        "title": "Modo de registro actual:",
+        "open": "Abierto",
+        "inviteOnly": "Solo por invitación",
+        "closed": "Cerrado",
+        "unknown": "Desconocido",
+        "inviteOnlyUser": "Puedes usar tus invitaciones disponibles para crear enlaces de registro.",
+        "inviteOnlyAdmin": "Como administrador, puedes crear invitaciones ilimitadas.",
+        "closedAdmin": "Solo los administradores pueden crear invitaciones.",
+        "closedUser": "El registro está cerrado. Solo los administradores pueden crear invitaciones.",
+        "openUser": "El registro está abierto para todos. Las invitaciones solo se pueden usar en modo \"Solo por invitación\".",
+        "openAdmin": "El registro está abierto para todos, pero puedes crear invitaciones ilimitadas."
+      }
     }
   },
   "upload": {

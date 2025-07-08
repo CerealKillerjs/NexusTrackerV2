@@ -4,8 +4,10 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import AuthCard from "@/app/components/auth/AuthCard";
 import { showNotification } from "@/app/utils/notifications";
+import { useI18n } from "@/app/hooks/useI18n";
 
 export default function UnverifiedPage() {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const router = useRouter();
   const login = searchParams.get("login") || "";
@@ -21,38 +23,38 @@ export default function UnverifiedPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        showNotification.success(data.message || "Verification email resent. Please check your inbox.");
+        showNotification.success(data.message || t('auth.emailVerification.unverified.resendSuccess'));
       } else {
-        showNotification.error(data.error || "Failed to resend verification email.");
+        showNotification.error(data.error || t('auth.emailVerification.unverified.resendError'));
       }
     } catch (e) {
-      showNotification.error("Failed to resend verification email.");
+      showNotification.error(t('auth.emailVerification.unverified.resendError'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AuthCard title="Email Not Verified">
+    <AuthCard title={t('auth.emailVerification.unverified.title')}>
       <div className="text-center">
         <p className="text-red-600 font-semibold mb-4">
-          Email not verified. Please verify your email to access your account.
+          {t('auth.emailVerification.unverified.message')}
         </p>
         <button
           className="mt-4 px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
           onClick={handleResend}
           disabled={loading}
         >
-          {loading ? "Resending..." : "Resend Verification Email"}
+          {loading ? t('auth.emailVerification.unverified.resending') : t('auth.emailVerification.unverified.resendButton')}
         </button>
         <div className="mt-6 text-sm text-text-secondary">
           <span>
-            Already verified?{' '}
+            {t('auth.emailVerification.unverified.alreadyVerified')}{' '}
             <button
               className="text-primary hover:underline"
               onClick={() => router.push('/auth/signin')}
             >
-              Go to Sign In
+              {t('auth.emailVerification.unverified.goToSignIn')}
             </button>
           </span>
         </div>

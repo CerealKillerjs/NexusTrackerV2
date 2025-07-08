@@ -89,9 +89,11 @@ export async function GET(request: NextRequest) {
         downloaded: true,
         passkey: true,
         emailVerified: true,
+        availableInvites: true,
         _count: {
           select: {
-            torrents: true // Count of uploaded torrents
+            torrents: true, // Count of uploaded torrents
+            createdInvites: true // Count of created invites
           }
         }
       },
@@ -103,10 +105,39 @@ export async function GET(request: NextRequest) {
     })
 
     // Calculate ratio and format data
-    const formattedUsers = users.map((user: any) => {
+    const formattedUsers = await Promise.all(users.map(async (user: any) => {
       const uploaded = user.uploaded || BigInt(0)
       const downloaded = user.downloaded || BigInt(0)
       const ratio = downloaded > BigInt(0) ? Number(uploaded) / Number(downloaded) : 0
+
+      // Get invitation statistics for this user
+      const now = new Date()
+      const [activeInvites, usedInvites, expiredInvites] = await Promise.all([
+        // Active invites (not used, not expired, active)
+        prisma.inviteCode.count({
+          where: {
+            createdBy: user.id,
+            isActive: true,
+            usedBy: null,
+            expiresAt: { gt: now }
+          }
+        }),
+        // Used invites
+        prisma.inviteCode.count({
+          where: {
+            createdBy: user.id,
+            usedBy: { not: null }
+          }
+        }),
+        // Expired invites (not used, expired)
+        prisma.inviteCode.count({
+          where: {
+            createdBy: user.id,
+            usedBy: null,
+            expiresAt: { lte: now }
+          }
+        })
+      ])
 
       return {
         id: user.id,
@@ -121,9 +152,10 @@ export async function GET(request: NextRequest) {
         passkey: user.passkey,
         isEmailVerified: !!user.emailVerified,
         uploadCount: user._count.torrents,
-        downloadCount: 0 // TODO: Implement download count tracking
+        downloadCount: 0, // TODO: Implement download count tracking
+        availableInvites: user.availableInvites
       }
-    })
+    }))
 
     // Calculate pagination info
     const totalPages = Math.ceil(total / validLimit)

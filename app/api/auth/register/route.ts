@@ -59,13 +59,95 @@ export async function POST(request: NextRequest) {
     if (existingUserByUsername) {
       // Return localized error message for duplicate username
       const errorMessage = language === 'en' 
-        ? "Username already exists" 
         : "El nombre de usuario ya existe"
       
       return NextResponse.json(
         { error: errorMessage },
         { status: 400 }
       )
+    }
+
+    // Verificar modo de registro y validar invitación si es necesario
+    const registrationMode = await prisma.configuration.findUnique({
+      where: { key: 'REGISTRATION_MODE' }
+    });
+
+    if (registrationMode?.value === 'closed') {
+      const errorMessage = language === 'en' 
+        ? "Registration is currently closed" 
+        : "El registro está cerrado actualmente"
+      
+      return NextResponse.json(
+        { error: errorMessage },
+        { status: 403 }
+      )
+    }
+
+    if (registrationMode?.value === 'invite_only') {
+      // Verificar que se proporcionó un código de invitación
+      if (!validatedData.inviteCode) {
+        const errorMessage = language === 'en' 
+          ? "Invitation code is required" 
+          : "Se requiere un código de invitación"
+        
+        return NextResponse.json(
+          { error: errorMessage },
+          { status: 400 }
+        )
+      }
+
+      // Validar la invitación
+      const invite = await prisma.inviteCode.findUnique({
+        where: { code: validatedData.inviteCode.toUpperCase() }
+      });
+
+      if (!invite) {
+        const errorMessage = language === 'en' 
+          ? "Invalid invitation code" 
+          : "Código de invitación inválido"
+        
+        return NextResponse.json(
+          { error: errorMessage },
+          { status: 400 }
+        )
+      }
+
+      // Verificar si ya fue usada
+      if (invite.usedBy) {
+        const errorMessage = language === 'en' 
+          ? "This invitation has already been used" 
+          : "Esta invitación ya ha sido utilizada"
+        
+        return NextResponse.json(
+          { error: errorMessage },
+          { status: 400 }
+        )
+      }
+
+      // Verificar si está activa
+      if (!invite.isActive) {
+        const errorMessage = language === 'en' 
+          ? "This invitation has been deactivated" 
+          : "Esta invitación ha sido desactivada"
+        
+        return NextResponse.json(
+          { error: errorMessage },
+          { status: 400 }
+        )
+      }
+
+      // Verificar si ha expirado
+      const now = new Date();
+      if (invite.expiresAt < now) {
+        const errorMessage = language === 'en' 
+          ? "This invitation has expired" 
+          : "Esta invitación ha expirado"
+        
+        return NextResponse.json(
+          { error: errorMessage },
+          { status: 400 }
+        )
+      }
     }
     
     // Hash password using bcrypt with salt rounds of 12 for security
@@ -95,6 +177,17 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    // Consumir la invitación si se proporcionó un código
+    if (registrationMode?.value === 'invite_only' && validatedData.inviteCode) {
+      await prisma.inviteCode.update({
+        where: { code: validatedData.inviteCode.toUpperCase() },
+        data: {
+          usedBy: user.id,
+          usedAt: new Date()
+        }
+      });
+    }
+
     if (!isFirstUser) {
       // Generate email verification token
       const crypto = await import('crypto')
@@ -122,7 +215,7 @@ export async function POST(request: NextRequest) {
         // Do not block registration
       }
     }
-
+    
     // Return success response with localized message
     const successMessage = language === 'en' 
       ? (isFirstUser
