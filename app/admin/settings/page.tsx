@@ -212,6 +212,31 @@ export default function AdminSettingsPage() {
               </div>
             </div>
 
+            {/* Public Browsing Section */}
+            <div>
+              <h2 className="text-xl font-semibold text-text mb-4 mt-6">Public Browsing</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block font-medium mb-1 text-white" htmlFor="PUBLIC_BROWSING_MODE">Browsing Mode</label>
+                  <select
+                    id="PUBLIC_BROWSING_MODE"
+                    value={config["PUBLIC_BROWSING_MODE"] || 'PUBLIC'}
+                    onChange={e => handleChange("PUBLIC_BROWSING_MODE", e.target.value)}
+                    className="w-full px-3 py-2 bg-surface border border-border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="PUBLIC">Public - Search Engine Style</option>
+                    <option value="PRIVATE">Private - Login Required</option>
+                  </select>
+                  <p className="text-sm text-text-secondary mt-1">
+                    {config["PUBLIC_BROWSING_MODE"] === 'PUBLIC' 
+                      ? 'Home page shows public torrent search (current design)'
+                      : 'Home page shows simple login/register interface'
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Save Button and Success Message */}
             <div className="flex items-center space-x-4 mt-8">
               <Button type="submit" disabled={saving}>
