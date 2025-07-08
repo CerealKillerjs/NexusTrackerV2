@@ -84,6 +84,7 @@ export default function AdminSettingsPage() {
   const trackerKeys = ["NEXT_PUBLIC_TRACKER_URL"]
   const emailEnabledKey = "EMAIL_ENABLED"
   const emailEnabled = config[emailEnabledKey] !== "false"
+  const supportEmailKey = "SUPPORT_EMAIL"
 
   return (
     <AdminLayout>
@@ -146,6 +147,23 @@ export default function AdminSettingsPage() {
                     />
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Support Email Section */}
+            <div>
+              <h2 className="text-xl font-semibold text-text mb-4 mt-8">Support Email</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block font-medium mb-1 capitalize text-white" htmlFor={supportEmailKey}>Support Email</label>
+                  <Input
+                    id={supportEmailKey}
+                    value={config[supportEmailKey] || ''}
+                    onChange={e => handleChange(supportEmailKey, e.target.value)}
+                    className="w-full text-white"
+                    type="email"
+                  />
+                </div>
               </div>
             </div>
 

@@ -45,28 +45,29 @@ enum UserStatus {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  username      String    @unique
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  passkey       String    @unique @default(cuid()) // Unique passkey for announce URLs
-  role          String    @default("USER") // USER, GUEST, ADMIN, MODERATOR
-  status        UserStatus @default(ACTIVE)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  uploaded      BigInt    @default(0)
-  downloaded    BigInt    @default(0)
-  ratio         Float     @default(0)
-  bonusPoints   Int       @default(0)
-  accounts      Account[]
-  sessions      Session[]
-  torrents      Torrent[]
-  comments      Comment[]
-  bookmarks     Bookmark[]
-  votes         Vote[]
+  id                  String               @id @default(cuid())
+  username            String               @unique
+  name                String?
+  email               String               @unique
+  emailVerified       DateTime?
+  image               String?
+  password            String?
+  passkey             String               @unique @default(cuid()) // Unique passkey for announce URLs
+  role                String               @default("USER") // USER, GUEST, ADMIN, MODERATOR
+  status              UserStatus           @default(ACTIVE)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  uploaded            BigInt               @default(0)
+  downloaded          BigInt               @default(0)
+  ratio               Float                @default(0)
+  bonusPoints         Int                  @default(0)
+  accounts            Account[]
+  sessions            Session[]
+  torrents            Torrent[]
+  comments            Comment[]
+  bookmarks           Bookmark[]
+  votes               Vote[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model VerificationToken {
@@ -79,34 +80,37 @@ model VerificationToken {
 
 model PasswordResetToken {
   id        String   @id @default(cuid())
+  userId    String
   email     String
   token     String   @unique
   expires   DateTime
   createdAt DateTime @default(now())
 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@map("password_reset_tokens")
 }
 
 model Torrent {
-  id          String   @id @default(cuid())
-  infoHash    String   @unique
+  id          String     @id @default(cuid())
+  infoHash    String     @unique
   name        String
   description String?
   type        String?
   source      String?
-  binary      String   @db.Text
+  binary      String     @db.Text
   uploadedBy  String
-  downloads   Int      @default(0)
+  downloads   Int        @default(0)
   size        BigInt
   files       Json
-  image       String?  // Base64 encoded image
-  nfo         String?  // NFO file content
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  freeleech   Boolean  @default(false)
+  image       String? // Base64 encoded image
+  nfo         String? // NFO file content
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  freeleech   Boolean    @default(false)
   tags        String[]
-  anonymous   Boolean  @default(false)
-  user        User     @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+  anonymous   Boolean    @default(false)
+  user        User       @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
   comments    Comment[]
   bookmarks   Bookmark[]
   votes       Vote[]
@@ -162,3 +166,13 @@ model Configuration {
   value     String
   updatedAt DateTime @updatedAt
 }
+
+// Configuration keys:
+// - SMTP_HOST
+// - SMTP_PORT
+// - SMTP_USER
+// - SMTP_PASS
+// - SMTP_FROM
+// - EMAIL_ENABLED
+// - NEXT_PUBLIC_TRACKER_URL
+// - SUPPORT_EMAIL (for support contact in notification emails)

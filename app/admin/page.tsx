@@ -65,6 +65,13 @@ export default function AdminDashboardPage() {
     }
   }, [loading, isAdmin, status, router]);
 
+  // Block access for unverified users
+  useEffect(() => {
+    if (status === 'authenticated' && session && !(session.user as any).emailVerified) {
+      router.push('/auth/unverified?login=' + encodeURIComponent(session.user?.email || session.user?.username || ''));
+    }
+  }, [status, session, router]);
+
   // Show loading while checking authentication and admin status
   if (status === 'loading' || loading) {
     return (

@@ -93,6 +93,13 @@ export default function DashboardPage() {
     }
   }, [status, router]);
 
+  // Block access for unverified users
+  useEffect(() => {
+    if (status === 'authenticated' && session && !(session.user as any).emailVerified) {
+      router.push('/auth/unverified?login=' + encodeURIComponent(session.user?.email || session.user?.username || ''));
+    }
+  }, [status, session, router]);
+
   // Fetch torrents when component mounts
   useEffect(() => {
     if (status === 'authenticated') {

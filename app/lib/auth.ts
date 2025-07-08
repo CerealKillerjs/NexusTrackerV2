@@ -75,6 +75,7 @@ export const authOptions = {
               role: true,
               passkey: true,
               status: true,
+              emailVerified: true,
             }
           })
 
@@ -107,6 +108,7 @@ export const authOptions = {
             name: user.username, // Use username as display name
             role: user.role as UserRole, // Include user role
             passkey: user.passkey, // Include passkey for announce URLs
+            emailVerified: user.emailVerified, // Propagate emailVerified
           }
         } catch (error) {
           // Log error for debugging
@@ -142,6 +144,7 @@ export const authOptions = {
         token.username = user.username
         token.role = user.role
         token.passkey = user.passkey
+        token.emailVerified = user.emailVerified // Propagate emailVerified
       }
       return token
     },
@@ -164,6 +167,7 @@ export const authOptions = {
         session.user.username = token.username as string
         session.user.role = token.role as string
         session.user.passkey = token.passkey as string
+        session.user.emailVerified = token.emailVerified // Propagate emailVerified
       }
       return session
     }

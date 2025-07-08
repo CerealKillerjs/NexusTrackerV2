@@ -71,7 +71,9 @@ export default function RegisterPage() {
         console.log('Registration response:', { status: response.status, data });
 
         if (response.ok) {
-          showNotification.success(t('auth.notification.successRegister'));
+          showNotification.success(
+            t('auth.notification.successRegisterEmailVerify', 'Success! Please check your email to verify your account.')
+          );
           router.push('/auth/signin');
         } else {
           showNotification.error(data.error || data.message || t('auth.notification.error'));

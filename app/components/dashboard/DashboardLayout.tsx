@@ -95,6 +95,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
   };
 
+  // Block access for unverified users
+  useEffect(() => {
+    if (status === 'authenticated' && session && !(session.user as any).emailVerified) {
+      router.push('/auth/unverified?login=' + encodeURIComponent(session.user?.email || session.user?.username || ''));
+    }
+  }, [status, session, router]);
+
+  if (status === 'authenticated' && session && !(session.user as any).emailVerified) {
+    return null; // Prevent rendering while redirecting
+  }
+
   // Show loading while checking authentication
   if (status === 'loading') {
     return (

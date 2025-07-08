@@ -109,6 +109,12 @@ export default function TorrentDetailPage() {
     }
   }, [torrentId, fetchTorrentData]);
 
+  useEffect(() => {
+    if (session && !(session.user as any).emailVerified) {
+      window.location.href = '/auth/unverified?login=' + encodeURIComponent(session.user?.email || session.user?.username || '');
+    }
+  }, [session]);
+
   const handleDownload = async () => {
     if (!session) {
       showNotification.error(t('torrentDetail.notifications.loginRequired.download'));

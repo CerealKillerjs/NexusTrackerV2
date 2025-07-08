@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
         email: validatedData.email,
         password: hashedPassword,
         role: isFirstUser ? 'ADMIN' : undefined, // Assign ADMIN role to first user
+        emailVerified: isFirstUser ? new Date() : undefined, // Auto-verify first user
       },
       // Only return safe user data (exclude password)
       select: {
@@ -90,14 +91,47 @@ export async function POST(request: NextRequest) {
         email: true,
         createdAt: true,
         role: true,
+        emailVerified: true,
       }
     })
-    
+
+    if (!isFirstUser) {
+      // Generate email verification token
+      const crypto = await import('crypto')
+      const verificationToken = crypto.randomBytes(32).toString('hex')
+      const expires = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+      await prisma.verificationToken.create({
+        data: {
+          identifier: user.email,
+          token: verificationToken,
+          expires,
+        }
+      })
+
+      // Send verification email
+      try {
+        const { sendVerificationEmail } = await import('@/app/lib/email')
+        await sendVerificationEmail(
+          user.email,
+          verificationToken,
+          user.username,
+          language
+        )
+      } catch (emailError) {
+        console.error('Failed to send verification email:', emailError)
+        // Do not block registration
+      }
+    }
+
     // Return success response with localized message
     const successMessage = language === 'en' 
-      ? "User registered successfully" 
-      : "Usuario registrado exitosamente"
-    
+      ? (isFirstUser
+        ? "User registered successfully. You are the admin and your email is automatically verified."
+        : "User registered successfully. Please check your email to verify your account.")
+      : (isFirstUser
+        ? "Usuario registrado exitosamente. Eres el administrador y tu correo ha sido verificado automáticamente."
+        : "Usuario registrado exitosamente. Por favor revisa tu correo para verificar tu cuenta.")
+
     return NextResponse.json(
       { 
         message: successMessage,

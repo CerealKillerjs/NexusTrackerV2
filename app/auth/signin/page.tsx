@@ -55,7 +55,11 @@ export default function LoginPage() {
       });
       
       if (result?.error) {
-        showNotification.error(t('auth.register.errors.invalidCredentials'));
+        if (result.error === 'EMAIL_NOT_VERIFIED') {
+          router.push('/auth/unverified?login=' + encodeURIComponent(formData.login));
+        } else {
+          showNotification.error(t('auth.register.errors.invalidCredentials'));
+        }
       } else {
         showNotification.success(t('auth.notification.successLogin'));
         router.push('/dashboard');

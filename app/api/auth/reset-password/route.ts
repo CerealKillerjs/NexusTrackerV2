@@ -35,7 +35,8 @@ export async function POST(request: NextRequest) {
     
     // Find the reset token in database
     const resetToken = await prisma.passwordResetToken.findUnique({
-      where: { token: validatedData.token }
+      where: { token: validatedData.token },
+      select: { id: true, userId: true, email: true, token: true, createdAt: true, expires: true }
     })
     
     if (!resetToken) {
@@ -66,9 +67,9 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Find user by email
+    // Find user by userId from token
     const user = await prisma.user.findUnique({
-      where: { email: resetToken.email }
+      where: { id: resetToken.userId }
     })
     
     if (!user) {

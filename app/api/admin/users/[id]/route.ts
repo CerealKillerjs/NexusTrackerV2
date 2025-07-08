@@ -177,7 +177,9 @@ export async function PUT(
     }
 
     // Check for duplicate email (if changed)
+    let emailChanged = false;
     if (body.email !== existingUser.email) {
+      emailChanged = true;
       const duplicateEmail = await prisma.user.findUnique({
         where: { email: body.email }
       })
@@ -197,11 +199,48 @@ export async function PUT(
       status: body.status
     }
 
-    // Handle email verification
-    if (body.isEmailVerified && !existingUser.emailVerified) {
-      updateData.emailVerified = new Date()
-    } else if (!body.isEmailVerified && existingUser.emailVerified) {
-      updateData.emailVerified = null
+    // Handle email verification and notifications if email changed
+    if (emailChanged) {
+      updateData.emailVerified = null;
+      // Generate new verification token
+      const crypto = await import('crypto');
+      const verificationToken = crypto.randomBytes(32).toString('hex');
+      const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+      await prisma.verificationToken.deleteMany({ where: { identifier: body.email } });
+      await prisma.verificationToken.create({
+        data: {
+          identifier: body.email,
+          token: verificationToken,
+          expires,
+        }
+      });
+      // Send verification email to new email
+      try {
+        const { sendVerificationEmail, sendEmailChangeSecurityAlert } = await import('@/app/lib/email');
+        await sendVerificationEmail(
+          body.email,
+          verificationToken,
+          body.username,
+          'en'
+        );
+        // Send security alert to old email
+        await sendEmailChangeSecurityAlert(
+          existingUser.email,
+          existingUser.email,
+          body.email,
+          body.username,
+          'en'
+        );
+      } catch (emailError) {
+        console.error('Failed to send verification or security alert email:', emailError);
+      }
+    } else {
+      // Handle email verification toggle (if not changed)
+      if (body.isEmailVerified && !existingUser.emailVerified) {
+        updateData.emailVerified = new Date();
+      } else if (!body.isEmailVerified && existingUser.emailVerified) {
+        updateData.emailVerified = null;
+      }
     }
 
     // Update user

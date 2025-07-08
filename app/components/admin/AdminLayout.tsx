@@ -65,6 +65,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return null;
   }
 
+  // Block access for unverified users
+  if (status === 'authenticated' && session && !(session.user as any).emailVerified) {
+    router.push('/auth/unverified?login=' + encodeURIComponent(session.user?.email || session.user?.username || ''));
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}

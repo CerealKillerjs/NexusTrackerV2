@@ -203,6 +203,12 @@ export default function UploadPage() {
     );
   }
 
+  // Block access for unverified users
+  if (status === 'authenticated' && session && !(session.user as any).emailVerified) {
+    router.push('/auth/unverified?login=' + encodeURIComponent(session.user?.email || session.user?.username || ''));
+    return null;
+  }
+
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
