@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import { auth } from '@/app/lib/auth';
 
@@ -8,7 +8,7 @@ async function getConfig(key: string, fallback: string) {
   return config?.value ?? fallback;
 }
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Authentication
     const session = await auth();
@@ -51,29 +51,23 @@ export async function POST(request: NextRequest) {
     const now = new Date();
     const expiresAt = new Date(now.getTime() + inviteExpiryHours * 60 * 60 * 1000);
 
-    // Create invitation and update counter
-    const operations = [
-      prisma.inviteCode.create({
-        data: {
-          code,
-          createdBy: user.id,
-          expiresAt,
-          isActive: true,
-        }
-      })
-    ];
+    // Create invitation
+    const invite = await prisma.inviteCode.create({
+      data: {
+        code,
+        createdBy: user.id,
+        expiresAt,
+        isActive: true,
+      }
+    });
 
     // Reduce available invitations only if not admin and in invite_only mode
     if (user.role !== 'ADMIN' && registrationMode === 'invite_only') {
-      operations.push(
-        prisma.user.update({
-          where: { id: user.id },
-          data: { availableInvites: { decrement: 1 } }
-        })
-      );
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { availableInvites: { decrement: 1 } }
+      });
     }
-
-    const [invite] = await prisma.$transaction(operations);
 
     // Generate complete invitation link
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
