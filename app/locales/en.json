@@ -224,6 +224,62 @@
       "announceCopied": "Announce URL copied to clipboard",
       "copyError": "Error copying URL",
       "invalidImage": "Please select a valid image file"
+    },
+    "invitations": {
+      "title": "Invitations",
+      "stats": {
+        "unlimited": "Unlimited Invitations",
+        "available": "Available Invitations"
+      },
+      "create": {
+        "title": "Create New Invitation",
+        "button": "Generate Link",
+        "creating": "Creating...",
+        "success": "Invitation created successfully",
+        "error": "Error creating invitation"
+      },
+      "generated": {
+        "title": "Generated Invitation Link",
+        "copyButton": "Copy Link",
+        "openButton": "Open Link",
+        "clearButton": "Clear",
+        "expiryInfo": "This link expires in 6 hours and can only be used once.",
+        "copied": "Invitation link copied",
+        "copyError": "Error copying link"
+      },
+      "active": {
+        "title": "Active Invitations",
+        "expired": "Expired",
+        "expiresIn": "Expires in {{hours}}h {{minutes}}m",
+        "cancelButton": "Cancel",
+        "canceling": "Canceling...",
+        "cancelSuccess": "Invitation canceled successfully",
+        "cancelError": "Error canceling invitation",
+        "copyButton": "Copy",
+        "copied": "Link copied",
+        "copyError": "Error copying link",
+        "createdOn": "Created on {{date}}",
+        "tip": "💡 You can cancel unused invitations to recover your available invitation."
+      },
+      "status": {
+        "inviteOnlyWarning": "⚠️ Invitations are only available in \"Invite Only\" mode",
+        "closedWarning": "❌ Registration is closed. Only administrators can create invitations.",
+        "noInvitesWarning": "❌ You don't have available invitations. Contact an administrator.",
+        "canCreate": "✅ You can create {{count}} invitation{{plural}}"
+      },
+      "registrationMode": {
+        "title": "Current registration mode:",
+        "open": "Open",
+        "inviteOnly": "Invite Only",
+        "closed": "Closed",
+        "unknown": "Unknown",
+        "inviteOnlyUser": "You can use your available invitations to create registration links.",
+        "inviteOnlyAdmin": "As an administrator, you can create unlimited invitations.",
+        "closedAdmin": "Only administrators can create invitations.",
+        "closedUser": "Registration is closed. Only administrators can create invitations.",
+        "openUser": "Registration is open to everyone. Invitations can only be used in \"Invite Only\" mode.",
+        "openAdmin": "Registration is open to everyone, but you can create unlimited invitations."
+      }
     }
   },
   "upload": {

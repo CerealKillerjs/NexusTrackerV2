@@ -61,12 +61,15 @@ model User {
   downloaded    BigInt    @default(0)
   ratio         Float     @default(0)
   bonusPoints   Int       @default(0)
+  availableInvites Int    @default(0) // Number of available invitations
   accounts      Account[]
   sessions      Session[]
   torrents      Torrent[]
   comments      Comment[]
   bookmarks     Bookmark[]
   votes         Vote[]
+  createdInvites InviteCode[] @relation("CreatedInvites")
+  usedInvite     InviteCode?  @relation("UsedInvite")
 }
 
 model VerificationToken {
@@ -161,4 +164,20 @@ model Configuration {
   key       String   @unique
   value     String
   updatedAt DateTime @updatedAt
+}
+
+model InviteCode {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  createdBy String
+  usedBy    String?  @unique
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  isActive  Boolean  @default(true)
+  
+  creator   User     @relation("CreatedInvites", fields: [createdBy], references: [id], onDelete: Cascade)
+  user      User?    @relation("UsedInvite", fields: [usedBy], references: [id], onDelete: SetNull)
+  
+  @@map("invite_codes")
 }

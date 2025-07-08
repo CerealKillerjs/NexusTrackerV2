@@ -47,6 +47,7 @@ interface UserData {
   isEmailVerified: boolean;
   uploadCount: number;
   downloadCount: number;
+  availableInvites: number;
 }
 
 interface UsersResponse {
@@ -346,6 +347,9 @@ export default function AdminUsersPage() {
                       {t('admin.users.table.headers.stats')}
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-medium text-text-secondary">
+                      Invitaciones
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-medium text-text-secondary">
                       {t('admin.users.table.headers.joined')}
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-medium text-text-secondary">
@@ -396,6 +400,17 @@ export default function AdminUsersPage() {
                               {user.ratio.toFixed(2)}
                             </span>
                           </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-center">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            user.availableInvites > 0 
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                              : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+                          }`}>
+                            {user.availableInvites} disponible{user.availableInvites !== 1 ? 's' : ''}
+                          </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-text-secondary">

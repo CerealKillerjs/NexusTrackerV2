@@ -33,6 +33,7 @@ interface UserData {
   bonusPoints: number;
   passkey: string;
   uploadCount: number;
+  availableInvites: number;
 }
 
 export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }: EditUserModalProps) {
@@ -45,7 +46,8 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
     email: '',
     role: 'USER' as 'USER' | 'MODERATOR' | 'ADMIN',
     status: 'ACTIVE' as 'ACTIVE' | 'BANNED' | 'PENDING',
-    isEmailVerified: false
+    isEmailVerified: false,
+    availableInvites: 0
   });
 
   // Fetch user data when modal opens
@@ -71,7 +73,8 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
         email: userData.email,
         role: userData.role,
         status: userData.status,
-        isEmailVerified: userData.isEmailVerified
+        isEmailVerified: userData.isEmailVerified,
+        availableInvites: userData.availableInvites
       });
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -253,6 +256,44 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
                   <div>
                     <span className="text-text-secondary">{t('admin.users.edit.ratio')}:</span>
                     <div className="font-medium text-text">{user.ratio.toFixed(2)}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Invitations Section */}
+              <div className="bg-surface-light rounded-lg p-4">
+                <h3 className="font-medium text-text mb-3">Gestión de Invitaciones</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-text mb-2">
+                      Invitaciones Disponibles
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.availableInvites}
+                      onChange={(e) => handleInputChange('availableInvites', parseInt(e.target.value) || 0)}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                    <p className="text-xs text-text-secondary mt-1">
+                      Número de invitaciones que puede usar este usuario
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-sm">
+                      <span className="text-text-secondary">Rol actual:</span>
+                      <span className={`ml-2 font-medium ${
+                        formData.role === 'ADMIN' ? 'text-red-500' : 
+                        formData.role === 'MODERATOR' ? 'text-yellow-500' : 'text-blue-500'
+                      }`}>
+                        {formData.role}
+                      </span>
+                    </div>
+                    {formData.role === 'ADMIN' && (
+                      <div className="text-xs text-green-600 bg-green-50 dark:bg-green-900/20 p-2 rounded">
+                        Los administradores tienen invitaciones ilimitadas
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

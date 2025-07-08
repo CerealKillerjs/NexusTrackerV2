@@ -224,6 +224,62 @@
       "announceCopied": "URL de anuncio copiada al portapapeles",
       "copyError": "Error al copiar la URL",
       "invalidImage": "Por favor selecciona un archivo de imagen válido"
+    },
+    "invitations": {
+      "title": "Invitaciones",
+      "stats": {
+        "unlimited": "Invitaciones Ilimitadas",
+        "available": "Invitaciones Disponibles"
+      },
+      "create": {
+        "title": "Crear Nueva Invitación",
+        "button": "Generar Enlace",
+        "creating": "Creando...",
+        "success": "Invitación creada exitosamente",
+        "error": "Error al crear invitación"
+      },
+      "generated": {
+        "title": "Enlace de Invitación Generado",
+        "copyButton": "Copiar Enlace",
+        "openButton": "Abrir Enlace",
+        "clearButton": "Limpiar",
+        "expiryInfo": "Este enlace expira en 6 horas y solo puede ser usado una vez.",
+        "copied": "Enlace de invitación copiado",
+        "copyError": "Error al copiar enlace"
+      },
+      "active": {
+        "title": "Invitaciones Activas",
+        "expired": "Expirada",
+        "expiresIn": "Expira en {{hours}}h {{minutes}}m",
+        "cancelButton": "Cancelar",
+        "canceling": "Cancelando...",
+        "cancelSuccess": "Invitación cancelada exitosamente",
+        "cancelError": "Error al cancelar invitación",
+        "copyButton": "Copiar",
+        "copied": "Enlace copiado",
+        "copyError": "Error al copiar enlace",
+        "createdOn": "Creada el {{date}}",
+        "tip": "💡 Puedes cancelar invitaciones no utilizadas para recuperar tu invitación disponible."
+      },
+      "status": {
+        "inviteOnlyWarning": "⚠️ Las invitaciones solo están disponibles en modo \"Solo por invitación\"",
+        "closedWarning": "❌ El registro está cerrado. Solo los administradores pueden crear invitaciones.",
+        "noInvitesWarning": "❌ No tienes invitaciones disponibles. Contacta a un administrador.",
+        "canCreate": "✅ Puedes crear {{count}} invitación{{plural}}"
+      },
+      "registrationMode": {
+        "title": "Modo de registro actual:",
+        "open": "Abierto",
+        "inviteOnly": "Solo por invitación",
+        "closed": "Cerrado",
+        "unknown": "Desconocido",
+        "inviteOnlyUser": "Puedes usar tus invitaciones disponibles para crear enlaces de registro.",
+        "inviteOnlyAdmin": "Como administrador, puedes crear invitaciones ilimitadas.",
+        "closedAdmin": "Solo los administradores pueden crear invitaciones.",
+        "closedUser": "El registro está cerrado. Solo los administradores pueden crear invitaciones.",
+        "openUser": "El registro está abierto para todos. Las invitaciones solo se pueden usar en modo \"Solo por invitación\".",
+        "openAdmin": "El registro está abierto para todos, pero puedes crear invitaciones ilimitadas."
+      }
     }
   },
   "upload": {

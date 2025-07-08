@@ -62,6 +62,7 @@ export const createSignUpSchema = (language: string = 'es') => {
     email: z.string().email(messages.invalidEmail),
     password: z.string().min(6, messages.passwordMin),
     confirmPassword: z.string(),
+    inviteCode: z.string().optional(), // Código de invitación opcional
   }).refine((data) => data.password === data.confirmPassword, {
     message: messages.passwordsDoNotMatch,
     path: ["confirmPassword"], // Specify which field the error belongs to
