@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import { auth } from '@/app/lib/auth';
+import { validateInviteLimit } from '@/app/lib/invite-limits';
 
 export async function POST(request: NextRequest) {
   try {
-    // Autenticación
+    // Authentication
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
-    // Verificar que es admin
+    // Verify that it's an admin
     const adminUser = await prisma.user.findUnique({
       where: { id: session.user.id },
       select: { role: true }
@@ -27,17 +28,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 });
     }
 
-    // Verificar que el usuario existe
+    // Verify that the user exists and get their current information
     const targetUser = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, username: true, role: true }
+      select: { id: true, username: true, role: true, availableInvites: true }
     });
 
     if (!targetUser) {
       return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 });
     }
 
-    // Actualizar las invitaciones disponibles
+    // Validate invitation limit
+    const validation = await validateInviteLimit(
+      targetUser.availableInvites,
+      invites,
+      targetUser.role
+    );
+
+    if (!validation.valid) {
+      return NextResponse.json({ 
+        error: validation.error,
+        maxAllowed: validation.maxAllowed
+      }, { status: 400 });
+    }
+
+    // Update available invitations
     await prisma.user.update({
       where: { id: userId },
       data: { availableInvites: invites }
@@ -48,7 +63,8 @@ export async function POST(request: NextRequest) {
       user: {
         id: targetUser.id,
         username: targetUser.username,
-        availableInvites: invites
+        availableInvites: invites,
+        maxAllowed: validation.maxAllowed
       }
     });
 

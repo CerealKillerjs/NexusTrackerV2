@@ -41,19 +41,29 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<UserData>({
+    id: '',
     username: '',
     email: '',
-    role: 'USER' as 'USER' | 'MODERATOR' | 'ADMIN',
-    status: 'ACTIVE' as 'ACTIVE' | 'BANNED' | 'PENDING',
+    role: 'USER',
+    status: 'ACTIVE',
     isEmailVerified: false,
+    createdAt: '',
+    uploaded: '0',
+    downloaded: '0',
+    ratio: 0,
+    bonusPoints: 0,
+    passkey: '',
+    uploadCount: 0,
     availableInvites: 0
   });
+  const [maxInvitesPerUser, setMaxInvitesPerUser] = useState<number>(5);
 
   // Fetch user data when modal opens
   useEffect(() => {
     if (isOpen && userId) {
       fetchUserData();
+      fetchMaxInvitesLimit();
     }
   }, [isOpen, userId]);
 
@@ -69,11 +79,19 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
       const userData: UserData = await response.json();
       setUser(userData);
       setFormData({
+        id: userData.id,
         username: userData.username,
         email: userData.email,
         role: userData.role,
         status: userData.status,
         isEmailVerified: userData.isEmailVerified,
+        createdAt: userData.createdAt,
+        uploaded: userData.uploaded,
+        downloaded: userData.downloaded,
+        ratio: userData.ratio,
+        bonusPoints: userData.bonusPoints,
+        passkey: userData.passkey,
+        uploadCount: userData.uploadCount,
         availableInvites: userData.availableInvites
       });
     } catch (error) {
@@ -81,6 +99,21 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
       showNotification.error('Error loading user data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMaxInvitesLimit = async () => {
+    try {
+      const response = await fetch('/api/admin/settings');
+      if (response.ok) {
+        const data = await response.json();
+        const maxInvites = data.config?.MAX_INVITES_PER_USER;
+        if (maxInvites) {
+          setMaxInvitesPerUser(parseInt(maxInvites, 10));
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching max invites limit:', error);
     }
   };
 
@@ -262,11 +295,11 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
 
               {/* Invitations Section */}
               <div className="bg-surface-light rounded-lg p-4">
-                <h3 className="font-medium text-text mb-3">Gestión de Invitaciones</h3>
+                <h3 className="font-medium text-text mb-3">{t('admin.users.edit.invitations.title')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-text mb-2">
-                      Invitaciones Disponibles
+                      {t('admin.users.edit.invitations.available')}
                     </label>
                     <input
                       type="number"
@@ -276,12 +309,17 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
                       className="w-full px-3 py-2 border border-border rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                     <p className="text-xs text-text-secondary mt-1">
-                      Número de invitaciones que puede usar este usuario
+                      {t('admin.users.edit.invitations.description')}
                     </p>
+                    {formData.role !== 'ADMIN' && (
+                      <p className="text-xs text-orange-600 mt-1">
+                        {t('admin.users.edit.invitations.maxLimit', { count: maxInvitesPerUser })}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <div className="text-sm">
-                      <span className="text-text-secondary">Rol actual:</span>
+                      <span className="text-text-secondary">{t('admin.users.edit.invitations.currentRole')}:</span>
                       <span className={`ml-2 font-medium ${
                         formData.role === 'ADMIN' ? 'text-red-500' : 
                         formData.role === 'MODERATOR' ? 'text-yellow-500' : 'text-blue-500'
@@ -291,7 +329,12 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
                     </div>
                     {formData.role === 'ADMIN' && (
                       <div className="text-xs text-green-600 bg-green-50 dark:bg-green-900/20 p-2 rounded">
-                        Los administradores tienen invitaciones ilimitadas
+                        {t('admin.users.edit.invitations.adminUnlimited')}
+                      </div>
+                    )}
+                    {formData.role !== 'ADMIN' && (
+                      <div className="text-xs text-blue-600 bg-blue-50 dark:bg-blue-900/20 p-2 rounded">
+                        {t('admin.users.edit.invitations.userLimit')}
                       </div>
                     )}
                   </div>

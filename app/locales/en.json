@@ -302,6 +302,14 @@
         "noInvitesWarning": "❌ You don't have available invitations. Contact an administrator.",
         "canCreate": "✅ You can create {{count}} invitation{{plural}}"
       },
+      "limits": {
+        "maxPerUser": "Maximum {{count}} per user",
+        "configurable": "configurable",
+        "adminUnlimited": "Administrators have unlimited invitations",
+        "userLimit": "Normal users have a configurable maximum limit",
+        "exceeded": "Cannot assign more than {{count}} invitations per user",
+        "currentLimit": "Current limit: {{count}} invitations"
+      },
       "registrationMode": {
         "title": "Current registration mode:",
         "open": "Open",
@@ -619,7 +627,16 @@
         "cancel": "Cancel",
         "save": "Save",
         "saving": "Saving...",
-        "userNotFound": "User not found"
+        "userNotFound": "User not found",
+        "invitations": {
+          "title": "Invitation Management",
+          "available": "Available Invitations",
+          "description": "Number of invitations this user can use",
+          "maxLimit": "Maximum {{count}} invitations per user (configurable)",
+          "currentRole": "Current role",
+          "adminUnlimited": "Administrators have unlimited invitations",
+          "userLimit": "Normal users have a configurable maximum limit"
+        }
       },
       "delete": {
         "title": "Delete User",

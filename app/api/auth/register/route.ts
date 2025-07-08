@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar modo de registro y validar invitación si es necesario
+    // Check registration mode and validate invitation if necessary
     const registrationMode = await prisma.configuration.findUnique({
       where: { key: 'REGISTRATION_MODE' }
     });
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (registrationMode?.value === 'invite_only') {
-      // Verificar que se proporcionó un código de invitación
+      // Check that an invitation code was provided
       if (!validatedData.inviteCode) {
         const errorMessage = language === 'en' 
           ? "Invitation code is required" 
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Validar la invitación
+      // Validate the invitation
       const invite = await prisma.inviteCode.findUnique({
         where: { code: validatedData.inviteCode.toUpperCase() }
       });
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Verificar si ya fue usada
+      // Check if it was already used
       if (invite.usedBy) {
         const errorMessage = language === 'en' 
           ? "This invitation has already been used" 
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Verificar si está activa
+      // Check if it's active
       if (!invite.isActive) {
         const errorMessage = language === 'en' 
           ? "This invitation has been deactivated" 
@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Verificar si ha expirado
+      // Check if it has expired
       const now = new Date();
       if (invite.expiresAt < now) {
         const errorMessage = language === 'en' 
@@ -177,7 +177,7 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Consumir la invitación si se proporcionó un código
+    // Consume the invitation if a code was provided
     if (registrationMode?.value === 'invite_only' && validatedData.inviteCode) {
       await prisma.inviteCode.update({
         where: { code: validatedData.inviteCode.toUpperCase() },

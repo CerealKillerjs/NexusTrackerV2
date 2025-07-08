@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/app/lib/auth"
 import { prisma } from "@/app/lib/prisma"
+import { validateInviteLimit } from "@/app/lib/invite-limits"
 
 // Helper function to generate unique invite codes
 function generateInviteCode(): string {
@@ -287,7 +288,21 @@ export async function PUT(
 
     // Handle available invitations update
     if (typeof body.availableInvites === 'number' && body.availableInvites >= 0) {
-      updateData.availableInvites = body.availableInvites
+      // Validate invitation limit
+      const validation = await validateInviteLimit(
+        existingUser.availableInvites || 0,
+        body.availableInvites,
+        body.role
+      );
+
+      if (!validation.valid) {
+        return NextResponse.json({ 
+          error: validation.error,
+          maxAllowed: validation.maxAllowed
+        }, { status: 400 });
+      }
+
+      updateData.availableInvites = body.availableInvites;
     }
 
     // Update user

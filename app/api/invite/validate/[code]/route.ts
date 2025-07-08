@@ -12,7 +12,7 @@ export async function GET(
       return NextResponse.json({ error: 'Código de invitación requerido' }, { status: 400 });
     }
 
-    // Buscar la invitación
+    // Search for the invitation
     const invite = await prisma.inviteCode.findUnique({
       where: { code },
       select: {
@@ -30,22 +30,22 @@ export async function GET(
 
     const now = new Date();
 
-    // Verificar si la invitación está activa
+    // Check if the invitation is active
     if (!invite.isActive) {
       return NextResponse.json({ error: 'Código de invitación inactivo' }, { status: 400 });
     }
 
-    // Verificar si ya fue usada
+    // Check if it was already used
     if (invite.usedBy) {
       return NextResponse.json({ error: 'Código de invitación ya fue utilizado' }, { status: 400 });
     }
 
-    // Verificar si expiró
+    // Check if it expired
     if (invite.expiresAt < now) {
       return NextResponse.json({ error: 'Código de invitación expirado' }, { status: 400 });
     }
 
-    // Obtener información del creador
+    // Get creator information
     const creator = await prisma.user.findUnique({
       where: { id: invite.createdBy },
       select: { username: true }

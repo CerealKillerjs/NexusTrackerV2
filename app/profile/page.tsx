@@ -40,7 +40,7 @@ const mockProfile: UserProfile = {
   }
 };
 
-// Extensión del tipo de usuario de sesión para incluir passkey
+// Extension of session user type to include passkey
 interface SessionUser {
   id: string;
   email: string;
@@ -68,6 +68,7 @@ export default function ProfilePage() {
   const [registrationMode, setRegistrationMode] = useState<string>('open');
   const [activeInvites, setActiveInvites] = useState<any[]>([]);
   const [loadingInvites, setLoadingInvites] = useState(false);
+  const [maxInvitesPerUser, setMaxInvitesPerUser] = useState<number>(5);
 
   // Handle avatar removal
   const handleRemoveAvatar = useCallback(() => {
@@ -88,7 +89,7 @@ export default function ProfilePage() {
     }
   }, [currentLanguage]);
 
-  // Generate announce URL para el usuario autenticado
+  // Generate announce URL for the authenticated user
   const announceUrl = user?.passkey
     ? `${typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'https' : 'http'}://${typeof window !== 'undefined' ? window.location.host : (process.env.NEXT_PUBLIC_TRACKER_URL?.replace(/^https?:\/\//, '') || 'localhost:3001')}/announce?passkey=${user.passkey}`
     : '';
@@ -113,11 +114,12 @@ export default function ProfilePage() {
     if (!user) return;
     
     try {
-      // Usar endpoints públicos
-      const [settingsResponse, userResponse, invitesResponse] = await Promise.all([
+      // Use public endpoints
+      const [settingsResponse, userResponse, invitesResponse, configResponse] = await Promise.all([
         fetch('/api/config/registration-mode'),
         fetch('/api/user/current'),
-        fetch('/api/user/invites')
+        fetch('/api/user/invites'),
+        fetch('/api/admin/settings')
       ]);
 
       if (settingsResponse.ok) {
@@ -135,6 +137,14 @@ export default function ProfilePage() {
       if (invitesResponse.ok) {
         const invitesData = await invitesResponse.json();
         setActiveInvites(invitesData.invites || []);
+      }
+
+      if (configResponse.ok) {
+        const configData = await configResponse.json();
+        const maxInvites = configData.config?.MAX_INVITES_PER_USER;
+        if (maxInvites) {
+          setMaxInvitesPerUser(parseInt(maxInvites, 10));
+        }
       }
     } catch (error) {
       console.error('Error fetching invite data:', error);
@@ -378,7 +388,12 @@ export default function ProfilePage() {
                     ) : (
                       <div>
                         <div className="text-lg font-semibold text-blue-500">{availableInvites}</div>
-                        <div className="text-sm text-text-secondary">{t('profile.invitations.stats.available')}</div>
+                        <div className="text-sm text-text-secondary">
+                          {t('profile.invitations.stats.available')}
+                        </div>
+                        <div className="text-xs text-text-secondary mt-1">
+                          {t('profile.invitations.limits.maxPerUser', { count: maxInvitesPerUser })}
+                        </div>
                       </div>
                     )}
                   </div>

@@ -42,7 +42,7 @@ export default function FileTree({ files }: FileTreeProps) {
     const tree: FileNode[] = [];
     const folderMap = new Map<string, FileNode>();
 
-    // Función para obtener o crear una carpeta
+    // Function to get or create a folder
     const getOrCreateFolder = (path: string, name: string): FileNode => {
       if (folderMap.has(path)) {
         return folderMap.get(path)!;
@@ -59,12 +59,12 @@ export default function FileTree({ files }: FileTreeProps) {
       return folderNode;
     };
 
-    // Procesar cada archivo
+    // Process each file
     files.forEach(file => {
       const pathParts = file.path.split('/');
       
       if (pathParts.length === 1) {
-        // Archivo en raíz
+        // File in root
         const fileNode: FileNode = {
           name: pathParts[0],
           path: file.path,
@@ -73,11 +73,11 @@ export default function FileTree({ files }: FileTreeProps) {
         };
         tree.push(fileNode);
       } else {
-        // Archivo en carpeta
+        // File in folder
         let currentPath = '';
         let parentFolder: FileNode | null = null;
 
-        // Crear todas las carpetas del path
+        // Create all folders in the path
         for (let i = 0; i < pathParts.length - 1; i++) {
           const folderName = pathParts[i];
           currentPath = currentPath ? `${currentPath}/${folderName}` : folderName;
@@ -85,12 +85,12 @@ export default function FileTree({ files }: FileTreeProps) {
           const folderNode = getOrCreateFolder(currentPath, folderName);
           
           if (!parentFolder) {
-            // Es una carpeta raíz
+            // It's a root folder
             if (!tree.some(node => node.path === folderNode.path)) {
               tree.push(folderNode);
             }
           } else {
-            // Es una subcarpeta
+            // It's a subfolder
             if (!parentFolder.children!.some(child => child.path === folderNode.path)) {
               parentFolder.children!.push(folderNode);
             }
@@ -99,7 +99,7 @@ export default function FileTree({ files }: FileTreeProps) {
           parentFolder = folderNode;
         }
 
-        // Añadir el archivo a la carpeta padre
+        // Add the file to the parent folder
         const fileName = pathParts[pathParts.length - 1];
         const fileNode: FileNode = {
           name: fileName,
@@ -111,7 +111,7 @@ export default function FileTree({ files }: FileTreeProps) {
         if (parentFolder) {
           parentFolder.children!.push(fileNode);
           
-          // Actualizar tamaños de todas las carpetas padre
+          // Update sizes of all parent folders
           let current = parentFolder;
           while (current) {
             current.size += file.size;
@@ -136,7 +136,7 @@ export default function FileTree({ files }: FileTreeProps) {
         return matchesSearch ? node : null;
       }
 
-      // Para carpetas, comprobar hijos
+      // For folders, check children
       const filteredChildren = (node.children || [])
         .map(child => filterNode(child))
         .filter((child): child is FileNode => child !== null);

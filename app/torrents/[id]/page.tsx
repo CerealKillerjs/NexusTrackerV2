@@ -36,6 +36,7 @@ import { Copy } from '@styled-icons/boxicons-regular/Copy';
 import { Plus } from '@styled-icons/boxicons-regular/Plus';
 import { Magnet } from '@styled-icons/boxicons-regular/Magnet';
 import Image from 'next/image';
+import { Chat } from '@styled-icons/boxicons-regular/Chat';
 
 interface TorrentData {
   id: string;
@@ -168,7 +169,7 @@ export default function TorrentDetailPage() {
 
       const data = await response.json();
       
-      // Abrir el enlace magnet en una nueva pestaña
+      // Open magnet link in a new tab
       window.location.href = data.magnetLink;
     } catch (error) {
       console.error('Magnet generation error:', error);
@@ -411,27 +412,12 @@ export default function TorrentDetailPage() {
 
             {/* Comments Section */}
             <div className="bg-surface rounded-lg border border-border p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-text flex items-center">
-                  <Comment size={20} className="mr-2" />
-                  {t('torrentDetail.comments.count').replace('{{count}}', (torrent._count?.comments || 0).toString())}
-                </h2>
-                
-                {session && (
-                  <button
-                    onClick={() => {
-                      // Esta función se manejará en el componente CommentsSection
-                      const event = new CustomEvent('openCommentModal');
-                      window.dispatchEvent(event);
-                    }}
-                    className="bg-primary text-background px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors flex items-center space-x-2"
-                  >
-                    <Plus size={16} />
-                    <span>{t('torrentDetail.comments.addComment')}</span>
-                  </button>
-                )}
-              </div>
+              <h2 className="text-xl font-semibold text-text mb-4 flex items-center">
+                <Chat size={20} className="mr-2" />
+                {t('torrentDetail.comments.title')}
+              </h2>
               
+              {/* This function will be handled in the CommentsSection component */}
               <CommentsSection torrentId={torrentId} />
             </div>
           </div>

@@ -1,7 +1,7 @@
 /**
- * AdminLayout - Clon visual del DashboardLayout para administración
- * Estructura, colores y clases idénticas al dashboard de usuario
- * Solo cambia el menú lateral y textos para administración
+ * AdminLayout - Visual clone of DashboardLayout for administration
+ * Structure, colors and classes identical to user dashboard
+ * Only changes the sidebar menu and texts for administration
  */
 
 'use client';
@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useI18n } from '@/app/hooks/useI18n';
-// Iconos para administración
+// Icons for administration
 import { Home } from '@styled-icons/boxicons-regular/Home';
 import { User } from '@styled-icons/boxicons-regular/User';
 import { Download } from '@styled-icons/boxicons-regular/Download';
@@ -32,7 +32,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Menú de administración
+  // Administration menu
   const adminNavItems = [
     { href: '/admin', label: t('admin.nav.dashboard'), icon: Home },
     { href: '/admin/users', label: t('admin.nav.users'), icon: User },
@@ -40,7 +40,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: '/admin/settings', label: t('admin.nav.settings'), icon: Cog },
   ];
 
-  // Cerrar dropdown al hacer click fuera
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -51,7 +51,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Mostrar loading mientras se autentica
+  // Show loading while authenticating
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -60,7 +60,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     );
   }
 
-  // No renderizar si no está autenticado
+  // Don't render if not authenticated
   if (status === 'unauthenticated' || !session) {
     return null;
   }
@@ -76,7 +76,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Header */}
       <header className="bg-surface border-b border-border h-16 fixed top-0 left-0 right-0 z-30">
         <div className="flex items-center justify-between h-full px-6">
-          {/* Logo y título admin */}
+          {/* Logo and admin title */}
           <div className="flex items-center">
             <Shield size={24} className="text-primary mr-2" />
             <h1 className="text-xl font-bold text-primary">{t('admin.title')}</h1>

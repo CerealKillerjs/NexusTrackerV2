@@ -302,6 +302,14 @@
         "noInvitesWarning": "❌ No tienes invitaciones disponibles. Contacta a un administrador.",
         "canCreate": "✅ Puedes crear {{count}} invitación{{plural}}"
       },
+      "limits": {
+        "maxPerUser": "Máximo {{count}} por usuario",
+        "configurable": "configurable",
+        "adminUnlimited": "Los administradores tienen invitaciones ilimitadas",
+        "userLimit": "Los usuarios normales tienen un límite máximo configurable",
+        "exceeded": "No se pueden asignar más de {{count}} invitaciones por usuario",
+        "currentLimit": "Límite actual: {{count}} invitaciones"
+      },
       "registrationMode": {
         "title": "Modo de registro actual:",
         "open": "Abierto",
@@ -617,7 +625,16 @@
         "cancel": "Cancelar",
         "save": "Guardar",
         "saving": "Guardando...",
-        "userNotFound": "Usuario no encontrado"
+        "userNotFound": "Usuario no encontrado",
+        "invitations": {
+          "title": "Gestión de Invitaciones",
+          "available": "Invitaciones Disponibles",
+          "description": "Número de invitaciones que puede usar este usuario",
+          "maxLimit": "Máximo {{count}} invitaciones por usuario (configurable)",
+          "currentRole": "Rol actual",
+          "adminUnlimited": "Los administradores tienen invitaciones ilimitadas",
+          "userLimit": "Los usuarios normales tienen un límite máximo configurable"
+        }
       },
       "delete": {
         "title": "Eliminar Usuario",

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import { auth } from '@/app/lib/auth';
 
-// Helper para obtener configuración
+// Helper to get configuration
 async function getConfig(key: string, fallback: string) {
   const config = await prisma.configuration.findUnique({ where: { key } });
   return config?.value ?? fallback;
@@ -10,17 +10,17 @@ async function getConfig(key: string, fallback: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Autenticación
+    // Authentication
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
-    // Obtener configuración
+    // Get configuration
     const registrationMode = await getConfig('REGISTRATION_MODE', 'open');
     const inviteExpiryHours = parseInt(await getConfig('INVITE_EXPIRY_HOURS', '6'));
 
-    // Obtener usuario con sus invitaciones disponibles
+    // Get user with available invitations
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
       select: { id: true, role: true, availableInvites: true }
@@ -29,29 +29,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 });
     }
 
-    // Verificar permisos según modo de registro
+    // Check permissions according to registration mode
     if (registrationMode === 'closed' && user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'El registro está cerrado' }, { status: 403 });
     }
 
-    // En modo open, solo los admins pueden crear invitaciones
+    // In open mode, only admins can create invitations
     if (registrationMode === 'open' && user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Las invitaciones solo están disponibles en modo por invitación' }, { status: 403 });
     }
 
-    // En modo invite_only, verificar invitaciones disponibles
+    // In invite_only mode, check available invitations
     if (registrationMode === 'invite_only' && user.role !== 'ADMIN') {
       if (user.availableInvites <= 0) {
         return NextResponse.json({ error: 'No tienes invitaciones disponibles' }, { status: 403 });
       }
     }
 
-    // Generar código de invitación único
+    // Generate unique invitation code
     const code = [...Array(8)].map(() => Math.random().toString(36)[2]).join('').toUpperCase();
     const now = new Date();
     const expiresAt = new Date(now.getTime() + inviteExpiryHours * 60 * 60 * 1000);
 
-    // Crear invitación y actualizar contador
+    // Create invitation and update counter
     const operations = [
       prisma.inviteCode.create({
         data: {
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       })
     ];
 
-    // Reducir invitaciones disponibles solo si no es admin y está en modo invite_only
+    // Reduce available invitations only if not admin and in invite_only mode
     if (user.role !== 'ADMIN' && registrationMode === 'invite_only') {
       operations.push(
         prisma.user.update({
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
     const [invite] = await prisma.$transaction(operations);
 
-    // Generar enlace de invitación completo
+    // Generate complete invitation link
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
     const inviteLink = `${baseUrl}/auth/signup?invite=${invite.code}`;
 

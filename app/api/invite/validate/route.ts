@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Código de invitación requerido' }, { status: 400 });
     }
 
-    // Buscar la invitación
+    // Search for the invitation
     const invite = await prisma.inviteCode.findUnique({
       where: { code: code.toUpperCase() },
       include: {
@@ -23,23 +23,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Código de invitación inválido' }, { status: 404 });
     }
 
-    // Verificar si ya fue usada
+    // Check if it was already used
     if (invite.usedBy) {
       return NextResponse.json({ error: 'Esta invitación ya ha sido utilizada' }, { status: 400 });
     }
 
-    // Verificar si está activa
+    // Check if it's active
     if (!invite.isActive) {
       return NextResponse.json({ error: 'Esta invitación ha sido desactivada' }, { status: 400 });
     }
 
-    // Verificar si ha expirado
+    // Check if it has expired
     const now = new Date();
     if (invite.expiresAt < now) {
       return NextResponse.json({ error: 'Esta invitación ha expirado' }, { status: 400 });
     }
 
-    // Verificar modo de registro
+    // Check registration mode
     const registrationMode = await prisma.configuration.findUnique({
       where: { key: 'REGISTRATION_MODE' }
     });
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'El registro no requiere invitación en este momento' }, { status: 400 });
     }
 
-    // La invitación es válida
+    // The invitation is valid
     return NextResponse.json({ 
       valid: true,
       createdBy: invite.creator.username,
