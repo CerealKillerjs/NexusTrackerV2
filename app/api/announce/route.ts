@@ -7,13 +7,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 
+/**
+ * Decodes a percent-encoded string to a Buffer
+ * @param encoded - The percent-encoded string
+ * @returns Buffer containing the decoded bytes
+ */
+function percentDecodeToBuffer(encoded: string): Buffer {
+  const bytes = [];
+  for (let i = 0; i < encoded.length; ) {
+    if (encoded[i] === '%') {
+      bytes.push(parseInt(encoded.substr(i + 1, 2), 16));
+      i += 3;
+    } else {
+      bytes.push(encoded.charCodeAt(i));
+      i += 1;
+    }
+  }
+  return Buffer.from(bytes);
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     
     // Extract BitTorrent announce parameters
     const passkey = searchParams.get('passkey');
-    const infoHash = searchParams.get('info_hash');
     const peerId = searchParams.get('peer_id');
     const port = searchParams.get('port');
     const uploaded = searchParams.get('uploaded');
@@ -21,8 +39,13 @@ export async function GET(request: NextRequest) {
     const left = searchParams.get('left');
     const event = searchParams.get('event'); // started, stopped, completed
     
+    // Extract info_hash directly from URL string to avoid automatic UTF-8 decoding
+    const urlString = request.url;
+    const infoHashMatch = urlString.match(/info_hash=([^&]+)/);
+    const encodedInfoHash = infoHashMatch ? infoHashMatch[1] : null;
+    
     // Validate required parameters
-    if (!passkey || !infoHash || !peerId || !port) {
+    if (!passkey || !encodedInfoHash || !peerId || !port) {
       return new NextResponse('Missing required parameters', { status: 400 });
     }
 
@@ -36,9 +59,12 @@ export async function GET(request: NextRequest) {
       return new NextResponse('Invalid passkey', { status: 403 });
     }
 
-    // Find torrent by info hash
+    // Decode info_hash from percent-encoded to hex
+    const infoHashHex = percentDecodeToBuffer(encodedInfoHash).toString('hex').toLowerCase();
+
+    // Find torrent by info hash (hex)
     const torrent = await prisma.torrent.findUnique({
-      where: { infoHash },
+      where: { infoHash: infoHashHex },
       select: { id: true, name: true }
     });
 
