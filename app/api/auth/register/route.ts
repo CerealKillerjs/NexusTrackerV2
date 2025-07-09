@@ -59,7 +59,8 @@ export async function POST(request: NextRequest) {
     if (existingUserByUsername) {
       // Return localized error message for duplicate username
       const errorMessage = language === 'en' 
-        : "El nombre de usuario ya existe"
+        ? "Username already exists"
+        : "El nombre de usuario ya existe";
       
       return NextResponse.json(
         { error: errorMessage },

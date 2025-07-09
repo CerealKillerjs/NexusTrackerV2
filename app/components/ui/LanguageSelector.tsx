@@ -79,7 +79,7 @@ export function LanguageSelector() {
         {/* Main button that toggles the dropdown */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center space-x-2 bg-accent text-background border border-accent rounded-lg px-3 py-2 shadow-lg hover:shadow-xl transition-all duration-200"
+          className="flex items-center space-x-2 bg-[var(--color-accent-background)] text-[var(--color-text)] border border-[var(--color-border)] rounded-lg px-3 py-2 shadow-lg hover:shadow-xl transition-all duration-200"
         >
           {/* Language flag emoji */}
           <span className="text-lg">{currentLanguage.flag}</span>
@@ -108,7 +108,7 @@ export function LanguageSelector() {
 
         {/* Dropdown menu with language options */}
         {isOpen && (
-          <div className="absolute bottom-full left-0 mb-2 bg-background-secondary border border-border rounded-lg shadow-lg overflow-hidden min-w-[140px] z-50">
+          <div className="absolute bottom-full left-0 mb-2 bg-[var(--color-accent-background)] border border-[var(--color-border)] rounded-lg shadow-lg overflow-hidden min-w-[140px] z-50">
             {languages.map((language) => (
               <button
                 key={language.code}
@@ -117,21 +117,21 @@ export function LanguageSelector() {
                   handleLanguageChange(language.code)
                 }}
                 className={cn(
-                  "flex items-center space-x-3 w-full px-4 py-2 text-left hover:bg-background-tertiary transition-colors duration-150",
+                  "flex items-center space-x-3 w-full px-4 py-2 text-left hover:bg-[color-mix(in oklab,var(--color-accent-background)_90%,black)] transition-colors duration-150 text-[var(--color-text)]",
                   // Highlight current language
-                  currentLang === language.code && "bg-accent/10 text-accent"
+                  currentLang === language.code && "bg-[color-mix(in oklab,var(--color-primary)_10%,var(--color-accent-background))] text-[var(--color-primary)]"
                 )}
               >
                 {/* Language flag */}
                 <span className="text-lg">{language.flag}</span>
                 {/* Language name */}
-                <span className="text-sm font-medium text-foreground">
+                <span className="text-sm font-medium text-[var(--color-text)]">
                   {language.name}
                 </span>
                 {/* Checkmark for current language */}
                 {currentLang === language.code && (
                   <svg
-                    className="w-4 h-4 text-accent ml-auto"
+                    className="w-4 h-4 text-[var(--color-primary)] ml-auto"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >

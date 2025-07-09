@@ -9,7 +9,6 @@
     /* Light theme */
     --primary: #2563eb;
     --primary-dark: #1d4ed8;
-    --accent: #8b5cf6;
     --background: #ffffff;
     --surface: #f3f4f6;
     --text: #1f2937;
@@ -24,13 +23,13 @@
     --password-weak: #EF4444;     /* Red */
     --password-fair: #EAB308;     /* Yellow */
     --password-good: #22C55E;     /* Green */
+    --accent-background: #dbeafe; /* Brighter light blue for accent backgrounds */
   }
 
   :root[class~="dark"] {
     /* Dark theme (VS Code style) */
     --primary: #569cd6;
     --primary-dark: #4a85ba;
-    --accent: #c586c0;
     --background: #1e1e1e;
     --surface: #252526;
     --text: #d4d4d4;
@@ -45,6 +44,7 @@
     --password-weak: #DC2626;     /* Red more dark */
     --password-fair: #FACC15;     /* Yellow more bright */
     --password-good: #16A34A;     /* Green more dark */
+    --accent-background: #3b4b7a; /* Brighter blue for accent backgrounds in dark mode */
   }
 
   html {
@@ -112,6 +112,7 @@
   --color-yellow: var(--yellow);
   --color-orange: var(--orange);
   --color-error: var(--error);
+  --color-accent-background: var(--accent-background);
 }
 
 /**
@@ -138,11 +139,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Focus styles for better accessibility */
-*:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
 
 /* Selection styles */
 ::selection {

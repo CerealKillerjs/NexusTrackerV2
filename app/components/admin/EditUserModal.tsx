@@ -11,6 +11,7 @@ import { useI18n } from '@/app/hooks/useI18n';
 import { X } from '@styled-icons/boxicons-regular/X';
 import { Save } from '@styled-icons/boxicons-regular/Save';
 import { showNotification } from '@/app/utils/notifications';
+import { FormField } from "@/app/components/ui/FigmaFloatingLabelInput"
 
 interface EditUserModalProps {
   isOpen: boolean;
@@ -191,28 +192,21 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
               {/* User Info Section */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-text mb-2">
-                    {t('admin.users.edit.username')}
-                  </label>
-                  <input
-                    type="text"
+                  <FormField
+                    label={t('admin.users.edit.username')}
                     value={formData.username}
-                    onChange={(e) => handleInputChange('username', e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    required
+                    onChange={val => handleInputChange('username', val)}
+                    className="w-full"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-text mb-2">
-                    {t('admin.users.edit.email')}
-                  </label>
-                  <input
-                    type="email"
+                  <FormField
+                    label={t('admin.users.edit.email')}
                     value={formData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    required
+                    onChange={val => handleInputChange('email', val)}
+                    className="w-full"
+                    type="email"
                   />
                 </div>
 
@@ -301,12 +295,12 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
                     <label className="block text-sm font-medium text-text mb-2">
                       {t('admin.users.edit.invitations.available')}
                     </label>
-                    <input
+                    <FormField
+                      label={t('admin.users.edit.invitations.available')}
+                      value={String(formData.availableInvites)}
+                      onChange={val => handleInputChange('availableInvites', parseInt(val) || 0)}
+                      className="w-full"
                       type="number"
-                      min="0"
-                      value={formData.availableInvites}
-                      onChange={(e) => handleInputChange('availableInvites', parseInt(e.target.value) || 0)}
-                      className="w-full px-3 py-2 border border-border rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                     <p className="text-xs text-text-secondary mt-1">
                       {t('admin.users.edit.invitations.description')}

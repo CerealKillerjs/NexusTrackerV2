@@ -47,6 +47,7 @@ CREATE TABLE "User" (
     "downloaded" BIGINT NOT NULL DEFAULT 0,
     "ratio" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "bonusPoints" INTEGER NOT NULL DEFAULT 0,
+    "availableInvites" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -138,6 +139,20 @@ CREATE TABLE "Configuration" (
     CONSTRAINT "Configuration_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "invite_codes" (
+    "id" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "createdBy" TEXT NOT NULL,
+    "usedBy" TEXT,
+    "usedAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT "invite_codes_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
 
@@ -177,6 +192,12 @@ CREATE UNIQUE INDEX "bookmarks_userId_torrentId_key" ON "bookmarks"("userId", "t
 -- CreateIndex
 CREATE UNIQUE INDEX "Configuration_key_key" ON "Configuration"("key");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "invite_codes_code_key" ON "invite_codes"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "invite_codes_usedBy_key" ON "invite_codes"("usedBy");
+
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -209,3 +230,9 @@ ALTER TABLE "bookmarks" ADD CONSTRAINT "bookmarks_userId_fkey" FOREIGN KEY ("use
 
 -- AddForeignKey
 ALTER TABLE "bookmarks" ADD CONSTRAINT "bookmarks_torrentId_fkey" FOREIGN KEY ("torrentId") REFERENCES "torrents"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "invite_codes" ADD CONSTRAINT "invite_codes_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "invite_codes" ADD CONSTRAINT "invite_codes_usedBy_fkey" FOREIGN KEY ("usedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

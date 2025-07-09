@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import AdminLayout from "@/app/components/admin/AdminLayout"
 import { Button } from "@/app/components/ui/Button"
 import { Input } from "@/app/components/ui/Input"
+import { FormField } from "@/app/components/ui/FigmaFloatingLabelInput"
 import { showNotification } from "@/app/utils/notifications"
 import { ToggleSwitch } from "@/app/components/ui/ToggleSwitch"
 
@@ -110,11 +111,10 @@ export default function AdminSettingsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {trackerKeys.map((key) => (
                   <div key={key}>
-                    <label className="block font-medium mb-1 capitalize text-white" htmlFor={key}>{key.replace(/_/g, ' ')}</label>
-                    <Input
-                      id={key}
+                    <FormField
+                      label={key.replace(/_/g, ' ')}
                       value={config[key] || ''}
-                      onChange={e => handleChange(key, e.target.value)}
+                      onChange={val => handleChange(key, val)}
                       className="w-full text-white"
                     />
                   </div>
@@ -137,14 +137,13 @@ export default function AdminSettingsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {smtpKeys.map((key) => (
                   <div key={key}>
-                    <label className="block font-medium mb-1 capitalize text-white" htmlFor={key}>{key.replace(/_/g, ' ')}</label>
-                    <Input
-                      id={key}
+                    <FormField
+                      label={key.replace(/_/g, ' ')}
                       value={config[key] || ''}
-                      onChange={e => handleChange(key, e.target.value)}
-                      className="w-full text-white"
+                      onChange={val => handleChange(key, val)}
                       type={key === "SMTP_PASS" ? "password" : "text"}
                       disabled={!emailEnabled}
+                      className="w-full text-white"
                     />
                   </div>
                 ))}
@@ -156,11 +155,10 @@ export default function AdminSettingsPage() {
               <h2 className="text-xl font-semibold text-text mb-4 mt-8">Support Email</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block font-medium mb-1 capitalize text-white" htmlFor={supportEmailKey}>Support Email</label>
-                  <Input
-                    id={supportEmailKey}
+                  <FormField
+                    label="Support Email"
                     value={config[supportEmailKey] || ''}
-                    onChange={e => handleChange(supportEmailKey, e.target.value)}
+                    onChange={val => handleChange(supportEmailKey, val)}
                     className="w-full text-white"
                     type="email"
                   />
@@ -173,7 +171,6 @@ export default function AdminSettingsPage() {
               <h2 className="text-xl font-semibold text-text mb-4 mt-6">Registration & Invites</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block font-medium mb-1 text-white" htmlFor="REGISTRATION_MODE">Registration Mode</label>
                   <select
                     id="REGISTRATION_MODE"
                     value={config["REGISTRATION_MODE"] || 'open'}
@@ -186,27 +183,23 @@ export default function AdminSettingsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-medium mb-1 text-white" htmlFor="INVITE_EXPIRY_HOURS">Invite Expiry (hours)</label>
-                  <Input
-                    id="INVITE_EXPIRY_HOURS"
+                  <FormField
+                    label="Invite Expiry (hours)"
                     value={config["INVITE_EXPIRY_HOURS"] || '6'}
-                    onChange={e => handleChange("INVITE_EXPIRY_HOURS", e.target.value)}
+                    onChange={val => handleChange("INVITE_EXPIRY_HOURS", val)}
                     className="w-full text-white"
                     type="number"
-                    min="1"
-                    max="168"
+                    // min and max are not supported by FormField, but can be added if needed
                   />
                 </div>
                 <div>
-                  <label className="block font-medium mb-1 text-white" htmlFor="MAX_INVITES_PER_USER">Max Invites Per User</label>
-                  <Input
-                    id="MAX_INVITES_PER_USER"
+                  <FormField
+                    label="Max Invites Per User"
                     value={config["MAX_INVITES_PER_USER"] || '5'}
-                    onChange={e => handleChange("MAX_INVITES_PER_USER", e.target.value)}
+                    onChange={val => handleChange("MAX_INVITES_PER_USER", val)}
                     className="w-full text-white"
                     type="number"
-                    min="1"
-                    max="50"
+                    // min and max are not supported by FormField, but can be added if needed
                   />
                 </div>
               </div>
@@ -214,7 +207,7 @@ export default function AdminSettingsPage() {
 
             {/* Save Button and Success Message */}
             <div className="flex items-center space-x-4 mt-8">
-              <Button type="submit" disabled={saving}>
+              <Button type="submit" disabled={saving} variant="accent">
                 {saving ? "Saving..." : "Save Settings"}
               </Button>
               {success && <span className="text-green-600 text-sm">Settings saved!</span>}

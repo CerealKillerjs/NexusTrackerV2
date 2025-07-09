@@ -7,7 +7,7 @@ import { cn } from "@/app/lib/utils"
  */
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean // Whether to show loading spinner
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive" // Visual style variant
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive" | "accent" // Visual style variant
   size?: "sm" | "md" | "lg" // Size variant
 }
 
@@ -39,6 +39,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       switch (variant) {
         case "primary":
           return "bg-accent text-background hover:bg-accent/90 focus:ring-accent disabled:bg-accent/50"
+        case "accent":
+          return "bg-[var(--color-accent-background)] text-[var(--color-text)] hover:bg-[color-mix(in oklab,var(--color-accent-background)_90%,black)] focus:ring-[var(--color-primary)] disabled:bg-[color-mix(in oklab,var(--color-accent-background)_50%,transparent)]"
         case "secondary":
           return "bg-background-secondary text-foreground hover:bg-background-tertiary focus:ring-accent disabled:bg-background-secondary/50"
         case "outline":
