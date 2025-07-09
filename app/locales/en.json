@@ -657,6 +657,25 @@
         "confirm": "Delete User",
         "deleting": "Deleting..."
       }
+    },
+    "settings": {
+      "title": "System Settings",
+      "description": "Manage system-wide configuration for your tracker. Changes are applied instantly.",
+      "sections": {
+        "tracker": "Tracker",
+        "smtp": "Email (SMTP)",
+        "support": "Support Email",
+        "registration": "Registration & Invites",
+        "publicBrowsing": "Public Browsing"
+      },
+      "publicBrowsing": {
+        "title": "Public Browsing",
+        "description": "Configure public browsing mode for search engines",
+        "public": "Public - Search Engine Style",
+        "private": "Private - Login Required",
+        "publicDesc": "Home page shows public torrent search (current design)",
+        "privateDesc": "Home page shows simple login/register interface"
+      }
     }
   }
 } 

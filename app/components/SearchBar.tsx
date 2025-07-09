@@ -7,15 +7,28 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/navigation';
 
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('all');
   const { t } = useTranslation();
+  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Searching:', searchTerm, 'in category:', category);
+    
+    // Build search parameters
+    const params = new URLSearchParams();
+    if (searchTerm.trim()) {
+      params.append('q', searchTerm.trim());
+    }
+    if (category && category !== 'all') {
+      params.append('category', category);
+    }
+    
+    // Redirect to search results page
+    router.push(`/search?${params.toString()}`);
   };
 
   return (

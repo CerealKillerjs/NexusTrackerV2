@@ -655,6 +655,25 @@
         "confirm": "Eliminar Usuario",
         "deleting": "Eliminando..."
       }
+    },
+    "settings": {
+      "title": "Configuración del Sistema",
+      "description": "Gestiona la configuración del sistema para tu tracker. Los cambios se aplican instantáneamente.",
+      "sections": {
+        "tracker": "Tracker",
+        "smtp": "Email (SMTP)",
+        "support": "Email de Soporte",
+        "registration": "Registro e Invitaciones",
+        "publicBrowsing": "Navegación Pública"
+      },
+      "publicBrowsing": {
+        "title": "Navegación Pública",
+        "description": "Configura el modo de navegación pública para motores de búsqueda",
+        "public": "Público - Estilo Motor de Búsqueda",
+        "private": "Privado - Requiere Login",
+        "publicDesc": "La página principal muestra búsqueda pública de torrents (diseño actual)",
+        "privateDesc": "La página principal muestra interfaz simple de login/registro"
+      }
     }
   }
 } 

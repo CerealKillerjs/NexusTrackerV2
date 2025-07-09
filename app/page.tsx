@@ -2,17 +2,65 @@
  * Home Page
  * Displays the main page with search bar, navigation, and footer
  * Includes a search bar for quick search and navigation links
+ * Shows public search or private login based on configuration
  */
 
 'use client';
 
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import SearchBar from './components/SearchBar';
 import { useTranslation } from 'react-i18next';
+import PrivateHomePage from './components/PrivateHomePage';
+import { usePublicBrowsing } from './hooks/usePublicBrowsing';
 
 export default function Home() {
+  const { status } = useSession();
+  const router = useRouter();
   const { t } = useTranslation();
+  const { mode, loading, error } = usePublicBrowsing();
 
+  // Redirect authenticated users to dashboard in private mode
+  useEffect(() => {
+    if (mode === 'PRIVATE' && status === 'authenticated') {
+      router.push('/dashboard');
+    }
+  }, [mode, status, router]);
+
+  // Show loading while checking configuration
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-text text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-red-500 text-lg">Error loading configuration</div>
+      </div>
+    );
+  }
+
+  // Private mode - show simple login/register page
+  if (mode === 'PRIVATE') {
+    if (status === 'loading') {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="text-text text-lg">Loading...</div>
+        </div>
+      );
+    }
+
+    return <PrivateHomePage />;
+  }
+
+  // Public mode - show the original design (current page.tsx content)
   return (
     <div className="min-h-screen flex flex-col bg-background text-text">
       <main className="flex-1 flex flex-col items-center justify-center p-8 w-full max-w-7xl mx-auto">
