@@ -15,7 +15,7 @@ import { validateInviteLimit } from "@/app/lib/invite-limits"
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current session
@@ -41,7 +41,7 @@ export async function GET(
       )
     }
 
-    const userId = params.id
+    const { id: userId } = await params
 
     // Get user data
     const user = await prisma.user.findUnique({
@@ -117,7 +117,7 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current session
@@ -143,7 +143,7 @@ export async function PUT(
       )
     }
 
-    const userId = params.id
+    const { id: userId } = await params
     const body = await request.json()
 
     // Validate required fields
@@ -309,7 +309,7 @@ export async function PUT(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current session
@@ -335,7 +335,7 @@ export async function DELETE(
       )
     }
 
-    const userId = params.id
+    const { id: userId } = await params
 
     // Check if user exists
     const userToDelete = await prisma.user.findUnique({
