@@ -99,10 +99,12 @@ export default function AdminSettingsPage() {
     }
   }
 
-  // Reset branding colors to defaults
+  // Reset branding colors to defaults from CSS variables
   const handleResetColors = async () => {
-    const defaultPrimary = '#2563eb';
-    const defaultSecondary = '#6c757d';
+    // Get the current CSS variable values for --primary and --secondary
+    const root = document.documentElement;
+    const defaultPrimary = getComputedStyle(root).getPropertyValue('--primary').trim();
+    const defaultSecondary = getComputedStyle(root).getPropertyValue('--secondary').trim();
     setConfig((prev) => ({
       ...prev,
       BRANDING_PRIMARY_COLOR: defaultPrimary,
@@ -185,114 +187,6 @@ export default function AdminSettingsPage() {
                     />
                   </div>
                 ))}
-              </div>
-            </div>
-
-            {/* SMTP Section */}
-            <div>
-              <div className="flex items-center justify-between mb-4 mt-6">
-                <h2 className="text-xl font-semibold text-text">Email (SMTP)</h2>
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-white">Enable Email</span>
-                  <ToggleSwitch
-                    checked={emailEnabled}
-                    onChange={e => handleChange(emailEnabledKey, e.target.checked ? "true" : "false")}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {smtpKeys.map((key) => (
-                  <div key={key}>
-                    <FormField
-                      label={key.replace(/_/g, ' ')}
-                      value={config[key] || ''}
-                      onChange={val => handleChange(key, val)}
-                      type={key === "SMTP_PASS" ? "password" : "text"}
-                      disabled={!emailEnabled}
-                      className="w-full text-white"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Support Email Section */}
-            <div>
-              <h2 className="text-xl font-semibold text-text mb-4 mt-8">Support Email</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <FormField
-                    label="Support Email"
-                    value={config[supportEmailKey] || ''}
-                    onChange={val => handleChange(supportEmailKey, val)}
-                    className="w-full text-white"
-                    type="email"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Registration Section */}
-            <div>
-              <h2 className="text-xl font-semibold text-text mb-4 mt-6">Registration & Invites</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <select
-                    id="REGISTRATION_MODE"
-                    value={config["REGISTRATION_MODE"] || 'open'}
-                    onChange={e => handleChange("REGISTRATION_MODE", e.target.value)}
-                    className="w-full px-3 py-2 bg-surface border border-border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="open">Open Registration</option>
-                    <option value="invite_only">Invite Only</option>
-                    <option value="closed">Closed</option>
-                  </select>
-                </div>
-                <div>
-                  <FormField
-                    label="Invite Expiry (hours)"
-                    value={config["INVITE_EXPIRY_HOURS"] || '6'}
-                    onChange={val => handleChange("INVITE_EXPIRY_HOURS", val)}
-                    className="w-full text-white"
-                    type="number"
-                    // min and max are not supported by FormField, but can be added if needed
-                  />
-                </div>
-                <div>
-                  <FormField
-                    label="Max Invites Per User"
-                    value={config["MAX_INVITES_PER_USER"] || '5'}
-                    onChange={val => handleChange("MAX_INVITES_PER_USER", val)}
-                    className="w-full text-white"
-                    type="number"
-                    // min and max are not supported by FormField, but can be added if needed
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Public Browsing Section */}
-            <div>
-              <h2 className="text-xl font-semibold text-text mb-4 mt-6">Public Browsing</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block font-medium mb-1 text-white" htmlFor="PUBLIC_BROWSING_MODE">Browsing Mode</label>
-                  <select
-                    id="PUBLIC_BROWSING_MODE"
-                    value={config["PUBLIC_BROWSING_MODE"] || 'PUBLIC'}
-                    onChange={e => handleChange("PUBLIC_BROWSING_MODE", e.target.value)}
-                    className="w-full px-3 py-2 bg-surface border border-border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="PUBLIC">Public - Search Engine Style</option>
-                    <option value="PRIVATE">Private - Login Required</option>
-                  </select>
-                  <p className="text-sm text-text-secondary mt-1">
-                    {config["PUBLIC_BROWSING_MODE"] === 'PUBLIC' 
-                      ? 'Home page shows public torrent search (current design)'
-                      : 'Home page shows simple login/register interface'
-                    }
-                  </p>
-                </div>
               </div>
             </div>
 
@@ -380,6 +274,115 @@ export default function AdminSettingsPage() {
                     HEX: {config[brandingKeys.secondary] || '#6c757d'}<br />
                     RGB: {hexToRgb(config[brandingKeys.secondary] || '#6c757d')}
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* SMTP Section */}
+            <div>
+              <div className="flex items-center justify-between mb-4 mt-6">
+                <h2 className="text-xl font-semibold text-text">Email (SMTP)</h2>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-white">Enable Email</span>
+                  <ToggleSwitch
+                    checked={emailEnabled}
+                    onChange={e => handleChange(emailEnabledKey, e.target.checked ? "true" : "false")}
+                  />
+                </div>
+              </div>
+              {emailEnabled && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {smtpKeys.map((key) => (
+                    <div key={key}>
+                      <FormField
+                        label={key.replace(/_/g, ' ')}
+                        value={config[key] || ''}
+                        onChange={val => handleChange(key, val)}
+                        type={key === "SMTP_PASS" ? "password" : "text"}
+                        className="w-full text-white"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Support Email Section */}
+            <div>
+              <h2 className="text-xl font-semibold text-text mb-4 mt-8">Support Email</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <FormField
+                    label="Support Email"
+                    value={config[supportEmailKey] || ''}
+                    onChange={val => handleChange(supportEmailKey, val)}
+                    className="w-full text-white"
+                    type="email"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Registration Section */}
+            <div>
+              <h2 className="text-xl font-semibold text-text mb-4 mt-6">Registration & Invites</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <select
+                    id="REGISTRATION_MODE"
+                    value={config["REGISTRATION_MODE"] || 'open'}
+                    onChange={e => handleChange("REGISTRATION_MODE", e.target.value)}
+                    className="w-full px-3 py-2 bg-surface border border-border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="open">Open Registration</option>
+                    <option value="invite_only">Invite Only</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                </div>
+                <div>
+                  <FormField
+                    label="Invite Expiry (hours)"
+                    value={config["INVITE_EXPIRY_HOURS"] || '6'}
+                    onChange={val => handleChange("INVITE_EXPIRY_HOURS", val)}
+                    className="w-full text-white"
+                    type="number"
+                    // min and max are not supported by FormField, but can be added if needed
+                  />
+                </div>
+                <div>
+                  <FormField
+                    label="Max Invites Per User"
+                    value={config["MAX_INVITES_PER_USER"] || '5'}
+                    onChange={val => handleChange("MAX_INVITES_PER_USER", val)}
+                    className="w-full text-white"
+                    type="number"
+                    // min and max are not supported by FormField, but can be added if needed
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Public Browsing Section */}
+            <div>
+              <h2 className="text-xl font-semibold text-text mb-4 mt-6">Public Browsing</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block font-medium mb-1 text-white" htmlFor="PUBLIC_BROWSING_MODE">Browsing Mode</label>
+                  <select
+                    id="PUBLIC_BROWSING_MODE"
+                    value={config["PUBLIC_BROWSING_MODE"] || 'PUBLIC'}
+                    onChange={e => handleChange("PUBLIC_BROWSING_MODE", e.target.value)}
+                    className="w-full px-3 py-2 bg-surface border border-border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="PUBLIC">Public - Search Engine Style</option>
+                    <option value="PRIVATE">Private - Login Required</option>
+                  </select>
+                  <p className="text-sm text-text-secondary mt-1">
+                    {config["PUBLIC_BROWSING_MODE"] === 'PUBLIC' 
+                      ? 'Home page shows public torrent search (current design)'
+                      : 'Home page shows simple login/register interface'
+                    }
+                  </p>
                 </div>
               </div>
             </div>
