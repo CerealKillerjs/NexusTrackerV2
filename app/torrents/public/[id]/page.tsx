@@ -213,46 +213,43 @@ export default function PublicTorrentDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-text">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-surface/20 text-text">
       {/* Header */}
-      <header className="bg-surface border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link 
-                href="/"
-                className="flex items-center text-text hover:text-primary transition-colors"
-              >
-                ← Back to Search
-              </Link>
-              <div className="text-2xl font-bold text-primary">
-                Nexus<span className="text-accent">Tracker</span>
-              </div>
+      <header className="bg-surface/80 backdrop-blur-xl border-b border-border/30 shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Link 
+              href="/"
+              className="flex items-center text-text hover:text-primary transition-colors text-lg font-semibold"
+            >
+              ← Back to Search
+            </Link>
+            <div className="text-3xl font-extrabold text-primary tracking-tight drop-shadow-lg">
+              Nexus<span className="text-accent">Tracker</span>
             </div>
-            <div className="flex items-center space-x-4">
-              <Link 
-                href="/auth/signin"
-                className="flex items-center px-4 py-2 text-text hover:text-primary transition-colors"
-              >
-                <LogIn size={20} className="mr-2" />
-                Login
-              </Link>
-              <Link 
-                href="/auth/signup"
-                className="flex items-center px-4 py-2 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors"
-              >
-                <Plus size={20} className="mr-2" />
-                Register
-              </Link>
-            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            <Link 
+              href="/auth/signin"
+              className="flex items-center px-4 py-2 text-text hover:text-primary transition-colors"
+            >
+              <LogIn size={20} className="mr-2" />
+              Login
+            </Link>
+            <Link 
+              href="/auth/signup"
+              className="flex items-center px-4 py-2 bg-primary/90 text-background rounded-full hover:bg-primary transition-colors font-semibold shadow-lg text-base"
+            >
+              <Plus size={20} className="mr-2" />
+              Register
+            </Link>
           </div>
         </div>
       </header>
-
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-6">
+      <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Torrent Header */}
-        <div className="bg-surface border border-border rounded-lg p-6 mb-6">
+        <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl p-8 mb-8 shadow-xl">
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-text mb-2">
@@ -326,11 +323,11 @@ export default function PublicTorrentDetailsPage() {
         </div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-8">
             {/* Description */}
-            <div className="bg-surface border border-border rounded-lg p-6">
+            <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl p-8 shadow-xl">
               <h2 className="text-xl font-semibold mb-4">Description</h2>
               <div className="prose prose-sm max-w-none text-text">
                 {torrent.description ? (
@@ -343,14 +340,14 @@ export default function PublicTorrentDetailsPage() {
 
             {/* Files */}
             {torrent.files && torrent.files.length > 0 && (
-              <div className="bg-surface border border-border rounded-lg p-6">
+              <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl p-8 shadow-xl">
                 <h2 className="text-xl font-semibold mb-4">Files ({torrent.files.length})</h2>
                 <FileTree files={torrent.files} />
               </div>
             )}
 
             {/* Comments */}
-            <div className="bg-surface border border-border rounded-lg p-6">
+            <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl p-8 shadow-xl">
               <h2 className="text-xl font-semibold mb-4">
                 Comments ({torrent._count.comments})
               </h2>
@@ -370,9 +367,9 @@ export default function PublicTorrentDetailsPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Torrent Info */}
-            <div className="bg-surface border border-border rounded-lg p-6">
+            <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl p-8 shadow-xl">
               <h3 className="text-lg font-semibold mb-4">Torrent Information</h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
@@ -410,7 +407,7 @@ export default function PublicTorrentDetailsPage() {
 
             {/* Tags */}
             {torrent.tags && torrent.tags.length > 0 && (
-              <div className="bg-surface border border-border rounded-lg p-6">
+              <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl p-8 shadow-xl">
                 <h3 className="text-lg font-semibold mb-4">Tags</h3>
                 <div className="flex flex-wrap gap-2">
                   {torrent.tags.map((tag, index) => (
@@ -426,7 +423,7 @@ export default function PublicTorrentDetailsPage() {
             )}
 
             {/* Related Torrents */}
-            <div className="bg-surface border border-border rounded-lg p-6">
+            <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl p-8 shadow-xl">
               <h3 className="text-lg font-semibold mb-4">Related Torrents</h3>
               <div className="text-center py-4">
                 <div className="text-text-secondary mb-4">

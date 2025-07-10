@@ -123,37 +123,35 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const user = session.user as typeof session.user & { role?: string };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-surface/20">
       {/* Header */}
-      <header className="bg-surface border-b border-border h-16 fixed top-0 left-0 right-0 z-30">
-        <div className="flex items-center justify-between h-full px-6">
+      <header className="bg-surface/80 backdrop-blur-xl border-b border-border/30 h-20 fixed top-0 left-0 right-0 z-30 shadow-xl flex items-center">
+        <div className="flex items-center justify-between h-full w-full px-8">
           {/* Left side - Logo */}
           <div className="flex items-center">
-            <h1 className="text-xl font-bold text-primary">NexusTracker V2</h1>
+            <h1 className="text-2xl font-extrabold text-primary tracking-tight drop-shadow-lg">NexusTracker V2</h1>
           </div>
-
           {/* Right side - User stats, search, upload, and user menu */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6">
             {/* User Stats */}
-            <div className="hidden lg:flex items-center space-x-4 text-sm text-text-secondary">
+            <div className="hidden lg:flex items-center space-x-4 bg-surface/70 backdrop-blur-lg rounded-full px-6 py-2 shadow-md border border-border/30">
               <div className="flex items-center space-x-1">
                 <Upload size={18} className="text-green-500" />
-                <span>{formatBytes(mockUserStats.upload)}</span>
+                <span className="font-mono text-text-secondary">{formatBytes(mockUserStats.upload)}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <Download size={18} className="text-red-500" />
-                <span>{formatBytes(mockUserStats.download)}</span>
+                <span className="font-mono text-text-secondary">{formatBytes(mockUserStats.download)}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <BarChartSquare size={18} className="text-blue-500" />
-                <span>{mockUserStats.ratio.toFixed(2)}</span>
+                <span className="font-mono text-text-secondary">{mockUserStats.ratio.toFixed(2)}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <Award size={18} className="text-yellow-500" />
-                <span>{mockUserStats.bp} BP</span>
+                <span className="font-mono text-text-secondary">{mockUserStats.bp} BP</span>
               </div>
             </div>
-
             {/* Search Bar */}
             <form onSubmit={handleSearch} className="hidden md:block">
               <input
@@ -161,65 +159,62 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 placeholder={t('header.search.placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-64 px-4 py-2 bg-background border border-border rounded-lg text-text placeholder-text-secondary focus:outline-none focus:border-primary transition-colors"
+                className="w-64 px-5 py-2 bg-surface/70 backdrop-blur-lg border border-border/30 rounded-full text-text placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary shadow-md transition-all"
               />
             </form>
-
             {/* Upload Button */}
             <Link 
               href="/torrents/upload"
-              className="hidden md:flex items-center px-4 py-2 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors text-sm font-medium"
+              className="hidden md:flex items-center px-5 py-2 bg-primary/90 text-background rounded-full hover:bg-primary transition-all text-base font-semibold shadow-lg border border-primary/30"
             >
               <Upload size={20} className="mr-2" /> {t('header.upload')}
             </Link>
-
             {/* User Dropdown */}
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-surface-light transition-colors"
+                className="flex items-center space-x-3 px-4 py-2 rounded-full hover:bg-surface-light/60 backdrop-blur-sm transition-all duration-300 border border-transparent hover:border-border/30 shadow-md"
               >
-                <span className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-background text-sm font-medium">
+                <span className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-background text-lg font-bold shadow-lg border-2 border-primary/60 ring-2 ring-primary/20">
                   {session.user?.username?.charAt(0).toUpperCase() || 'U'}
                 </span>
-                <span className="hidden md:block text-text font-medium">
+                <span className="hidden md:block text-text font-semibold">
                   {session.user?.username || session.user?.email}
                 </span>
-                <ChevronDown size={18} className="text-text-secondary" />
+                <ChevronDown size={20} className={`text-text-secondary transition-transform duration-300 ${userDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
-
               {userDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-surface border border-border rounded-lg shadow-lg z-50">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-surface/95 backdrop-blur-xl border border-border/30 rounded-2xl shadow-2xl z-50 overflow-hidden animate-fade-in">
                   <Link 
                     href="/profile"
-                    className="block px-4 py-3 text-text hover:bg-surface-light transition-colors"
+                    className="flex items-center px-4 py-3 text-text hover:bg-surface-light/60 backdrop-blur-sm transition-all duration-300"
                     onClick={() => setUserDropdownOpen(false)}
                   >
-                    <User size={18} className="mr-2 inline" /> {t('header.userMenu.profile')}
+                    <User size={18} className="mr-3" /> {t('header.userMenu.profile')}
                   </Link>
                   {user?.role === 'ADMIN' && (
                     <Link 
                       href="/admin"
-                      className="block px-4 py-3 text-text hover:bg-surface-light transition-colors"
+                      className="flex items-center px-4 py-3 text-text hover:bg-surface-light/60 backdrop-blur-sm transition-all duration-300"
                       onClick={() => setUserDropdownOpen(false)}
                     >
-                      <Lock size={18} className="mr-2 inline" /> {t('header.userMenu.adminPanel')}
+                      <Lock size={18} className="mr-3" /> {t('header.userMenu.adminPanel')}
                     </Link>
                   )}
                   {user?.role === 'MODERATOR' && (
                     <Link 
                       href="/moderator"
-                      className="block px-4 py-3 text-text hover:bg-surface-light transition-colors"
+                      className="flex items-center px-4 py-3 text-text hover:bg-surface-light/60 backdrop-blur-sm transition-all duration-300"
                       onClick={() => setUserDropdownOpen(false)}
                     >
-                      <Lock size={18} className="mr-2 inline" /> {t('header.userMenu.moderatorPanel')}
+                      <Lock size={18} className="mr-3" /> {t('header.userMenu.moderatorPanel')}
                     </Link>
                   )}
                   <button
                     onClick={() => signOut({ callbackUrl: '/auth/signin' })}
-                    className="w-full text-left px-4 py-3 text-text hover:bg-surface-light transition-colors"
+                    className="w-full flex items-center px-4 py-3 text-text hover:bg-surface-light/60 backdrop-blur-sm transition-all duration-300"
                   >
-                    <LogOutCircle size={18} className="mr-2 inline" /> {t('header.userMenu.logout')}
+                    <LogOutCircle size={18} className="mr-3" /> {t('header.userMenu.logout')}
                   </button>
                 </div>
               )}
@@ -227,21 +222,20 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </div>
       </header>
-
       {/* Main Layout */}
       <div className="flex pt-16">
         {/* Sidebar */}
-        <aside className="w-64 bg-surface border-r border-border h-screen fixed left-0 top-16 z-20">
+        <aside className="w-64 bg-surface/80 backdrop-blur-xl border-r border-border/30 h-screen fixed left-0 top-16 z-20 shadow-lg">
           <nav className="p-4">
             <ul className="space-y-2">
               {navItems.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-sm font-medium ${
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 text-sm font-medium ${
                       pathname === item.href 
-                        ? 'bg-primary/10 text-primary border-l-4 border-primary' 
-                        : 'text-text hover:bg-surface-light'
+                        ? 'bg-primary/10 text-primary border-l-4 border-primary shadow-lg backdrop-blur-sm' 
+                        : 'text-text hover:bg-surface-light/60 hover:shadow-md backdrop-blur-sm'
                     }`}
                   >
                     <item.icon size={20} className="shrink-0" />
@@ -252,10 +246,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </ul>
           </nav>
         </aside>
-
         {/* Main Content */}
         <main className="flex-1 ml-64 p-6">
-          {children}
+          <div className="max-w-7xl mx-auto">
+            {children}
+          </div>
         </main>
       </div>
     </div>

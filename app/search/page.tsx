@@ -164,24 +164,19 @@ export default function SearchResultsPage() {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen bg-background text-text">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-surface/20 text-text">
       {/* Header */}
-      <header className="bg-surface border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-primary">
-              Nexus<span className="text-accent">Tracker</span>
-            </Link>
-            <div className="text-text-secondary">
-              Search Results
-            </div>
-          </div>
+      <header className="bg-surface/80 backdrop-blur-xl border-b border-border/30 shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
+          <Link href="/" className="text-3xl font-extrabold text-primary tracking-tight drop-shadow-lg">
+            Nexus<span className="text-accent">Tracker</span>
+          </Link>
+          <div className="text-text-secondary text-lg font-medium">Search Results</div>
         </div>
       </header>
-
       {/* Search Section */}
-      <div className="bg-surface border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="bg-surface/80 backdrop-blur-xl border-b border-border/30 shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 py-6">
           <form onSubmit={handleSearch} className="space-y-4">
             {/* Search Bar */}
             <div className="flex space-x-4">
@@ -192,23 +187,22 @@ export default function SearchResultsPage() {
                   placeholder="Search torrents..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg text-text placeholder-text-secondary focus:outline-none focus:border-primary transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-background/80 border border-border/30 rounded-full text-text placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary shadow-md transition-all"
                 />
               </div>
               <button
                 type="submit"
-                className="px-6 py-3 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors font-medium"
+                className="px-6 py-3 bg-primary/90 text-background rounded-full hover:bg-primary transition-colors font-semibold shadow-lg text-base"
               >
                 Search
               </button>
             </div>
-
             {/* Filters */}
             <div className="flex flex-wrap gap-4">
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="px-3 py-2 bg-background border border-border rounded-lg text-text focus:outline-none focus:border-primary transition-colors"
+                className="px-3 py-2 bg-background/80 border border-border/30 rounded-full text-text focus:outline-none focus:ring-2 focus:ring-primary shadow-md"
               >
                 {categories.map((cat) => (
                   <option key={cat.value} value={cat.value}>
@@ -216,11 +210,10 @@ export default function SearchResultsPage() {
                   </option>
                 ))}
               </select>
-
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 bg-background border border-border rounded-lg text-text focus:outline-none focus:border-primary transition-colors"
+                className="px-3 py-2 bg-background/80 border border-border/30 rounded-full text-text focus:outline-none focus:ring-2 focus:ring-primary shadow-md"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -228,11 +221,10 @@ export default function SearchResultsPage() {
                   </option>
                 ))}
               </select>
-
               <button
                 type="button"
                 onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
-                className="px-3 py-2 bg-background border border-border rounded-lg text-text hover:bg-surface transition-colors"
+                className="px-3 py-2 bg-background/80 border border-border/30 rounded-full text-text hover:bg-surface-light transition-colors shadow-md"
               >
                 {sortOrder === 'desc' ? '↓' : '↑'}
               </button>
@@ -240,9 +232,8 @@ export default function SearchResultsPage() {
           </form>
         </div>
       </div>
-
       {/* Results Section */}
-      <main className="max-w-7xl mx-auto px-4 py-6">
+      <main className="max-w-7xl mx-auto px-4 py-8">
         {loading ? (
           <div className="text-center py-12">
             <div className="text-text-secondary">Loading torrents...</div>

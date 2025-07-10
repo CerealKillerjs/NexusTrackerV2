@@ -90,14 +90,13 @@ export default function AdminSettingsPage() {
 
   return (
     <AdminLayout>
-      <div className="max-w-3xl mx-auto py-10">
+      <div className="max-w-3xl mx-auto py-12">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text mb-2">System Settings</h1>
-          <p className="text-text-secondary">Manage system-wide configuration for your tracker. Changes are applied instantly.</p>
+          <h1 className="text-4xl font-extrabold text-text mb-2">System Settings</h1>
+          <p className="text-lg text-text-secondary">Manage system-wide configuration for your tracker. Changes are applied instantly.</p>
         </div>
-
-        <div className="bg-surface border border-border rounded-lg p-8 shadow-sm">
+        <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl shadow-xl p-10">
           <form
             onSubmit={e => {
               e.preventDefault()

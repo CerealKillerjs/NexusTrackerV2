@@ -74,7 +74,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-background via-background to-surface/20 text-foreground`}
         suppressHydrationWarning
       >
         <I18nProvider>

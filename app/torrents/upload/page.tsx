@@ -379,17 +379,16 @@ export default function UploadPage() {
       <div className="max-w-4xl mx-auto p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text mb-2">
-            <Upload className="inline mr-2 align-text-bottom" size={28} />
+          <h1 className="text-4xl font-extrabold text-primary mb-4 drop-shadow-lg flex items-center gap-2">
+            <Upload className="inline align-text-bottom" size={32} />
             {t('upload.title')}
           </h1>
-          <p className="text-text-secondary">
+          <p className="text-lg text-text-secondary">
             {t('upload.subtitle')}
           </p>
         </div>
-
         {/* Upload Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/30 p-8 shadow-xl">
           {/* File Upload Areas - Side by Side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Torrent File Upload Area */}
@@ -813,7 +812,7 @@ export default function UploadPage() {
         </form>
 
         {/* Info Box */}
-        <div className="mt-8 bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+        <div className="mt-8 bg-blue-500/10 border border-blue-500/20 rounded-2xl p-6 shadow-lg">
           <div className="flex items-start space-x-3">
             <InfoCircle size={20} className="text-blue-500 mt-0.5" />
             <div>

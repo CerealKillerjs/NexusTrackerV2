@@ -224,16 +224,15 @@ export default function ProfilePage() {
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen bg-background text-text p-6">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-surface/20 text-text p-6">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-primary mb-6">
+          <h1 className="text-4xl font-extrabold text-primary mb-8 drop-shadow-lg">
             {t('profile.title')}
           </h1>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Sidebar with avatar and user info */}
-            <div className="space-y-6">
-              <div className="bg-surface rounded-lg border border-border p-6">
+            <div className="space-y-8">
+              <div className="bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/30 p-8 shadow-xl">
                 <div className="space-y-4">
                   {/* Avatar */}
                   <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-background">
@@ -322,11 +321,10 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
-
             {/* Main content */}
-            <div className="md:col-span-2 space-y-6">
+            <div className="md:col-span-2 space-y-8">
               {/* Detailed statistics */}
-              <section className="bg-surface rounded-lg border border-border p-6">
+              <section className="bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/30 p-8 shadow-xl">
                 <h2 className="text-xl font-semibold mb-4">{t('profile.sections.stats')}</h2>
                 <div className="space-y-6">
                   {/* Announce URL */}
@@ -375,7 +373,7 @@ export default function ProfilePage() {
               </section>
 
               {/* Invitations Section */}
-              <section className="bg-surface rounded-lg border border-border p-6">
+              <section className="bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/30 p-8 shadow-xl">
                 <h2 className="text-xl font-semibold mb-4">{t('profile.invitations.title')}</h2>
                 <div className="space-y-6">
                   {/* Invitation Statistics */}
@@ -636,7 +634,7 @@ export default function ProfilePage() {
               </section>
 
               {/* Preferences */}
-              <section className="bg-surface rounded-lg border border-border p-6">
+              <section className="bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/30 p-8 shadow-xl">
                 <h2 className="text-xl font-semibold mb-4">{t('profile.sections.preferences')}</h2>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">

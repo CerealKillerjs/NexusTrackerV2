@@ -123,34 +123,32 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto py-10">
         {/* Header */}
         <div className="mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-text mb-2">
-              <Home className="inline mr-2 align-text-bottom" size={22} /> {t('dashboard.title')}
-            </h1>
-            <p className="text-text-secondary">
-              {t('dashboard.welcome', { username: session.user?.username || session.user?.email })}
-            </p>
-          </div>
+          <h1 className="text-4xl font-extrabold text-text mb-2 flex items-center gap-2">
+            <Home className="inline align-text-bottom text-primary" size={28} />
+            {t('dashboard.title')}
+          </h1>
+          <p className="text-lg text-text-secondary">
+            {t('dashboard.welcome', { username: session.user?.username || session.user?.email })}
+          </p>
         </div>
-
         {/* Latest Torrents Section */}
-        <div className="bg-surface rounded-lg border border-border overflow-hidden">
-          <div className="px-6 py-4 border-b border-border bg-surface-light flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-text flex items-center">
-              <Download className="mr-2" size={22} /> {t('dashboard.latestTorrents.title')}
-              <span className="ml-2 text-sm text-text-secondary">
+        <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl shadow-xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-border bg-surface-light/80 flex justify-between items-center">
+            <h2 className="text-2xl font-semibold text-text flex items-center">
+              <Download className="mr-2" size={24} /> {t('dashboard.latestTorrents.title')}
+              <span className="ml-2 text-base text-text-secondary">
                 {t('dashboard.latestTorrents.count', { count: torrents.length })}
               </span>
             </h2>
             <button
               onClick={fetchTorrents}
               disabled={loading}
-              className="flex items-center px-3 py-1 text-sm text-text-secondary hover:text-primary transition-colors disabled:opacity-50"
+              className="flex items-center px-4 py-2 text-sm bg-primary text-background rounded-md hover:bg-primary-dark transition-colors disabled:opacity-50"
             >
-              <Refresh size={16} className={`mr-1 ${loading ? 'animate-spin' : ''}`} />
+              <Refresh size={16} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
               {t('dashboard.latestTorrents.refresh')}
             </button>
           </div>

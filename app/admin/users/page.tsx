@@ -233,21 +233,19 @@ export default function AdminUsersPage() {
 
   return (
     <AdminLayout>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto py-10">
         {/* Header */}
         <div className="mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-text mb-2">
-              <User className="inline mr-2 align-text-bottom" size={22} /> {t('admin.users.title')}
-            </h1>
-            <p className="text-text-secondary">
-              {t('admin.users.description')}
-            </p>
-          </div>
+          <h1 className="text-4xl font-extrabold text-text mb-2 flex items-center gap-2">
+            <User className="inline align-text-bottom text-primary" size={28} />
+            {t('admin.users.title')}
+          </h1>
+          <p className="text-lg text-text-secondary">
+            {t('admin.users.description')}
+          </p>
         </div>
-
         {/* Filters and Search */}
-        <div className="bg-surface border border-border rounded-lg p-6 mb-6">
+        <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl shadow-xl p-8 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Search */}
             <div className="relative">
@@ -257,34 +255,31 @@ export default function AdminUsersPage() {
                 placeholder={t('admin.users.search.placeholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border border-border rounded-md bg-background text-text placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="pl-10 pr-4 py-2 w-full border border-border rounded-md bg-background/80 text-text placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
-
             {/* Role Filter */}
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="px-4 py-2 border border-border rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="px-4 py-2 border border-border rounded-md bg-background/80 text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             >
               <option value="all">{t('admin.users.filters.allRoles')}</option>
               <option value="USER">{t('admin.users.roles.user')}</option>
               <option value="MODERATOR">{t('admin.users.roles.moderator')}</option>
               <option value="ADMIN">{t('admin.users.roles.admin')}</option>
             </select>
-
             {/* Status Filter */}
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-border rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="px-4 py-2 border border-border rounded-md bg-background/80 text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             >
               <option value="all">{t('admin.users.filters.allStatus')}</option>
               <option value="ACTIVE">{t('admin.users.status.active')}</option>
               <option value="BANNED">{t('admin.users.status.banned')}</option>
               <option value="PENDING">{t('admin.users.status.pending')}</option>
             </select>
-
             {/* Refresh Button */}
             <button
               onClick={fetchUsers}
@@ -296,13 +291,12 @@ export default function AdminUsersPage() {
             </button>
           </div>
         </div>
-
         {/* Users Table */}
-        <div className="bg-surface border border-border rounded-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-border bg-surface-light">
-            <h2 className="text-xl font-semibold text-text">
+        <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl shadow-xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-border bg-surface-light/80">
+            <h2 className="text-2xl font-semibold text-text">
               {t('admin.users.list.title')}
-              <span className="ml-2 text-sm text-text-secondary">
+              <span className="ml-2 text-base text-text-secondary">
                 {t('admin.users.list.count', { count: users.length })}
               </span>
             </h2>

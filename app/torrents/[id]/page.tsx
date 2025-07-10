@@ -306,7 +306,7 @@ export default function TorrentDetailPage() {
       <div className="max-w-6xl mx-auto p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text mb-2">{torrent.name}</h1>
+          <h1 className="text-4xl font-extrabold text-text mb-2 drop-shadow-lg">{torrent.name}</h1>
           <div className="flex items-center space-x-4 text-text-secondary">
             <span className="flex items-center">
               <Calendar size={16} className="mr-1" />
@@ -324,11 +324,11 @@ export default function TorrentDetailPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-8">
             {/* Torrent Information */}
-            <div className="bg-surface rounded-lg border border-border p-6">
+            <div className="bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/30 p-8 shadow-xl">
               <h2 className="text-xl font-semibold text-text mb-4 flex items-center">
                 <InfoCircle size={20} className="mr-2" />
                 {t('torrentDetail.torrentInfo.title')}
@@ -412,7 +412,7 @@ export default function TorrentDetailPage() {
             </div>
 
             {/* File List */}
-            <div className="bg-surface rounded-lg border border-border p-6">
+            <div className="bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/30 p-8 shadow-xl">
               <h2 className="text-xl font-semibold text-text mb-4 flex items-center">
                 <Folder size={20} className="mr-2" />
                 {t('torrentDetail.fileList.count').replace('{{count}}', torrent.files.length.toString())}
@@ -422,7 +422,7 @@ export default function TorrentDetailPage() {
             </div>
 
             {/* Comments Section */}
-            <div className="bg-surface rounded-lg border border-border p-6">
+            <div className="bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/30 p-8 shadow-xl">
               <h2 className="text-xl font-semibold text-text mb-4 flex items-center">
                 <Chat size={20} className="mr-2" />
                 {t('torrentDetail.comments.title')}
@@ -434,9 +434,9 @@ export default function TorrentDetailPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Action Buttons */}
-            <div className="bg-surface rounded-lg border border-border p-6">
+            <div className="bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/30 p-8 shadow-xl">
               <h3 className="text-lg font-semibold text-text mb-4">{t('torrentDetail.actions.title')}</h3>
               
               <div className="space-y-3">
@@ -517,7 +517,7 @@ export default function TorrentDetailPage() {
             </div>
 
             {/* Uploader Information */}
-            <div className="bg-surface rounded-lg border border-border p-6">
+            <div className="bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/30 p-8 shadow-xl">
               <h3 className="text-lg font-semibold text-text mb-4 flex items-center">
                 <User size={20} className="mr-2" />
                 {t('torrentDetail.uploader.title')}
@@ -556,7 +556,7 @@ export default function TorrentDetailPage() {
             </div>
 
             {/* Statistics */}
-            <div className="bg-surface rounded-lg border border-border p-6">
+            <div className="bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/30 p-8 shadow-xl">
               <h3 className="text-lg font-semibold text-text mb-4">{t('torrentDetail.statistics.title')}</h3>
               
               <div className="space-y-3">

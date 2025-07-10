@@ -1,7 +1,6 @@
 /**
- * AdminLayout - Visual clone of DashboardLayout for administration
- * Structure, colors and classes identical to user dashboard
- * Only changes the sidebar menu and texts for administration
+ * AdminLayout - Modern admin interface with iOS 18/macOS 26 inspired design
+ * Features frosted glass effects and improved visual hierarchy
  */
 
 'use client';
@@ -11,6 +10,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useI18n } from '@/app/hooks/useI18n';
+
 // Icons for administration
 import { Home } from '@styled-icons/boxicons-regular/Home';
 import { User } from '@styled-icons/boxicons-regular/User';
@@ -55,6 +55,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
         <div className="text-text text-lg">{t('common.loading')}</div>
       </div>
     );
@@ -72,44 +73,57 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-surface/20">
       {/* Header */}
-      <header className="bg-surface border-b border-border h-16 fixed top-0 left-0 right-0 z-30">
+      <header className="bg-surface/80 backdrop-blur-xl border-b border-border/30 h-16 fixed top-0 left-0 right-0 z-30 shadow-lg">
         <div className="flex items-center justify-between h-full px-6">
           {/* Logo and admin title */}
-          <div className="flex items-center">
-            <Shield size={24} className="text-primary mr-2" />
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+              <svg className="w-5 h-5 text-background" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
             <h1 className="text-xl font-bold text-primary">{t('admin.title')}</h1>
           </div>
+          
           {/* User menu */}
           <div className="flex items-center space-x-4">
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-surface-light transition-colors"
+                className="flex items-center space-x-3 px-4 py-2 rounded-xl hover:bg-surface-light/60 backdrop-blur-sm transition-all duration-300 border border-transparent hover:border-border/30"
               >
-                <span className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-background text-sm font-medium">
+                <span className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-background text-sm font-semibold shadow-md">
                   {session.user?.username?.charAt(0).toUpperCase() || 'A'}
                 </span>
                 <span className="hidden md:block text-text font-medium">
                   {session.user?.username || session.user?.email}
                 </span>
-                <ChevronDown size={18} className="text-text-secondary" />
+                <svg className={`w-4 h-4 text-text-secondary transition-transform duration-300 ${userDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
               {userDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-surface border border-border rounded-lg shadow-lg z-50">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-surface/95 backdrop-blur-xl border border-border/30 rounded-2xl shadow-2xl z-50 overflow-hidden">
                   <Link 
                     href="/profile"
-                    className="block px-4 py-3 text-text hover:bg-surface-light transition-colors"
+                    className="flex items-center px-4 py-3 text-text hover:bg-surface-light/60 backdrop-blur-sm transition-all duration-300"
                     onClick={() => setUserDropdownOpen(false)}
                   >
-                    <User size={18} className="mr-2 inline" /> {t('header.userMenu.profile')}
+                    <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    {t('header.userMenu.profile')}
                   </Link>
                   <button
                     onClick={() => signOut({ callbackUrl: '/auth/signin' })}
-                    className="w-full text-left px-4 py-3 text-text hover:bg-surface-light transition-colors"
+                    className="w-full flex items-center px-4 py-3 text-text hover:bg-surface-light/60 backdrop-blur-sm transition-all duration-300"
                   >
-                    <LogOutCircle size={18} className="mr-2 inline" /> {t('header.userMenu.logout')}
+                    <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    {t('header.userMenu.logout')}
                   </button>
                 </div>
               )}
@@ -121,17 +135,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Main Layout */}
       <div className="flex pt-16">
         {/* Sidebar */}
-        <aside className="w-64 bg-surface border-r border-border h-screen fixed left-0 top-16 z-20">
+        <aside className="w-64 bg-surface/80 backdrop-blur-xl border-r border-border/30 h-screen fixed left-0 top-16 z-20 shadow-lg">
           <nav className="p-4">
             <ul className="space-y-2">
               {adminNavItems.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-sm font-medium ${
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 text-sm font-medium ${
                       pathname === item.href 
-                        ? 'bg-primary/10 text-primary border-l-4 border-primary' 
-                        : 'text-text hover:bg-surface-light'
+                        ? 'bg-primary/10 text-primary border-l-4 border-primary shadow-lg backdrop-blur-sm' 
+                        : 'text-text hover:bg-surface-light/60 hover:shadow-md backdrop-blur-sm'
                     }`}
                   >
                     <item.icon size={20} className="shrink-0" />
@@ -145,7 +159,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
         {/* Main Content */}
         <main className="flex-1 ml-64 p-6">
-          {children}
+          <div className="max-w-7xl mx-auto">
+            {children}
+          </div>
         </main>
       </div>
     </div>

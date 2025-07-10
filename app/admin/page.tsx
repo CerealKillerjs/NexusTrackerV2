@@ -88,30 +88,26 @@ export default function AdminDashboardPage() {
 
   return (
     <AdminLayout>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-4xl mx-auto py-12">
         {/* Header */}
         <div className="mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-text mb-2">
-              <Shield className="inline mr-2 align-text-bottom" size={22} /> {t('admin.dashboard.title')}
-            </h1>
-            <p className="text-text-secondary">
-              {t('admin.dashboard.welcome', { username: session.user?.username || session.user?.email })}
-            </p>
-          </div>
+          <h1 className="text-4xl font-extrabold text-text mb-2 flex items-center gap-2">
+            <Shield className="inline align-text-bottom text-primary" size={28} />
+            {t('admin.dashboard.title')}
+          </h1>
+          <p className="text-lg text-text-secondary">
+            {t('admin.dashboard.welcome', { username: session.user?.username || session.user?.email })}
+          </p>
         </div>
-
         {/* Admin Dashboard Content */}
-        <div className="bg-surface border border-border rounded-lg p-8">
-          <div className="text-center">
-            <Home className="mx-auto mb-4 text-text-secondary" size={48} />
-            <h2 className="text-xl font-semibold text-text mb-2">
-              {t('admin.dashboard.comingSoon.title')}
-            </h2>
-            <p className="text-text-secondary">
-              {t('admin.dashboard.comingSoon.description')}
-            </p>
-          </div>
+        <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl shadow-xl p-12 flex flex-col items-center">
+          <Home className="mb-6 text-text-secondary" size={56} />
+          <h2 className="text-2xl font-semibold text-text mb-2">
+            {t('admin.dashboard.comingSoon.title')}
+          </h2>
+          <p className="text-text-secondary text-center max-w-xl">
+            {t('admin.dashboard.comingSoon.description')}
+          </p>
         </div>
       </div>
     </AdminLayout>
