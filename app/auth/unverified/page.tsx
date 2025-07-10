@@ -27,7 +27,7 @@ export default function UnverifiedPage() {
       } else {
         showNotification.error(data.error || t('auth.emailVerification.unverified.resendError'));
       }
-    } catch (e) {
+    } catch {
       showNotification.error(t('auth.emailVerification.unverified.resendError'));
     } finally {
       setLoading(false);

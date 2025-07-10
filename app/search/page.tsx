@@ -8,7 +8,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 // Icon imports
@@ -87,7 +87,7 @@ export default function SearchResultsPage() {
   ];
 
   // Fetch torrents
-  const fetchTorrents = async (page = 1) => {
+  const fetchTorrents = useCallback(async (page = 1) => {
     try {
       setLoading(true);
       setError(null);
@@ -121,7 +121,7 @@ export default function SearchResultsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchQuery, category, sortBy, sortOrder]);
 
   // Handle search
   const handleSearch = (e: React.FormEvent) => {
@@ -161,7 +161,7 @@ export default function SearchResultsPage() {
   useEffect(() => {
     const page = parseInt(searchParams.get('page') || '1');
     fetchTorrents(page);
-  }, [searchParams]);
+  }, [searchParams, fetchTorrents]);
 
   return (
     <div className="min-h-screen bg-background text-text">

@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     const sortOrder = searchParams.get('sortOrder') || 'desc';
     
     // Build where clause
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     
     if (category && category !== 'all') {
       where.type = category;
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     }
     
     // Build order by clause
-    const orderBy: any = {};
+    const orderBy: Record<string, unknown> = {};
     orderBy[sortBy] = sortOrder;
     
     // Get torrents with related data (limited info for public access)

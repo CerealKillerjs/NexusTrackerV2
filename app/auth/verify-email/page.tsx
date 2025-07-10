@@ -30,7 +30,7 @@ export default function VerifyEmailPage() {
           setStatus("error");
           setMessage(data.error || t('auth.emailVerification.verify.error'));
         }
-      } catch (e) {
+      } catch {
         setStatus("error");
         setMessage(t('auth.emailVerification.verify.verificationFailed'));
       }

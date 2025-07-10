@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     const offset = (validPage - 1) * validLimit
 
     // Build where clause for filtering
-    const where: any = {}
+    const where: Record<string, unknown> = {}
 
     // Search filter
     if (search) {
@@ -105,39 +105,25 @@ export async function GET(request: NextRequest) {
     })
 
     // Calculate ratio and format data
-    const formattedUsers = await Promise.all(users.map(async (user: any) => {
+    const formattedUsers = await Promise.all(users.map(async (user: {
+      id: string;
+      username: string;
+      email: string;
+      role: string;
+      status: string;
+      createdAt: Date;
+      uploaded: bigint;
+      downloaded: bigint;
+      passkey: string;
+      emailVerified: Date | null;
+      availableInvites: number;
+      _count: { torrents: number; createdInvites: number };
+    }) => {
       const uploaded = user.uploaded || BigInt(0)
       const downloaded = user.downloaded || BigInt(0)
       const ratio = downloaded > BigInt(0) ? Number(uploaded) / Number(downloaded) : 0
 
-      // Get invitation statistics for this user
-      const now = new Date()
-      const [activeInvites, usedInvites, expiredInvites] = await Promise.all([
-        // Active invites (not used, not expired, active)
-        prisma.inviteCode.count({
-          where: {
-            createdBy: user.id,
-            isActive: true,
-            usedBy: null,
-            expiresAt: { gt: now }
-          }
-        }),
-        // Used invites
-        prisma.inviteCode.count({
-          where: {
-            createdBy: user.id,
-            usedBy: { not: null }
-          }
-        }),
-        // Expired invites (not used, expired)
-        prisma.inviteCode.count({
-          where: {
-            createdBy: user.id,
-            usedBy: null,
-            expiresAt: { lte: now }
-          }
-        })
-      ])
+      // Invitation statistics are not used in the returned object, so skip their calculation
 
       return {
         id: user.id,

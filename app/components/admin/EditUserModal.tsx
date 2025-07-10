@@ -6,7 +6,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useI18n } from '@/app/hooks/useI18n';
 import { X } from '@styled-icons/boxicons-regular/X';
 import { Save } from '@styled-icons/boxicons-regular/Save';
@@ -60,15 +60,7 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
   });
   const [maxInvitesPerUser, setMaxInvitesPerUser] = useState<number>(5);
 
-  // Fetch user data when modal opens
-  useEffect(() => {
-    if (isOpen && userId) {
-      fetchUserData();
-      fetchMaxInvitesLimit();
-    }
-  }, [isOpen, userId]);
-
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/admin/users/${userId}`);
@@ -101,9 +93,9 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
 
-  const fetchMaxInvitesLimit = async () => {
+  const fetchMaxInvitesLimit = useCallback(async () => {
     try {
       const response = await fetch('/api/admin/settings');
       if (response.ok) {
@@ -116,7 +108,15 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
     } catch (error) {
       console.error('Error fetching max invites limit:', error);
     }
-  };
+  }, []);
+
+  // Fetch user data when modal opens
+  useEffect(() => {
+    if (isOpen && userId) {
+      fetchUserData();
+      fetchMaxInvitesLimit();
+    }
+  }, [isOpen, userId, fetchUserData, fetchMaxInvitesLimit]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,7 +150,7 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
     }
   };
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = <T,>(field: string, value: T) => {
     setFormData(prev => ({
       ...prev,
       [field]: value

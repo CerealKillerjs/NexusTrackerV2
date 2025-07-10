@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { auth } from "@/app/lib/auth"
 import { prisma } from "@/app/lib/prisma"
 
@@ -11,7 +11,7 @@ import { prisma } from "@/app/lib/prisma"
  * @param request - NextRequest object
  * @returns NextResponse with admin status
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Get the current session
     const session = await auth()

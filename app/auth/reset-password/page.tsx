@@ -139,7 +139,7 @@ export default function ResetPasswordPage() {
 
       <div className="mt-4 text-center text-sm">
         <span className="text-text-secondary">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
         </span>
         <Link 
           href="/auth/signup"

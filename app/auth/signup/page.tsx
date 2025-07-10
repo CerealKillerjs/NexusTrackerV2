@@ -113,7 +113,13 @@ export default function RegisterPage() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const requestBody: any = {
+        const requestBody: {
+          username: string;
+          email: string;
+          password: string;
+          confirmPassword: string;
+          inviteCode?: string;
+        } = {
           username: formData.username,
           email: formData.email,
           password: formData.password,

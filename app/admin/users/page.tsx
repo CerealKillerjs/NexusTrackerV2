@@ -10,7 +10,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import AdminLayout from '@/app/components/admin/AdminLayout';
@@ -19,7 +19,6 @@ import { useI18n } from '@/app/hooks/useI18n';
 import { User } from '@styled-icons/boxicons-regular/User';
 import { Shield } from '@styled-icons/boxicons-solid/Shield';
 import { Search } from '@styled-icons/boxicons-regular/Search';
-import { Filter } from '@styled-icons/boxicons-regular/Filter';
 import { Refresh } from '@styled-icons/boxicons-regular/Refresh';
 import { Edit } from '@styled-icons/boxicons-regular/Edit';
 import { Trash } from '@styled-icons/boxicons-regular/Trash';
@@ -28,7 +27,6 @@ import { XCircle } from '@styled-icons/boxicons-regular/XCircle';
 import { Time } from '@styled-icons/boxicons-regular/Time';
 import { Download } from '@styled-icons/boxicons-regular/Download';
 import { Upload } from '@styled-icons/boxicons-regular/Upload';
-import { showNotification } from '@/app/utils/notifications';
 import EditUserModal from '@/app/components/admin/EditUserModal';
 import DeleteUserModal from '@/app/components/admin/DeleteUserModal';
 
@@ -80,6 +78,31 @@ export default function AdminUsersPage() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
 
+  // Fetch users from API (top-level, useCallback)
+  const fetchUsers = useCallback(async () => {
+    try {
+      setError(null);
+      const params = new URLSearchParams({
+        limit: '50',
+        sortBy: 'createdAt',
+        sortOrder: 'desc'
+      });
+      if (searchTerm) params.append('search', searchTerm);
+      if (roleFilter !== 'all') params.append('role', roleFilter);
+      if (statusFilter !== 'all') params.append('status', statusFilter);
+      const response = await fetch(`/api/admin/users?${params}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error al cargar los usuarios: ${response.status} ${errorText}`);
+      }
+      const data: UsersResponse = await response.json();
+      setUsers(data.users);
+    } catch (err) {
+      console.error('Error fetching users:', err);
+      setError(err instanceof Error ? err.message : 'Error desconocido');
+    }
+  }, [searchTerm, roleFilter, statusFilter]);
+
   // Check if user is admin and fetch users
   useEffect(() => {
     const checkAdminAndFetchUsers = async () => {
@@ -115,44 +138,14 @@ export default function AdminUsersPage() {
     };
 
     checkAdminAndFetchUsers();
-  }, [status, session, router]);
-
-  // Fetch users from API
-  const fetchUsers = async () => {
-    try {
-      setError(null);
-      
-      const params = new URLSearchParams({
-        limit: '50',
-        sortBy: 'createdAt',
-        sortOrder: 'desc'
-      });
-
-      if (searchTerm) params.append('search', searchTerm);
-      if (roleFilter !== 'all') params.append('role', roleFilter);
-      if (statusFilter !== 'all') params.append('status', statusFilter);
-      
-      const response = await fetch(`/api/admin/users?${params}`);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Error al cargar los usuarios: ${response.status} ${errorText}`);
-      }
-      
-      const data: UsersResponse = await response.json();
-      setUsers(data.users);
-    } catch (err) {
-      console.error('Error fetching users:', err);
-      setError(err instanceof Error ? err.message : 'Error desconocido');
-    }
-  };
+  }, [status, session, router, fetchUsers]);
 
   // Refetch users when filters change (only if admin)
   useEffect(() => {
     if (status === 'authenticated' && isAdmin && !loading) {
       fetchUsers();
     }
-  }, [searchTerm, roleFilter, statusFilter]);
+  }, [searchTerm, roleFilter, statusFilter, status, isAdmin, loading, fetchUsers]);
 
   // Show loading while checking authentication and admin status
   if (status === 'loading' || loading) {
