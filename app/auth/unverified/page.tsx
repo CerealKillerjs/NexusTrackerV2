@@ -1,12 +1,12 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import AuthCard from "@/app/components/auth/AuthCard";
 import { showNotification } from "@/app/utils/notifications";
 import { useI18n } from "@/app/hooks/useI18n";
 
-export default function UnverifiedPage() {
+function UnverifiedForm() {
   const { t } = useI18n();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -60,5 +60,19 @@ export default function UnverifiedPage() {
         </div>
       </div>
     </AuthCard>
+  );
+}
+
+export default function UnverifiedPage() {
+  return (
+    <Suspense fallback={
+      <AuthCard title="Email Verification">
+        <div className="text-center">
+          <p className="text-text-secondary">Loading...</p>
+        </div>
+      </AuthCard>
+    }>
+      <UnverifiedForm />
+    </Suspense>
   );
 } 
