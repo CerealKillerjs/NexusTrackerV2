@@ -20,8 +20,8 @@ export async function POST(
 
     const { id: torrentId } = await params;
 
-    // Get torrent and user passkey
-    const [torrent, user] = await Promise.all([
+    // Get torrent, user passkey, and branding configuration
+    const [torrent, user, brandingConfig] = await Promise.all([
       prisma.torrent.findUnique({
         where: { id: torrentId },
         select: {
@@ -34,6 +34,10 @@ export async function POST(
       prisma.user.findUnique({
         where: { id: session.user.id },
         select: { passkey: true },
+      }),
+      prisma.configuration.findUnique({
+        where: { key: 'BRANDING_NAME' },
+        select: { value: true },
       }),
     ]);
 
@@ -106,11 +110,15 @@ export async function POST(
     const modifiedBuffer = bencode.encode(torrentData);
     console.log('📦 Torrent re-codificado exitosamente');
 
+    // Create filename with branding name
+    const brandingName = brandingConfig?.value || 'NexusTracker';
+    const filename = `${torrent.name} - ${brandingName}.torrent`;
+
     // Return modified torrent file
     return new NextResponse(modifiedBuffer, {
       headers: {
         'Content-Type': 'application/x-bittorrent',
-        'Content-Disposition': `attachment; filename="${torrent.name}.torrent"`,
+        'Content-Disposition': `attachment; filename="${filename}"`,
       },
     });
   } catch (error) {

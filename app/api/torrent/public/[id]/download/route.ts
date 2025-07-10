@@ -14,22 +14,23 @@ export async function GET(
   try {
     const { id: torrentId } = await params;
 
-    // Get torrent data
-    const torrent = await prisma.torrent.findUnique({
-      where: { id: torrentId },
-      select: {
-        id: true,
-        name: true,
-        infoHash: true,
-        size: true,
-        files: {
-          select: {
-            name: true,
-            size: true,
-          },
+    // Get torrent data and branding configuration
+    const [torrent, brandingConfig] = await Promise.all([
+      prisma.torrent.findUnique({
+        where: { id: torrentId },
+        select: {
+          id: true,
+          name: true,
+          infoHash: true,
+          size: true,
+          files: true,
         },
-      },
-    });
+      }),
+      prisma.configuration.findUnique({
+        where: { key: 'BRANDING_NAME' },
+        select: { value: true },
+      }),
+    ]);
 
     if (!torrent) {
       return NextResponse.json(
@@ -41,11 +42,15 @@ export async function GET(
     // Generate .torrent file content
     const torrentContent = generateTorrentFile(torrent);
 
+    // Create filename with branding name
+    const brandingName = brandingConfig?.value || 'NexusTracker';
+    const filename = `${torrent.name} - ${brandingName}.torrent`;
+
     // Return the .torrent file
     return new NextResponse(torrentContent, {
       headers: {
         'Content-Type': 'application/x-bittorrent',
-        'Content-Disposition': `attachment; filename="${torrent.name}.torrent"`,
+        'Content-Disposition': `attachment; filename="${filename}"`,
       },
     });
   } catch (error) {
