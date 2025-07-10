@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Peer" ADD COLUMN     "left" BIGINT NOT NULL DEFAULT 0;
