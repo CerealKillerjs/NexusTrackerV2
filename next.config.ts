@@ -4,4 +4,14 @@ const nextConfig: NextConfig = {
   /* config options here */
 };
 
-export default nextConfig;
+export default {
+  /* config options here */
+  async rewrites() {
+    return [
+      {
+        source: '/announce',
+        destination: '/api/announce',
+      },
+    ];
+  },
+};

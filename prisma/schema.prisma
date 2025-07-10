@@ -71,6 +71,8 @@ model User {
   passwordResetTokens PasswordResetToken[]
   createdInvites      InviteCode[]         @relation("CreatedInvites")
   usedInvite          InviteCode?          @relation("UsedInvite")
+  peers               Peer[]
+  torrentCompletions  TorrentCompletion[]
 }
 
 model VerificationToken {
@@ -117,6 +119,8 @@ model Torrent {
   comments    Comment[]
   bookmarks   Bookmark[]
   votes       Vote[]
+  peers       Peer[]
+  torrentCompletions  TorrentCompletion[]
 
   @@map("torrents")
 }
@@ -197,4 +201,38 @@ model InviteCode {
   user      User?    @relation("UsedInvite", fields: [usedBy], references: [id], onDelete: SetNull)
   
   @@map("invite_codes")
+}
+
+model Peer {
+  id           String   @id @default(cuid())
+  peerId       String
+  ip           String
+  port         Int
+  torrentId    String
+  userId       String
+  lastAnnounce DateTime @updatedAt
+  client       String?
+  left         BigInt   @default(0) // Amount left to download
+
+  torrent      Torrent  @relation(fields: [torrentId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([peerId, torrentId])
+  @@index([torrentId])
+  @@index([userId])
+}
+
+model TorrentCompletion {
+  id        String   @id @default(cuid())
+  torrentId String
+  userId    String
+  peerId    String
+  completedAt DateTime @default(now())
+
+  torrent   Torrent  @relation(fields: [torrentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([torrentId])
+  @@index([userId])
+  @@index([peerId])
 }
