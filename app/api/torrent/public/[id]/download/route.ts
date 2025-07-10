@@ -109,7 +109,7 @@ function bencode(obj: unknown): string {
     let result = 'd';
     const keys = Object.keys(obj as object).sort();
     for (const key of keys) {
-      result += bencode(key) + bencode((obj as any)[key]);
+      result += bencode(key) + bencode((obj as Record<string, unknown>)[key]);
     }
     return result + 'e';
   }
