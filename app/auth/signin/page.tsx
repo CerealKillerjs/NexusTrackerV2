@@ -14,6 +14,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { showNotification } from '@/app/utils/notifications';
 import i18n from '@/app/lib/i18n';
+import { useBranding } from '@/app/providers/BrandingProvider';
 
 export default function LoginPage() {
   const { t } = useI18n();
@@ -25,6 +26,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [registrationMode, setRegistrationMode] = useState<string>('open');
   const [configLoading, setConfigLoading] = useState(true);
+  const { BRANDING_LOGO_URL, BRANDING_NAME } = useBranding();
 
   // Get registration mode on component mount
   useEffect(() => {
@@ -97,10 +99,14 @@ export default function LoginPage() {
       {/* Header */}
       <header className="flex justify-start items-center p-6">
         <Link href="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-background font-bold text-sm">N</span>
-          </div>
-          <span className="text-text font-semibold">NexusTracker</span>
+          {BRANDING_LOGO_URL ? (
+            <img src={BRANDING_LOGO_URL} alt="Logo" className="w-8 h-8 object-contain rounded-lg" />
+          ) : (
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-background font-bold text-sm">N</span>
+            </div>
+          )}
+          <span className="text-text font-semibold">{BRANDING_NAME || 'NexusTracker'}</span>
         </Link>
       </header>
 

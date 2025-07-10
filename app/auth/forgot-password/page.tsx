@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { FormField } from '../../components/ui/FigmaFloatingLabelInput';
 import { showNotification } from '@/app/utils/notifications';
+import { useBranding } from '@/app/providers/BrandingProvider';
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();
@@ -18,6 +19,7 @@ export default function ForgotPasswordPage() {
     login: ''
   });
   const [loading, setLoading] = useState(false);
+  const { BRANDING_LOGO_URL, BRANDING_NAME } = useBranding();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,10 +58,14 @@ export default function ForgotPasswordPage() {
       {/* Header */}
       <header className="flex justify-start items-center p-6">
         <Link href="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-background font-bold text-sm">N</span>
-          </div>
-          <span className="text-text font-semibold">NexusTracker</span>
+          {BRANDING_LOGO_URL ? (
+            <img src={BRANDING_LOGO_URL} alt="Logo" className="w-8 h-8 object-contain rounded-lg" />
+          ) : (
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-background font-bold text-sm">N</span>
+            </div>
+          )}
+          <span className="text-text font-semibold">{BRANDING_NAME || 'NexusTracker'}</span>
         </Link>
       </header>
 

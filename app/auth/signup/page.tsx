@@ -15,6 +15,7 @@ import PasswordStrengthBar from '../../components/auth/PasswordStrengthBar';
 import PasswordRequirementsCard from '../../components/auth/PasswordRequirementsCard';
 import { showNotification } from '@/app/utils/notifications';
 import { useRouter } from 'next/navigation';
+import { useBranding } from '@/app/providers/BrandingProvider';
 
 export default function RegisterPage() {
   const { t } = useTranslation();
@@ -34,6 +35,7 @@ export default function RegisterPage() {
   const [registrationMode, setRegistrationMode] = useState<string>('open');
   const [loading, setLoading] = useState(true);
   const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+  const { BRANDING_LOGO_URL, BRANDING_NAME } = useBranding();
 
   // Check for invite code in URL on component mount
   useEffect(() => {
@@ -236,10 +238,14 @@ export default function RegisterPage() {
       {/* Header */}
       <header className="flex justify-start items-center p-6">
         <Link href="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-background font-bold text-sm">N</span>
-          </div>
-          <span className="text-text font-semibold">NexusTracker</span>
+          {BRANDING_LOGO_URL ? (
+            <img src={BRANDING_LOGO_URL} alt="Logo" className="w-8 h-8 object-contain rounded-lg" />
+          ) : (
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-background font-bold text-sm">N</span>
+            </div>
+          )}
+          <span className="text-text font-semibold">{BRANDING_NAME || 'NexusTracker'}</span>
         </Link>
       </header>
 

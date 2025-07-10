@@ -73,6 +73,73 @@ export default function AdminSettingsPage() {
     }
   }
 
+  // Helper to convert HEX to RGB
+  function hexToRgb(hex: string) {
+    let c = hex.replace('#', '')
+    if (c.length === 3) c = c.split('').map(x => x + x).join('')
+    const num = parseInt(c, 16)
+    return `${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}`
+  }
+
+  // Handle file upload for logo and favicon
+  const handleFileUpload = async (type: 'logo' | 'favicon', file: File) => {
+    const formData = new FormData()
+    formData.append('type', type)
+    formData.append('file', file)
+    const res = await fetch('/api/admin/branding/upload', {
+      method: 'POST',
+      body: formData,
+    })
+    const data = await res.json()
+    if (res.ok && data.url) {
+      handleChange(type === 'logo' ? 'BRANDING_LOGO_URL' : 'BRANDING_FAVICON_URL', data.url)
+      showNotification.success(`${type === 'logo' ? 'Logo' : 'Favicon'} uploaded!`)
+    } else {
+      showNotification.error(data.error || 'Upload failed')
+    }
+  }
+
+  // Reset branding colors to defaults
+  const handleResetColors = async () => {
+    const defaultPrimary = '#2563eb';
+    const defaultSecondary = '#6c757d';
+    setConfig((prev) => ({
+      ...prev,
+      BRANDING_PRIMARY_COLOR: defaultPrimary,
+      BRANDING_SECONDARY_COLOR: defaultSecondary,
+    }));
+    // Save immediately
+    setSaving(true);
+    setError(null);
+    setSuccess(false);
+    try {
+      const res = await fetch("/api/admin/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          BRANDING_PRIMARY_COLOR: defaultPrimary,
+          BRANDING_SECONDARY_COLOR: defaultSecondary,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to reset colors");
+      showNotification.success("Colors reset to default");
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err.message || "Error resetting colors");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Branding keys
+  const brandingKeys = {
+    name: 'BRANDING_NAME',
+    logo: 'BRANDING_LOGO_URL',
+    favicon: 'BRANDING_FAVICON_URL',
+    primary: 'BRANDING_PRIMARY_COLOR',
+    secondary: 'BRANDING_SECONDARY_COLOR',
+  }
+
   if (loading) {
     return <AdminLayout><div className="p-8">Loading configuration...</div></AdminLayout>
   }
@@ -225,6 +292,94 @@ export default function AdminSettingsPage() {
                       : 'Home page shows simple login/register interface'
                     }
                   </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Branding Section */}
+            <div>
+              <h2 className="text-xl font-semibold text-text mb-4 mt-8">Branding</h2>
+              <div className="flex justify-end mb-4">
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors text-sm font-medium border border-primary/30 shadow"
+                  onClick={handleResetColors}
+                  disabled={saving}
+                >
+                  Reset to Default Colors
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Tracker Name */}
+                <div>
+                  <FormField
+                    label="Tracker Name"
+                    value={config[brandingKeys.name] || ''}
+                    onChange={val => handleChange(brandingKeys.name, val)}
+                    className="w-full text-white"
+                  />
+                </div>
+                {/* Logo Upload */}
+                <div>
+                  <label className="block text-sm font-medium text-white mb-1">Logo</label>
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/svg+xml"
+                    onChange={e => {
+                      if (e.target.files && e.target.files[0]) {
+                        handleFileUpload('logo', e.target.files[0])
+                      }
+                    }}
+                    className="block w-full text-white"
+                  />
+                  {config[brandingKeys.logo] && (
+                    <img src={config[brandingKeys.logo]} alt="Logo Preview" className="mt-2 h-12" />
+                  )}
+                </div>
+                {/* Favicon Upload */}
+                <div>
+                  <label className="block text-sm font-medium text-white mb-1">Favicon</label>
+                  <input
+                    type="file"
+                    accept="image/png,image/x-icon,image/svg+xml"
+                    onChange={e => {
+                      if (e.target.files && e.target.files[0]) {
+                        handleFileUpload('favicon', e.target.files[0])
+                      }
+                    }}
+                    className="block w-full text-white"
+                  />
+                  {config[brandingKeys.favicon] && (
+                    <img src={config[brandingKeys.favicon]} alt="Favicon Preview" className="mt-2 h-8" />
+                  )}
+                </div>
+                {/* Primary Color */}
+                <div>
+                  <label className="block text-sm font-medium text-white mb-1">Primary Color</label>
+                  <input
+                    type="color"
+                    value={config[brandingKeys.primary] || '#007bff'}
+                    onChange={e => handleChange(brandingKeys.primary, e.target.value)}
+                    className="w-16 h-10 p-0 border-none bg-transparent"
+                  />
+                  <div className="text-xs text-white mt-1">
+                    HEX: {config[brandingKeys.primary] || '#007bff'}<br />
+                    RGB: {hexToRgb(config[brandingKeys.primary] || '#007bff')}
+                  </div>
+                </div>
+                {/* Secondary Color */}
+                <div>
+                  <label className="block text-sm font-medium text-white mb-1">Secondary Color</label>
+                  <input
+                    type="color"
+                    value={config[brandingKeys.secondary] || '#6c757d'}
+                    onChange={e => handleChange(brandingKeys.secondary, e.target.value)}
+                    className="w-16 h-10 p-0 border-none bg-transparent"
+                  />
+                  <div className="text-xs text-white mt-1">
+                    HEX: {config[brandingKeys.secondary] || '#6c757d'}<br />
+                    RGB: {hexToRgb(config[brandingKeys.secondary] || '#6c757d')}
+                  </div>
                 </div>
               </div>
             </div>

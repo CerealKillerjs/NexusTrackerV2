@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useI18n } from '@/app/hooks/useI18n';
+import { useBranding } from '@/app/providers/BrandingProvider';
 // Icon imports
 import { Home } from '@styled-icons/boxicons-regular/Home';
 import { Upload } from '@styled-icons/boxicons-regular/Upload';
@@ -45,6 +46,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { BRANDING_LOGO_URL, BRANDING_NAME } = useBranding();
 
   // Navigation items with translations
   const navItems = [
@@ -129,7 +131,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="flex items-center justify-between h-full w-full px-8">
           {/* Left side - Logo */}
           <div className="flex items-center">
-            <h1 className="text-2xl font-extrabold text-primary tracking-tight drop-shadow-lg">NexusTracker V2</h1>
+            {BRANDING_LOGO_URL ? (
+              <img src={BRANDING_LOGO_URL} alt="Logo" className="h-10 w-10 object-contain mr-3" />
+            ) : (
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3">
+                <span className="text-background font-bold text-lg">N</span>
+              </div>
+            )}
+            <h1 className="text-2xl font-extrabold text-primary tracking-tight drop-shadow-lg">
+              {BRANDING_NAME || 'NexusTracker V2'}
+            </h1>
           </div>
           {/* Right side - User stats, search, upload, and user menu */}
           <div className="flex items-center space-x-6">

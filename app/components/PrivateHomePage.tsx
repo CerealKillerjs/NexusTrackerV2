@@ -11,19 +11,25 @@
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { Button } from './ui/Button';
+import { useBranding } from '@/app/providers/BrandingProvider';
 
 export default function PrivateHomePage() {
   const { t } = useTranslation();
+  const { BRANDING_LOGO_URL, BRANDING_NAME } = useBranding();
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-surface">
       {/* Header */}
       <header className="flex justify-start items-center p-6">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-background font-bold text-sm">N</span>
-          </div>
-          <span className="text-text font-semibold">NexusTracker</span>
+          {BRANDING_LOGO_URL ? (
+            <img src={BRANDING_LOGO_URL} alt="Logo" className="w-8 h-8 object-contain rounded-lg" />
+          ) : (
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-background font-bold text-sm">N</span>
+            </div>
+          )}
+          <span className="text-text font-semibold">{BRANDING_NAME || 'NexusTracker'}</span>
         </div>
       </header>
 
@@ -32,11 +38,16 @@ export default function PrivateHomePage() {
         {/* Hero Section */}
         <div className="text-center mb-12 max-w-2xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4">
-              <span className="text-primary">Nexus</span>
-              <span className="text-accent">Tracker</span>
-              <span className="text-text-secondary text-3xl md:text-4xl ml-2">V2</span>
-            </h1>
+            {(() => {
+              const name = (BRANDING_NAME || 'NexusTracker V2').split(' ');
+              return (
+                <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4">
+                  <span className="text-primary">{name[0]}</span>
+                  {name[1] && <span className="text-accent"> {name[1]}</span>}
+                  {name[2] && <span className="text-text-secondary text-3xl md:text-4xl ml-2"> {name.slice(2).join(' ')}</span>}
+                </h1>
+              );
+            })()}
             <p className="text-xl text-text-secondary leading-relaxed">
               {t('home.subtitle')}
             </p>

@@ -5,6 +5,7 @@ import { AuthProvider } from "./providers/AuthProvider";
 import { I18nProvider } from "./providers/I18nProvider";
 import { LanguageSelector } from "./components/ui/LanguageSelector";
 import { Toaster } from 'react-hot-toast';
+import BrandingClientWrapper from "./components/BrandingClientWrapper";
 
 /**
  * Font configuration for the application
@@ -77,12 +78,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-background via-background to-surface/20 text-foreground`}
         suppressHydrationWarning
       >
-        <I18nProvider>
-          <AuthProvider>
-            {children}
-            <LanguageSelector />
-          </AuthProvider>
-        </I18nProvider>
+        <BrandingClientWrapper>
+          <I18nProvider>
+            <AuthProvider>
+              {children}
+              <LanguageSelector />
+            </AuthProvider>
+          </I18nProvider>
+        </BrandingClientWrapper>
         <Toaster position="bottom-right" />
       </body>
     </html>
