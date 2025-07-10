@@ -9,10 +9,6 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-];
-
 // Export array with ignores as first element, then config
 export default [
   {
@@ -24,6 +20,12 @@ export default [
       "dist/",
       "*.min.js",
     ],
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
+      },
+    },
   },
-  ...eslintConfig,
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
