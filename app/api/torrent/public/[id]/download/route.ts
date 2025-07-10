@@ -22,12 +22,7 @@ export async function GET(
         name: true,
         infoHash: true,
         size: true,
-        files: {
-          select: {
-            name: true,
-            size: true,
-          },
-        },
+        files: true,
       },
     });
 
@@ -38,8 +33,18 @@ export async function GET(
       );
     }
 
+    // Parse files JSON and ensure correct type
+    let files: Array<{ name: string; size: number }> = [];
+    if (Array.isArray(torrent.files)) {
+      files = torrent.files.filter((f): f is { name: string; size: number } => {
+        if (!f || typeof f !== 'object' || Array.isArray(f)) return false;
+        const obj = f as Record<string, unknown>;
+        return typeof obj.name === 'string' && typeof obj.size === 'number';
+      });
+    }
+
     // Generate .torrent file content
-    const torrentContent = generateTorrentFile(torrent);
+    const torrentContent = generateTorrentFile({ ...torrent, files });
 
     // Return the .torrent file
     return new NextResponse(torrentContent, {
@@ -100,11 +105,11 @@ function bencode(obj: unknown): string {
     }
     return result + 'e';
   }
-  if (typeof obj === 'object') {
+  if (obj && typeof obj === 'object') {
     let result = 'd';
-    const keys = Object.keys(obj).sort();
+    const keys = Object.keys(obj as object).sort();
     for (const key of keys) {
-      result += bencode(key) + bencode(obj[key]);
+      result += bencode(key) + bencode((obj as any)[key]);
     }
     return result + 'e';
   }
