@@ -51,8 +51,6 @@ export async function GET(request: NextRequest) {
     const passkey = searchParams.get('passkey');
     const peerId = searchParams.get('peer_id');
     const port = searchParams.get('port');
-    const uploaded = searchParams.get('uploaded');
-    const downloadedParam = searchParams.get('downloaded');
     const left = searchParams.get('left');
     const event = searchParams.get('event');
     const numwant = parseInt(searchParams.get('numwant') || '50', 10);
@@ -87,7 +85,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get peer IP address (IPv4 or IPv6)
-    let ip =
+    const ip =
       request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
       request.headers.get('x-real-ip') ||
       searchParams.get('ip') ||
@@ -197,7 +195,7 @@ export async function GET(request: NextRequest) {
       where: { torrentId: torrent.id },
     });
 
-    let response: any = {
+    const response: Record<string, unknown> = {
       interval: 1800,
       'min interval': 900,
       complete,
@@ -216,7 +214,7 @@ export async function GET(request: NextRequest) {
           const portBuf = Buffer.alloc(2);
           portBuf.writeUInt16BE(p.port, 0);
           peerBuffers.push(Buffer.concat([ipBuf, portBuf]));
-        } catch (e) {
+        } catch {
           // Skip invalid IPs
         }
       }
