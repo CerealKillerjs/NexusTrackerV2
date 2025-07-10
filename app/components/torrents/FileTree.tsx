@@ -112,7 +112,7 @@ export default function FileTree({ files }: FileTreeProps) {
           parentFolder.children!.push(fileNode);
           
           // Update sizes of all parent folders
-          let current = parentFolder;
+          let current: FileNode | null = parentFolder;
           while (current) {
             current.size += file.size;
             const parentPath = current.path.split('/').slice(0, -1).join('/');
