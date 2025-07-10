@@ -4,12 +4,10 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/app/lib/auth';
 import { prisma } from '@/app/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth();
     const { searchParams } = new URL(request.url);
     
     // Pagination parameters
@@ -24,7 +22,7 @@ export async function GET(request: NextRequest) {
     const sortOrder = searchParams.get('sortOrder') || 'desc';
     
     // Build where clause
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     
     if (category) {
       where.type = category;
@@ -39,7 +37,7 @@ export async function GET(request: NextRequest) {
     }
     
     // Build order by clause
-    const orderBy: any = {};
+    const orderBy: Record<string, unknown> = {};
     orderBy[sortBy] = sortOrder;
     
     // Get torrents with related data

@@ -67,15 +67,15 @@ export async function GET(
     let files: { path: string; size: number }[] = [];
     try {
       if (torrent.files && typeof torrent.files === 'object') {
-        const filesData = torrent.files as any;
+        const filesData = torrent.files as unknown;
         if (Array.isArray(filesData)) {
-          files = filesData.map((file: any) => ({
+          files = filesData.map((file: { path?: string; name?: string; size?: number; length?: number }) => ({
             path: file.path || file.name || 'Unknown file',
             size: Number(file.size || file.length || 0),
           }));
         }
       }
-    } catch (fileError) {
+    } catch {
       console.log('Could not parse files JSON');
       files = [];
     }

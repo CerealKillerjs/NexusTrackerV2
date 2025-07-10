@@ -8,7 +8,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -62,7 +62,7 @@ export default function PublicTorrentDetailsPage() {
   const [shareCopied, setShareCopied] = useState(false);
 
   // Fetch torrent details
-  const fetchTorrentDetails = async () => {
+  const fetchTorrentDetails = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -89,7 +89,7 @@ export default function PublicTorrentDetailsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [torrentId]);
 
   // Format bytes
   const formatBytes = (bytes: number): string => {
@@ -159,7 +159,7 @@ export default function PublicTorrentDetailsPage() {
     if (torrentId) {
       fetchTorrentDetails();
     }
-  }, [torrentId]);
+  }, [torrentId, fetchTorrentDetails]);
 
   if (loading) {
     return (

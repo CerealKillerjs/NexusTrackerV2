@@ -3,11 +3,6 @@ import { auth } from "@/app/lib/auth"
 import { prisma } from "@/app/lib/prisma"
 import { validateInviteLimit } from "@/app/lib/invite-limits"
 
-// Helper function to generate unique invite codes
-function generateInviteCode(): string {
-  return [...Array(8)].map(() => Math.random().toString(36)[2]).join('').toUpperCase()
-}
-
 /**
  * GET /api/admin/users/[id]
  * 
@@ -20,7 +15,7 @@ function generateInviteCode(): string {
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current session
@@ -46,7 +41,7 @@ export async function GET(
       )
     }
 
-    const userId = params.id
+    const { id: userId } = await params
 
     // Get user data
     const user = await prisma.user.findUnique({
@@ -79,41 +74,6 @@ export async function GET(
         { status: 404 }
       )
     }
-
-    // Get invitation statistics
-    const now = new Date()
-    
-    // Get total created invitations
-    const totalCreated = await prisma.inviteCode.count({
-      where: { createdBy: userId }
-    })
-    
-    // Get active invitations (not used, not expired, and isActive)
-    const active = await prisma.inviteCode.count({
-      where: {
-        createdBy: userId,
-        isActive: true,
-        usedBy: null,
-        expiresAt: { gt: now }
-      }
-    })
-    
-    // Get used invitations
-    const used = await prisma.inviteCode.count({
-      where: {
-        createdBy: userId,
-        usedBy: { not: null }
-      }
-    })
-    
-    // Get expired invitations (expired and not used)
-    const expired = await prisma.inviteCode.count({
-      where: {
-        createdBy: userId,
-        expiresAt: { lte: now },
-        usedBy: null
-      }
-    })
 
     // Format user data
     const formattedUser = {
@@ -157,7 +117,7 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current session
@@ -183,7 +143,7 @@ export async function PUT(
       )
     }
 
-    const userId = params.id
+    const { id: userId } = await params
     const body = await request.json()
 
     // Validate required fields
@@ -235,7 +195,7 @@ export async function PUT(
     }
 
     // Prepare update data
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       username: body.username,
       email: body.email,
       role: body.role,
@@ -349,7 +309,7 @@ export async function PUT(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current session
@@ -375,7 +335,7 @@ export async function DELETE(
       )
     }
 
-    const userId = params.id
+    const { id: userId } = await params
 
     // Check if user exists
     const userToDelete = await prisma.user.findUnique({

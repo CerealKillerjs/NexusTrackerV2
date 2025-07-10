@@ -86,17 +86,17 @@ export async function POST(
 
       // Add all trackers from announce-list if it exists
       if (torrentData['announce-list']) {
-        console.log('📋 Procesando announce-list...');
-        torrentData['announce-list'].forEach((trackerGroup: any[], index: number) => {
-          console.log(`📋 Grupo ${index}:`, trackerGroup);
+        console.log('\ud83d\udccb Procesando announce-list...');
+        (torrentData['announce-list'] as unknown as unknown[][]).forEach((trackerGroup, index) => {
+          console.log(`\ud83d\udccb Grupo ${index}:`, trackerGroup);
           if (Array.isArray(trackerGroup)) {
-            trackerGroup.forEach((tracker: any) => {
+            trackerGroup.forEach((tracker) => {
               const trackerStr = Buffer.isBuffer(tracker) || tracker instanceof Uint8Array
                 ? Buffer.from(tracker).toString('utf8')
                 : String(tracker);
               if (trackerStr && !allTrackers.includes(trackerStr)) {
                 allTrackers.push(trackerStr);
-                console.log('✅ Agregado tracker:', trackerStr);
+                console.log('\u2705 Agregado tracker:', trackerStr);
               }
             });
           }

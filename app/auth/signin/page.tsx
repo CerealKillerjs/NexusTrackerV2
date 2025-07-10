@@ -25,7 +25,6 @@ export default function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
   const [registrationMode, setRegistrationMode] = useState<string>('open');
-  const [configLoading, setConfigLoading] = useState(true);
 
   // Get registration mode on component mount
   useEffect(() => {
@@ -39,7 +38,6 @@ export default function LoginPage() {
       } catch (error) {
         console.error('Error fetching registration mode:', error);
       } finally {
-        setConfigLoading(false);
       }
     };
 

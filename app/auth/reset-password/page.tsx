@@ -6,7 +6,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ import AuthCard from '../../components/auth/AuthCard';
 import AuthInput from '../../components/auth/AuthInput';
 import { showNotification } from '@/app/utils/notifications';
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -139,7 +139,7 @@ export default function ResetPasswordPage() {
 
       <div className="mt-4 text-center text-sm">
         <span className="text-text-secondary">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
         </span>
         <Link 
           href="/auth/signup"
@@ -149,5 +149,19 @@ export default function ResetPasswordPage() {
         </Link>
       </div>
     </AuthCard>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <AuthCard title="Reset Password">
+        <div className="text-center">
+          <p className="text-text-secondary">Loading...</p>
+        </div>
+      </AuthCard>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
   );
 } 

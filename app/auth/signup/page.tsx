@@ -6,7 +6,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -16,7 +16,7 @@ import PasswordStrengthBar from '../../components/auth/PasswordStrengthBar';
 import { showNotification } from '@/app/utils/notifications';
 import { useRouter } from 'next/navigation';
 
-export default function RegisterPage() {
+function RegisterForm() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -113,7 +113,13 @@ export default function RegisterPage() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const requestBody: any = {
+        const requestBody: {
+          username: string;
+          email: string;
+          password: string;
+          confirmPassword: string;
+          inviteCode?: string;
+        } = {
           username: formData.username,
           email: formData.email,
           password: formData.password,
@@ -282,5 +288,19 @@ export default function RegisterPage() {
         </>
       )}
     </AuthCard>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={
+      <AuthCard title="Register">
+        <div className="text-center py-8">
+          <div className="text-text-secondary">Loading...</div>
+        </div>
+      </AuthCard>
+    }>
+      <RegisterForm />
+    </Suspense>
   );
 } 

@@ -8,7 +8,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 // Icon imports
@@ -47,7 +47,7 @@ interface TorrentResponse {
   };
 }
 
-export default function SearchResultsPage() {
+function SearchResultsForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -87,7 +87,7 @@ export default function SearchResultsPage() {
   ];
 
   // Fetch torrents
-  const fetchTorrents = async (page = 1) => {
+  const fetchTorrents = useCallback(async (page = 1) => {
     try {
       setLoading(true);
       setError(null);
@@ -121,7 +121,7 @@ export default function SearchResultsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchQuery, category, sortBy, sortOrder]);
 
   // Handle search
   const handleSearch = (e: React.FormEvent) => {
@@ -161,7 +161,7 @@ export default function SearchResultsPage() {
   useEffect(() => {
     const page = parseInt(searchParams.get('page') || '1');
     fetchTorrents(page);
-  }, [searchParams]);
+  }, [searchParams, fetchTorrents]);
 
   return (
     <div className="min-h-screen bg-background text-text">
@@ -379,5 +379,21 @@ export default function SearchResultsPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function SearchResultsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background text-text">
+        <div className="max-w-7xl mx-auto px-4 py-12">
+          <div className="text-center">
+            <div className="text-text-secondary">Loading search results...</div>
+          </div>
+        </div>
+      </div>
+    }>
+      <SearchResultsForm />
+    </Suspense>
   );
 } 

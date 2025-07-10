@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import AuthCard from "@/app/components/auth/AuthCard";
 import { useI18n } from "@/app/hooks/useI18n";
 
-export default function VerifyEmailPage() {
+function VerifyEmailForm() {
   const { t } = useI18n();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -30,7 +30,7 @@ export default function VerifyEmailPage() {
           setStatus("error");
           setMessage(data.error || t('auth.emailVerification.verify.error'));
         }
-      } catch (e) {
+      } catch {
         setStatus("error");
         setMessage(t('auth.emailVerification.verify.verificationFailed'));
       }
@@ -66,5 +66,19 @@ export default function VerifyEmailPage() {
         )}
       </div>
     </AuthCard>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={
+      <AuthCard title="Email Verification">
+        <div className="text-center">
+          <p className="text-text-secondary">Verifying email...</p>
+        </div>
+      </AuthCard>
+    }>
+      <VerifyEmailForm />
+    </Suspense>
   );
 } 

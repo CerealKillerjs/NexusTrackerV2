@@ -61,12 +61,11 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Invitation states
-  const [inviteCode, setInviteCode] = useState<string>('');
   const [inviteLink, setInviteLink] = useState<string>('');
   const [inviteLoading, setInviteLoading] = useState(false);
   const [availableInvites, setAvailableInvites] = useState<number>(0);
   const [registrationMode, setRegistrationMode] = useState<string>('open');
-  const [activeInvites, setActiveInvites] = useState<any[]>([]);
+  const [activeInvites, setActiveInvites] = useState<{ id: string; code: string; createdAt: string; used: boolean; expiresAt?: string; inviteLink?: string; }[]>([]);
   const [loadingInvites, setLoadingInvites] = useState(false);
   const [maxInvitesPerUser, setMaxInvitesPerUser] = useState<number>(5);
 
@@ -163,8 +162,7 @@ export default function ProfilePage() {
       });
 
       if (response.ok) {
-        const { code, inviteLink } = await response.json();
-        setInviteCode(code);
+        const { inviteLink } = await response.json();
         setInviteLink(inviteLink);
         showNotification.success(t('profile.invitations.create.success'));
         // Refresh stats
@@ -501,7 +499,7 @@ export default function ProfilePage() {
                           </a>
                           <button
                             onClick={() => {
-                              setInviteCode('');
+                              // setInviteCode(''); // This line is removed
                               setInviteLink('');
                             }}
                             className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 
@@ -564,7 +562,7 @@ export default function ProfilePage() {
                         <h3 className="font-medium text-text">{t('profile.invitations.active.title')}</h3>
                         <div className="space-y-3">
                           {activeInvites.map((invite) => {
-                            const expiresAt = new Date(invite.expiresAt);
+                            const expiresAt = new Date(invite.expiresAt || '');
                             const isExpired = expiresAt < new Date();
                             const timeLeft = expiresAt.getTime() - new Date().getTime();
                             const hoursLeft = Math.max(0, Math.floor(timeLeft / (1000 * 60 * 60)));
@@ -597,7 +595,7 @@ export default function ProfilePage() {
                                 <div className="flex gap-2">
                                   <input
                                     type="text"
-                                    value={invite.inviteLink}
+                                    value={invite.inviteLink || ''}
                                     readOnly
                                     className="flex-1 p-2 bg-background border border-border rounded 
                                                text-text font-mono text-xs"
@@ -605,7 +603,7 @@ export default function ProfilePage() {
                                   <button
                                     onClick={async () => {
                                       try {
-                                        await navigator.clipboard.writeText(invite.inviteLink);
+                                        await navigator.clipboard.writeText(invite.inviteLink || '');
                                         showNotification.success(t('profile.invitations.active.copied'));
                                       } catch {
                                         showNotification.error(t('profile.invitations.active.copyError'));

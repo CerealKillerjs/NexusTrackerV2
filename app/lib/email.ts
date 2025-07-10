@@ -221,9 +221,8 @@ export const sendEmailChangeSecurityAlert = async (
   const config = await getSmtpConfig();
   const transporter = await createTransporter();
   // Fetch support email from configuration
-  let supportEmail: string | undefined;
   const supportConfig = await prisma.configuration.findUnique({ where: { key: 'SUPPORT_EMAIL' } });
-  supportEmail = supportConfig?.value || config.from || config.user;
+  const supportEmail: string | undefined = supportConfig?.value || config.from || config.user;
 
   // Generate a password reset token for the old email
   const user = await prisma.user.findFirst({ where: { email: oldEmail } });

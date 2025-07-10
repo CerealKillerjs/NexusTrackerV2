@@ -8,7 +8,6 @@ import { cn } from "@/app/lib/utils"
 interface ToggleSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
   checked?: boolean // Controlled checked state
   defaultChecked?: boolean // Uncontrolled initial checked state
-  label?: string // Optional label text
 }
 
 /**
@@ -24,7 +23,7 @@ interface ToggleSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
  * @param ref - Forwarded ref for DOM access
  */
 export const ToggleSwitch = forwardRef<HTMLInputElement, ToggleSwitchProps>(
-  ({ checked, defaultChecked, onChange, label, className, disabled, ...props }, ref) => {
+  ({ checked, defaultChecked, onChange, className, disabled, ...props }, ref) => {
     // Internal state for uncontrolled usage
     const [internalChecked, setInternalChecked] = useState(defaultChecked || false)
     const isControlled = checked !== undefined
@@ -75,3 +74,5 @@ export const ToggleSwitch = forwardRef<HTMLInputElement, ToggleSwitchProps>(
     )
   }
 )
+
+ToggleSwitch.displayName = "ToggleSwitch";

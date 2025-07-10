@@ -31,9 +31,7 @@ import { Calendar } from '@styled-icons/boxicons-regular/Calendar';
 import { Folder } from '@styled-icons/boxicons-regular/Folder';
 import { Tag } from '@styled-icons/boxicons-regular/Tag';
 import { InfoCircle } from '@styled-icons/boxicons-regular/InfoCircle';
-import { Comment } from '@styled-icons/boxicons-regular/Comment';
 import { Copy } from '@styled-icons/boxicons-regular/Copy';
-import { Plus } from '@styled-icons/boxicons-regular/Plus';
 import { Magnet } from '@styled-icons/boxicons-regular/Magnet';
 import Image from 'next/image';
 import { Chat } from '@styled-icons/boxicons-regular/Chat';
@@ -111,7 +109,7 @@ export default function TorrentDetailPage() {
   }, [torrentId, fetchTorrentData]);
 
   useEffect(() => {
-    if (session && !(session.user as any).emailVerified) {
+    if (session && typeof session.user === 'object' && session.user && 'emailVerified' in session.user && !session.user.emailVerified) {
       window.location.href = '/auth/unverified?login=' + encodeURIComponent(session.user?.email || session.user?.username || '');
     }
   }, [session]);

@@ -3,10 +3,10 @@ import { prisma } from '@/app/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
   try {
-    const code = params.code;
+    const { code } = await params;
 
     if (!code) {
       return NextResponse.json({ error: 'Código de invitación requerido' }, { status: 400 });

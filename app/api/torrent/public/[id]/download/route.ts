@@ -22,12 +22,7 @@ export async function GET(
         name: true,
         infoHash: true,
         size: true,
-        files: {
-          select: {
-            name: true,
-            size: true,
-          },
-        },
+        files: true,
       },
     });
 
@@ -38,8 +33,18 @@ export async function GET(
       );
     }
 
+    // Parse files JSON and ensure correct type
+    let files: Array<{ name: string; size: number }> = [];
+    if (Array.isArray(torrent.files)) {
+      files = torrent.files.filter((f): f is { name: string; size: number } => {
+        if (!f || typeof f !== 'object' || Array.isArray(f)) return false;
+        const obj = f as Record<string, unknown>;
+        return typeof obj.name === 'string' && typeof obj.size === 'number';
+      });
+    }
+
     // Generate .torrent file content
-    const torrentContent = generateTorrentFile(torrent);
+    const torrentContent = generateTorrentFile({ ...torrent, files });
 
     // Return the .torrent file
     return new NextResponse(torrentContent, {
@@ -58,7 +63,10 @@ export async function GET(
 }
 
 // Generate .torrent file content
-function generateTorrentFile(torrent: any): string {
+function generateTorrentFile(torrent: {
+  name: string;
+  files: Array<{ name: string; size: number }>;
+}): string {
   // This is a simplified .torrent file generation
   // In a real implementation, you would generate a proper .torrent file
   // For now, we'll create a basic structure
@@ -68,7 +76,7 @@ function generateTorrentFile(torrent: any): string {
       name: torrent.name,
       piece_length: 262144, // 256KB pieces
       pieces: '', // Would contain piece hashes
-      files: torrent.files.map((file: any) => ({
+      files: torrent.files.map((file) => ({
         length: file.size,
         path: [file.name],
       })),
@@ -83,7 +91,7 @@ function generateTorrentFile(torrent: any): string {
 }
 
 // Simple bencode implementation
-function bencode(obj: any): string {
+function bencode(obj: unknown): string {
   if (typeof obj === 'string') {
     return obj.length + ':' + obj;
   }
@@ -97,11 +105,11 @@ function bencode(obj: any): string {
     }
     return result + 'e';
   }
-  if (typeof obj === 'object') {
+  if (obj && typeof obj === 'object') {
     let result = 'd';
-    const keys = Object.keys(obj).sort();
+    const keys = Object.keys(obj as object).sort();
     for (const key of keys) {
-      result += bencode(key) + bencode(obj[key]);
+      result += bencode(key) + bencode((obj as Record<string, unknown>)[key]);
     }
     return result + 'e';
   }

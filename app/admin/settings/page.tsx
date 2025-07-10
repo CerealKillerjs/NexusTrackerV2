@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import AdminLayout from "@/app/components/admin/AdminLayout"
 import { Button } from "@/app/components/ui/Button"
-import { Input } from "@/app/components/ui/Input"
 import { FormField } from "@/app/components/ui/FigmaFloatingLabelInput"
 import { showNotification } from "@/app/utils/notifications"
 import { ToggleSwitch } from "@/app/components/ui/ToggleSwitch"
@@ -36,8 +35,8 @@ export default function AdminSettingsPage() {
         if (!res.ok) throw new Error("Failed to fetch configuration")
         const data = await res.json()
         setConfig(data.config || {})
-      } catch (err: any) {
-        setError(err.message || "Error loading configuration")
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Error loading configuration")
       } finally {
         setLoading(false)
       }
@@ -66,8 +65,8 @@ export default function AdminSettingsPage() {
       if (!res.ok) throw new Error("Failed to save configuration")
       showNotification.success("Configuration saved")
       setSuccess(true)
-    } catch (err: any) {
-      setError(err.message || "Error saving configuration")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Error saving configuration")
     } finally {
       setSaving(false)
     }
@@ -83,7 +82,6 @@ export default function AdminSettingsPage() {
   // Group settings (example: SMTP, Tracker, etc.)
   const smtpKeys = ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM"]
   const trackerKeys = ["NEXT_PUBLIC_TRACKER_URL"]
-  const registrationKeys = ["REGISTRATION_MODE", "INVITE_EXPIRY_HOURS", "MAX_INVITES_PER_USER"]
   const emailEnabledKey = "EMAIL_ENABLED"
   const emailEnabled = config[emailEnabledKey] !== "false"
   const supportEmailKey = "SUPPORT_EMAIL"

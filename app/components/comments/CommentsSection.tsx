@@ -10,7 +10,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useI18n } from '@/app/hooks/useI18n';
 import { showNotification } from '@/app/utils/notifications';
@@ -68,9 +68,31 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
     totalPages: 0,
   });
 
+  const fetchComments = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `/api/torrent/${torrentId}/comments?page=${pagination.page}&limit=${pagination.limit}`
+      );
+
+      if (!response.ok) {
+        throw new Error('Error al cargar los comentarios');
+      }
+
+      const data: CommentsResponse = await response.json();
+      setComments(data.comments);
+      setPagination(data.pagination);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+      showNotification.error(t('torrentDetail.comments.error.load'));
+    } finally {
+      setLoading(false);
+    }
+  }, [torrentId, pagination.page, pagination.limit, t]);
+
   useEffect(() => {
     fetchComments();
-  }, [torrentId, pagination.page]);
+  }, [torrentId, pagination.page, fetchComments]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -99,28 +121,6 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
       window.removeEventListener('openCommentModal', handleOpenModal);
     };
   }, [showModal, session]);
-
-  const fetchComments = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `/api/torrent/${torrentId}/comments?page=${pagination.page}&limit=${pagination.limit}`
-      );
-
-      if (!response.ok) {
-        throw new Error('Error al cargar los comentarios');
-      }
-
-      const data: CommentsResponse = await response.json();
-      setComments(data.comments);
-      setPagination(data.pagination);
-    } catch (error) {
-      console.error('Error fetching comments:', error);
-      showNotification.error(t('torrentDetail.comments.error.load'));
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();

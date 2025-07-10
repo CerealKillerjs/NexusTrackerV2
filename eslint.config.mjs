@@ -9,8 +9,23 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [
+// Export array with ignores as first element, then config
+export default [
+  {
+    ignores: [
+      "app/generated/",
+      "node_modules/",
+      ".next/",
+      "out/",
+      "dist/",
+      "*.min.js",
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
+      },
+    },
+  },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
-
-export default eslintConfig;

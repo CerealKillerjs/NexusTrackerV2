@@ -67,7 +67,7 @@ export default function AdminDashboardPage() {
 
   // Block access for unverified users
   useEffect(() => {
-    if (status === 'authenticated' && session && !(session.user as any).emailVerified) {
+    if (status === 'authenticated' && session && typeof session.user === 'object' && session.user && 'emailVerified' in session.user && !session.user.emailVerified) {
       router.push('/auth/unverified?login=' + encodeURIComponent(session.user?.email || session.user?.username || ''));
     }
   }, [status, session, router]);

@@ -9,7 +9,7 @@ async function isAdmin() {
 }
 
 // GET: Return all configuration as key-value pairs
-export async function GET(request: NextRequest) {
+export async function GET() {
   if (!(await isAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
   }

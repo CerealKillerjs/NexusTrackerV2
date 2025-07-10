@@ -18,6 +18,7 @@ export const ROLE_PERMISSIONS = {
     canComment: false,
     canVote: false,
     canReport: false,
+    canModerate: false,
     canAccessAdmin: false,
   },
   USER: {
@@ -28,6 +29,7 @@ export const ROLE_PERMISSIONS = {
     canComment: true,
     canVote: true,
     canReport: true,
+    canModerate: false,
     canAccessAdmin: false,
   },
   MODERATOR: {
