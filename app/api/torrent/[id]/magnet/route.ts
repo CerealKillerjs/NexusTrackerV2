@@ -57,7 +57,7 @@ export async function POST(
     const baseUrl = `${protocol}://${host}`;
 
     // Create announce URL with passkey
-    const announceUrl = `${baseUrl}/api/announce?passkey=${user.passkey}`;
+    const announceUrl = `${baseUrl}/announce?passkey=${user.passkey}`;
 
     // Get all trackers from the original torrent file
     const torrentBuffer = Buffer.from(torrent.binary, 'base64');
