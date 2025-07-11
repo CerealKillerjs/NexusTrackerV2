@@ -165,7 +165,7 @@ export default function AdminSettingsPage() {
           <h1 className="text-4xl font-extrabold text-text mb-2">System Settings</h1>
           <p className="text-lg text-text-secondary">Manage system-wide configuration for your tracker. Changes are applied instantly.</p>
         </div>
-        <div className="bg-surface/80 backdrop-blur-xl border border-border/30 rounded-2xl shadow-xl p-10">
+        <div className="rounded-2xl shadow-xl p-10 border border-border/30" style={{ background: "var(--surface-light)" }}>
           <form
             onSubmit={e => {
               e.preventDefault()

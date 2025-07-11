@@ -163,7 +163,8 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
       onClick={onClose}
     >
       <div 
-        className="bg-surface/90 backdrop-blur-2xl border border-border/30 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-border/30"
+        style={{ background: "var(--surface-light)" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -191,7 +192,7 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
           ) : user ? (
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* User Info Section */}
-              <div className="bg-surface-light/60 backdrop-blur-sm rounded-xl p-5 border border-border/20">
+              <div className="rounded-xl p-5 border border-border/20" style={{ background: "var(--surface-light)" }}>
                 <h3 className="font-semibold text-text mb-4 flex items-center">
                   <svg className="w-4 h-4 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -268,7 +269,7 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
               </div>
 
               {/* User Stats (Read-only) */}
-              <div className="bg-surface-light/60 backdrop-blur-sm rounded-xl p-5 border border-border/20">
+              <div className="rounded-xl p-5 border border-border/20" style={{ background: "var(--surface-light)" }}>
                 <h3 className="font-semibold text-text mb-4 flex items-center">
                   <svg className="w-4 h-4 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -302,7 +303,7 @@ export default function EditUserModal({ isOpen, onClose, userId, onUserUpdated }
               </div>
 
               {/* Invitations Section */}
-              <div className="bg-surface-light/60 backdrop-blur-sm rounded-xl p-5 border border-border/20">
+              <div className="rounded-xl p-5 border border-border/20" style={{ background: "var(--surface-light)" }}>
                 <h3 className="font-semibold text-text mb-4 flex items-center">
                   <svg className="w-4 h-4 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

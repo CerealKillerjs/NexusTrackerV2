@@ -56,7 +56,7 @@ export const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
       fontFamily: "var(--font-sans)",
       fontWeight: "bold",
       fontSize: "16px",
-      color: "var(--color-white)",
+      color: "var(--text)",
       lineHeight: "1.5",
       boxSizing: "border-box",
       display: "block",
@@ -90,13 +90,13 @@ export const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
             className={cn(
               "absolute font-bold pointer-events-none",
               isActive
-                ? "left-4 -top-2 text-xs px-2 h-5 flex items-center"
+                ? "left-4 -top-3 text-xs px-2 h-5 flex items-center"
                 : "left-5 top-1/2 -translate-y-1/2 text-base h-[22px] flex items-center"
             )}
             style={{
-              color: isActive ? "var(--color-primary)" : isHovered ? "var(--color-white)" : "var(--color-white)",
+              color: isActive ? "var(--color-primary)" : isHovered ? "var(--text)" : "var(--text)",
               fontFamily: "var(--font-sans)",
-              background: isActive ? "var(--background)" : "transparent",
+              background: isActive ? "var(--surface-light)" : "transparent",
               padding: isActive ? "0 8px" : "0 8px 0 8px",
               height: isActive ? "20px" : "22px",
               display: "flex",

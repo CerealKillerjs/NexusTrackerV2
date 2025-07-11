@@ -114,7 +114,7 @@ export default function LoginPage() {
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-12">
         <div className="w-full max-w-md mx-auto">
           {/* Auth Card */}
-          <div className="bg-surface/50 backdrop-blur-sm rounded-2xl p-8 border border-border/50 shadow-2xl">
+          <div className="rounded-2xl p-8 border border-border/50 shadow-2xl" style={{ background: "var(--surface-light)" }}>
             {/* Header */}
             <div className="text-center mb-8">
               <div className="flex items-center justify-center w-12 h-12 mb-4 mx-auto">
