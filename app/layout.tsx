@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./providers/AuthProvider";
 import { I18nProvider } from "./providers/I18nProvider";
+import { BrandingProvider } from "./contexts/BrandingContext";
 import { LanguageSelector } from "./components/ui/LanguageSelector";
 import { Toaster } from 'react-hot-toast';
 
@@ -79,8 +80,10 @@ export default function RootLayout({
       >
         <I18nProvider>
           <AuthProvider>
-            {children}
-            <LanguageSelector />
+            <BrandingProvider>
+              {children}
+              <LanguageSelector />
+            </BrandingProvider>
           </AuthProvider>
         </I18nProvider>
         <Toaster position="bottom-right" />

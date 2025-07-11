@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useI18n } from '@/app/hooks/useI18n';
+import { useBranding } from '@/app/contexts/BrandingContext';
 // Icon imports
 import { Home } from '@styled-icons/boxicons-regular/Home';
 import { Upload } from '@styled-icons/boxicons-regular/Upload';
@@ -42,6 +43,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter();
   const { data: session, status } = useSession();
   const { t } = useI18n();
+  const { branding, loading: brandingLoading } = useBranding();
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -129,7 +131,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="flex items-center justify-between h-full px-6">
           {/* Left side - Logo */}
           <div className="flex items-center">
-            <h1 className="text-xl font-bold text-primary">NexusTracker V2</h1>
+            <h1 className="text-xl font-bold text-primary">
+              {brandingLoading ? "NexusTracker V2" : (branding?.BRANDING_NAME || "NexusTracker V2")}
+            </h1>
           </div>
 
           {/* Right side - User stats, search, upload, and user menu */}

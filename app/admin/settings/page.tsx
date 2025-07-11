@@ -228,6 +228,25 @@ export default function AdminSettingsPage() {
               </div>
             </div>
 
+            {/* Branding Section */}
+            <div>
+              <h2 className="text-xl font-semibold text-text mb-4 mt-6">Branding</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <FormField
+                    label="Tracker Name"
+                    value={config["BRANDING_NAME"] || ''}
+                    onChange={val => handleChange("BRANDING_NAME", val)}
+                    className="w-full text-white"
+                    placeholder="e.g., MyTracker, AwesomeTracker, etc."
+                  />
+                  <p className="text-sm text-text-secondary mt-1">
+                    This name will appear in headers, titles, and downloaded torrent files
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Save Button and Success Message */}
             <div className="flex items-center space-x-4 mt-8">
               <Button type="submit" disabled={saving} variant="accent">
