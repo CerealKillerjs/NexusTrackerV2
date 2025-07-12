@@ -213,6 +213,35 @@
       "freeleech": "FL"
     }
   },
+  "categories": {
+    "title": "Categories",
+    "subtitle": "Explore torrents by category",
+    "browseAll": "Browse All",
+    "browseCategory": "Browse Category",
+    "torrents": "torrents",
+    "recentTorrents": "Recent Torrents",
+    "statistics": "Statistics",
+    "movies": "Movies",
+    "moviesDescription": "High-quality movies, from classics to new releases",
+    "tv": "TV Shows",
+    "tvDescription": "Complete TV series and individual episodes",
+    "music": "Music",
+    "musicDescription": "Albums, singles and music in different formats",
+    "books": "Books",
+    "booksDescription": "E-books, audiobooks and publications",
+    "games": "Games",
+    "gamesDescription": "Video games for PC, consoles and mobile devices",
+    "software": "Software",
+    "softwareDescription": "Applications, tools and development software",
+    "other": "Other",
+    "otherDescription": "Miscellaneous content and other files"
+  },
+  "tags": {
+    "title": "Popular Tags",
+    "subtitle": "The most used tags on the platform",
+    "viewAll": "View all tags",
+    "noTags": "No tags available"
+  },
   "sidebar": {
     "nav": {
       "home": "Home",
