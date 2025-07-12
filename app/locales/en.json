@@ -118,6 +118,26 @@
     "loading": "Loading...",
     "copy": "Copy"
   },
+  "errors": {
+    "500": {
+      "title": "Server Error",
+      "message": "An unexpected error occurred",
+      "retry": "Retry",
+      "home": "Go Home"
+    },
+    "404": {
+      "title": "Page Not Found",
+      "message": "The page you're looking for doesn't exist or has been moved",
+      "home": "Go Home",
+      "back": "Go Back"
+    },
+    "global": {
+      "title": "Global Server Error",
+      "message": "A critical server error has occurred",
+      "retry": "Retry",
+      "home": "Go Home"
+    }
+  },
   "home": {
     "subtitle": "The OverPowered Torrent Tracker",
     "nav": {

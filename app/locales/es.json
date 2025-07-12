@@ -118,6 +118,26 @@
     "loading": "Cargando...",
     "copy": "Copiar"
   },
+  "errors": {
+    "500": {
+      "title": "Error del Servidor",
+      "message": "Ha ocurrido un error inesperado",
+      "retry": "Reintentar",
+      "home": "Ir al Inicio"
+    },
+    "404": {
+      "title": "Página No Encontrada",
+      "message": "La página que buscas no existe o ha sido movida",
+      "home": "Ir al Inicio",
+      "back": "Volver Atrás"
+    },
+    "global": {
+      "title": "Error Global del Servidor",
+      "message": "Ha ocurrido un error crítico en el servidor",
+      "retry": "Reintentar",
+      "home": "Ir al Inicio"
+    }
+  },
   "home": {
     "subtitle": "El Rastreador de Torrents SobrePotenciado",
     "nav": {
