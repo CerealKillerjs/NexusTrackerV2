@@ -16,9 +16,32 @@ const createCommentSchema = z.object({
 });
 
 // Helper function to build comment tree
-function buildCommentTree(comments: any[], maxDepth: number = 4) {
-  const commentMap = new Map();
-  const rootComments: any[] = [];
+interface CommentWithReplies {
+  id: string;
+  content: string;
+  userId: string;
+  torrentId: string | null;
+  parentId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  user: {
+    id: string;
+    username: string;
+    role: string;
+    createdAt: Date;
+  };
+  _count: {
+    upvotes: number;
+    downvotes: number;
+  };
+  userVote: 'upvote' | 'downvote' | null;
+  isOP: boolean;
+  replies: CommentWithReplies[];
+}
+
+function buildCommentTree(comments: CommentWithReplies[], maxDepth: number = 4): CommentWithReplies[] {
+  const commentMap = new Map<string, CommentWithReplies>();
+  const rootComments: CommentWithReplies[] = [];
 
   // First pass: create a map of all comments
   comments.forEach(comment => {
