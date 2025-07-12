@@ -164,6 +164,7 @@ export async function GET(
         _count: counts,
         userVote: userVotes[comment.id] || null,
         isOP,
+        replies: [], // Add empty replies array
       };
     });
 
