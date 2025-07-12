@@ -10,7 +10,7 @@
 
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -20,18 +20,11 @@ import { showNotification } from '@/app/utils/notifications';
 // Icon imports
 import { Bookmark } from '@styled-icons/boxicons-regular/Bookmark';
 import { File } from '@styled-icons/boxicons-regular/File';
-import { ListUl } from '@styled-icons/boxicons-regular/ListUl';
-import { Download } from '@styled-icons/boxicons-regular/Download';
 import { CaretUp } from '@styled-icons/boxicons-regular/CaretUp';
 import { CaretDown } from '@styled-icons/boxicons-regular/CaretDown';
-import { BarChartSquare } from '@styled-icons/boxicons-regular/BarChartSquare';
-import { News } from '@styled-icons/boxicons-regular/News';
-import { User } from '@styled-icons/boxicons-regular/User';
-import { Chat } from '@styled-icons/boxicons-solid/Chat';
 import { Refresh } from '@styled-icons/boxicons-regular/Refresh';
 import { Trash } from '@styled-icons/boxicons-regular/Trash';
 import { X } from '@styled-icons/boxicons-regular/X';
-import { Check } from '@styled-icons/boxicons-regular/Check';
 import { SelectField } from '@/app/components/ui/FigmaFloatingLabelSelect';
 import { FormField } from '@/app/components/ui/FigmaFloatingLabelInput';
 
@@ -70,7 +63,7 @@ interface BookmarksResponse {
 
 // Función para formatear bytes a tamaño legible
 function formatBytes(bytes: string | number): string {
-  let num = typeof bytes === 'string' ? parseInt(bytes, 10) : bytes;
+  const num = typeof bytes === 'string' ? parseInt(bytes, 10) : bytes;
   if (isNaN(num) || num === 0) return '0 B';
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -110,7 +103,7 @@ export default function BookmarksPage() {
   }, [bookmarks]);
 
   // Fetch bookmarks from API
-  const fetchBookmarks = async (page = 1, opts?: { search?: string; category?: string; sortOrder?: 'desc' | 'asc' }) => {
+  const fetchBookmarks = useCallback(async (page = 1, opts?: { search?: string; category?: string; sortOrder?: 'desc' | 'asc' }) => {
     try {
       setLoading(true);
       setError(null);
@@ -137,7 +130,7 @@ export default function BookmarksPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search, category, sortOrder]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -158,7 +151,7 @@ export default function BookmarksPage() {
     if (status === 'authenticated') {
       fetchBookmarks();
     }
-  }, [status]);
+  }, [status, fetchBookmarks]);
 
   // Handle bookmark removal
   const handleRemoveBookmark = (bookmark: Bookmark) => {
@@ -204,31 +197,10 @@ export default function BookmarksPage() {
     setBookmarkToDelete(null);
   };
 
-  // Handlers para filtros
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCategory(e.target.value);
-    fetchBookmarks(1, { category: e.target.value });
-  };
-  const handleSortOrderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const order = e.target.value as 'desc' | 'asc';
-    setSortOrder(order);
-    fetchBookmarks(1, { sortOrder: order });
-  };
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
+  // Handle search submit
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     fetchBookmarks(1, { search });
-  };
-
-  // Format date
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
   };
 
   // Show loading while checking authentication
