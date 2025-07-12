@@ -52,6 +52,8 @@ function buildCommentTree(comments: CommentWithReplies[], maxDepth: number = 4):
   comments.forEach(comment => {
     const commentWithReplies = commentMap.get(comment.id);
     
+    if (!commentWithReplies) return; // Skip if comment not found in map
+    
     if (comment.parentId) {
       // This is a reply
       const parent = commentMap.get(comment.parentId);
