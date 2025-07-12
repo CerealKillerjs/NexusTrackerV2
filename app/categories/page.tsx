@@ -8,7 +8,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useI18n } from '@/app/hooks/useI18n';
 // Icon imports
@@ -63,8 +63,8 @@ export default function CategoriesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Define categories with their metadata
-  const categories: Category[] = [
+  // Define categories with their metadata - memoized to prevent recreation
+  const categories: Category[] = useMemo(() => [
     {
       id: 'Movies',
       name: 'Movies',
@@ -135,7 +135,7 @@ export default function CategoriesPage() {
       count: 0,
       recentTorrents: [],
     },
-  ];
+  ], [t]);
 
   // Fetch category statistics and popular tags
   useEffect(() => {
