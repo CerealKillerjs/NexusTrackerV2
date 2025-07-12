@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import AdminLayout from "@/app/components/admin/AdminLayout"
 import { Button } from "@/app/components/ui/Button"
 import { FormField } from "@/app/components/ui/FigmaFloatingLabelInput"
+import { SelectField } from "@/app/components/ui/FigmaFloatingLabelSelect"
 import { showNotification } from "@/app/utils/notifications"
 import { ToggleSwitch } from "@/app/components/ui/ToggleSwitch"
 
@@ -169,16 +170,17 @@ export default function AdminSettingsPage() {
               <h2 className="text-xl font-semibold text-text mb-4 mt-6">Registration & Invites</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <select
-                    id="REGISTRATION_MODE"
+                  <SelectField
+                    label="Registration Mode"
+                    options={[
+                      { value: "open", label: "Open Registration" },
+                      { value: "invite_only", label: "Invite Only" },
+                      { value: "closed", label: "Closed" },
+                    ]}
                     value={config["REGISTRATION_MODE"] || 'open'}
-                    onChange={e => handleChange("REGISTRATION_MODE", e.target.value)}
-                    className="w-full px-3 py-2 bg-surface border border-border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="open">Open Registration</option>
-                    <option value="invite_only">Invite Only</option>
-                    <option value="closed">Closed</option>
-                  </select>
+                    onChange={val => handleChange("REGISTRATION_MODE", val)}
+                    className="w-full text-white"
+                  />
                 </div>
                 <div>
                   <FormField
@@ -208,16 +210,16 @@ export default function AdminSettingsPage() {
               <h2 className="text-xl font-semibold text-text mb-4 mt-6">Public Browsing</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block font-medium mb-1 text-white" htmlFor="PUBLIC_BROWSING_MODE">Browsing Mode</label>
-                  <select
-                    id="PUBLIC_BROWSING_MODE"
+                  <SelectField
+                    label="Browsing Mode"
+                    options={[
+                      { value: "PUBLIC", label: "Public - Search Engine Style" },
+                      { value: "PRIVATE", label: "Private - Login Required" },
+                    ]}
                     value={config["PUBLIC_BROWSING_MODE"] || 'PUBLIC'}
-                    onChange={e => handleChange("PUBLIC_BROWSING_MODE", e.target.value)}
-                    className="w-full px-3 py-2 bg-surface border border-border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="PUBLIC">Public - Search Engine Style</option>
-                    <option value="PRIVATE">Private - Login Required</option>
-                  </select>
+                    onChange={val => handleChange("PUBLIC_BROWSING_MODE", val)}
+                    className="w-full text-white"
+                  />
                   <p className="text-sm text-text-secondary mt-1">
                     {config["PUBLIC_BROWSING_MODE"] === 'PUBLIC' 
                       ? 'Home page shows public torrent search (current design)'
