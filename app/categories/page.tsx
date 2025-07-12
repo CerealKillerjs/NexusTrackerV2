@@ -152,7 +152,7 @@ export default function CategoriesPage() {
             return {
               categoryId: category.id,
               count: data.pagination.total,
-              recentTorrents: data.torrents.slice(0, 3).map((torrent: any) => ({
+              recentTorrents: data.torrents.slice(0, 3).map((torrent: { id: string; title: string; size: string; downloads: number; uploadedAt: string }) => ({
                 id: torrent.id,
                 name: torrent.title,
                 size: torrent.size,
@@ -197,7 +197,7 @@ export default function CategoriesPage() {
     };
 
     fetchData();
-  }, []);
+  }, [categories]);
 
   // Format file size
   const formatSize = (bytes: string): string => {
