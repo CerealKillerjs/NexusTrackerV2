@@ -253,6 +253,54 @@
       "bookmarks": "Marcadores"
     }
   },
+  "bookmarks": {
+    "title": "Mis Marcadores",
+    "description": "Tienes {{count}} torrents marcados",
+    "list": {
+      "title": "Lista de Marcadores",
+      "count": "{{count}} de {{total}} marcadores",
+      "refresh": "Actualizar",
+      "loading": "Cargando marcadores...",
+      "error": "Error al cargar los marcadores",
+      "retry": "Reintentar",
+      "empty": "No tienes marcadores",
+      "emptyDescription": "Los torrents que marques aparecerán aquí para acceso rápido",
+      "browseTorrents": "Explorar Torrents"
+    },
+    "table": {
+      "headers": {
+        "title": "Título",
+        "category": "Categoría",
+        "size": "Tamaño",
+        "seedersLeechers": "Seeders/Leechers",
+        "stats": "Estadísticas",
+        "bookmarked": "Marcado el",
+        "actions": "Acciones"
+      },
+      "stats": {
+        "downloads": "descargas"
+      }
+    },
+    "pagination": {
+      "info": "Página {{page}} de {{totalPages}} ({{total}} marcadores total)",
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
+    "actions": {
+      "remove": "Eliminar marcador"
+    },
+    "modal": {
+      "title": "Eliminar Marcador",
+      "message": "¿Estás seguro de que quieres eliminar \"{{title}}\" de tus marcadores?",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar",
+      "deleting": "Eliminando..."
+    },
+    "notifications": {
+      "removed": "Marcador eliminado exitosamente",
+      "error": "Error al eliminar el marcador"
+    }
+  },
   "header": {
     "search": {
       "placeholder": "Buscar torrents..."

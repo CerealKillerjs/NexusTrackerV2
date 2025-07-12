@@ -253,6 +253,54 @@
       "bookmarks": "Bookmarks"
     }
   },
+  "bookmarks": {
+    "title": "My Bookmarks",
+    "description": "You have {{count}} bookmarked torrents",
+    "list": {
+      "title": "Bookmarks List",
+      "count": "{{count}} of {{total}} bookmarks",
+      "refresh": "Refresh",
+      "loading": "Loading bookmarks...",
+      "error": "Error loading bookmarks",
+      "retry": "Retry",
+      "empty": "You don't have any bookmarks",
+      "emptyDescription": "Torrents you bookmark will appear here for quick access",
+      "browseTorrents": "Browse Torrents"
+    },
+    "table": {
+      "headers": {
+        "title": "Title",
+        "category": "Category",
+        "size": "Size",
+        "seedersLeechers": "Seeders/Leechers",
+        "stats": "Stats",
+        "bookmarked": "Bookmarked on",
+        "actions": "Actions"
+      },
+      "stats": {
+        "downloads": "downloads"
+      }
+    },
+    "pagination": {
+      "info": "Page {{page}} of {{totalPages}} ({{total}} bookmarks total)",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "actions": {
+      "remove": "Remove bookmark"
+    },
+    "modal": {
+      "title": "Remove Bookmark",
+      "message": "Are you sure you want to remove \"{{title}}\" from your bookmarks?",
+      "cancel": "Cancel",
+      "confirm": "Remove",
+      "deleting": "Removing..."
+    },
+    "notifications": {
+      "removed": "Bookmark removed successfully",
+      "error": "Error removing bookmark"
+    }
+  },
   "header": {
     "search": {
       "placeholder": "Search torrents..."
