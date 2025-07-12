@@ -90,6 +90,11 @@ export const SelectField = React.forwardRef<HTMLSelectElement, SelectFieldProps>
       zIndex: 10,
     };
 
+    const optionStyle: React.CSSProperties = {
+      backgroundColor: 'var(--surface)',
+      color: 'var(--text)',
+    };
+
     return (
       <div
         className={cn("relative w-full min-w-[240px] max-w-[400px]", className)}
@@ -135,7 +140,7 @@ export const SelectField = React.forwardRef<HTMLSelectElement, SelectFieldProps>
             className="selectfield-input"
           >
             {options.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option key={option.value} value={option.value} style={optionStyle}>
                 {option.label}
               </option>
             ))}
