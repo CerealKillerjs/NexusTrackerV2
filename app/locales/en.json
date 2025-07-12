@@ -79,7 +79,8 @@
       "button": "Send Reset Link",
       "success": "If an account with that email/username exists, a password reset link has been sent.",
       "error": "Failed to send password reset email. Please try again later.",
-      "resetPasswordError": "Unable to reset password (feature disabled). Please contact admin if you think this is wrong."
+      "resetPasswordError": "Unable to reset password (feature disabled). Please contact admin if you think this is wrong.",
+      "rememberPassword": "Remember your password?"
     },
     "resetPassword": {
       "title": "Reset Password",

@@ -7,14 +7,14 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useI18n } from '@/app/hooks/useI18n';
 import Link from 'next/link';
 import AuthCard from '../../components/auth/AuthCard';
 import AuthInput from '../../components/auth/AuthInput';
 import { showNotification } from '@/app/utils/notifications';
 
 export default function ForgotPasswordPage() {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const [formData, setFormData] = useState({
     login: ''
   });
@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
       const data = await response.json();
 
       if (response.ok) {
-        showNotification.success(data.message || 'Password reset email sent!');
+        showNotification.success(data.message || t('auth.forgotPassword.success'));
         setFormData({ login: '' }); // Clear the form
       } else {
         showNotification.error(data.error || t('auth.notification.error'));
@@ -77,25 +77,25 @@ export default function ForgotPasswordPage() {
 
       <div className="mt-6 text-center text-sm">
         <span className="text-text-secondary">
-          Remember your password?{' '}
+          {t('auth.forgotPassword.rememberPassword')}{' '}
         </span>
         <Link 
           href="/auth/signin"
           className="text-primary hover:text-primary-dark transition-colors"
         >
-          Sign in
+          {t('auth.signin.button')}
         </Link>
       </div>
 
       <div className="mt-4 text-center text-sm">
         <span className="text-text-secondary">
-          Don&apos;t have an account?{' '}
+          {t('auth.signin.noAccount')}{' '}
         </span>
         <Link 
           href="/auth/signup"
           className="text-primary hover:text-primary-dark transition-colors"
         >
-          Sign up
+          {t('auth.signin.signUpLink')}
         </Link>
       </div>
     </AuthCard>
