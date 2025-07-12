@@ -421,12 +421,26 @@ export default function TorrentDetailPage() {
 
             {/* Comments Section */}
             <div className="bg-surface rounded-lg border border-border p-6">
-              <h2 className="text-xl font-semibold text-text mb-4 flex items-center">
-                <Chat size={20} className="mr-2" />
-                {t('torrentDetail.comments.title')}
-              </h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-text flex items-center">
+                  <Chat size={20} className="mr-2" />
+                  {t('torrentDetail.comments.count').replace('{{count}}', (torrent._count?.comments || 0).toString())}
+                </h2>
+                
+                {session && (
+                  <button
+                    onClick={() => {
+                      // Trigger modal opening event for CommentsSection
+                      const event = new CustomEvent('openCommentModal');
+                      window.dispatchEvent(event);
+                    }}
+                    className="bg-primary text-background px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors flex items-center space-x-2"
+                  >
+                    <span>{t('torrentDetail.comments.addComment')}</span>
+                  </button>
+                )}
+              </div>
               
-              {/* This function will be handled in the CommentsSection component */}
               <CommentsSection torrentId={torrentId} />
             </div>
           </div>

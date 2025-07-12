@@ -4,8 +4,9 @@
  * Displays and manages comments for a torrent with:
  * - Comment list with pagination
  * - Modal for comment creation
- * - Vote functionality
- * - User information display
+ * - Vote functionality (up/down)
+ * - User information display with roles
+ * - Real-time updates and validation
  */
 
 'use client';
@@ -68,6 +69,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
     totalPages: 0,
   });
 
+  // Fetch comments from API
   const fetchComments = useCallback(async () => {
     try {
       setLoading(true);
@@ -76,7 +78,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
       );
 
       if (!response.ok) {
-        throw new Error('Error al cargar los comentarios');
+        throw new Error('Error loading comments');
       }
 
       const data: CommentsResponse = await response.json();
@@ -90,10 +92,12 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
     }
   }, [torrentId, pagination.page, pagination.limit, t]);
 
+  // Fetch comments when component mounts or pagination changes
   useEffect(() => {
     fetchComments();
-  }, [torrentId, pagination.page, fetchComments]);
+  }, [fetchComments]);
 
+  // Handle modal events and keyboard shortcuts
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showModal) {
@@ -112,7 +116,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
       document.body.style.overflow = 'hidden';
     }
 
-    // Listen for the open modal event from parent
+    // Listen for the open modal event from parent component
     window.addEventListener('openCommentModal', handleOpenModal);
 
     return () => {
@@ -122,6 +126,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
     };
   }, [showModal, session]);
 
+  // Handle comment submission
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -147,7 +152,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Error al crear el comentario');
+        throw new Error(errorData.error || 'Error creating comment');
       }
 
       const data = await response.json();
@@ -163,12 +168,13 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
       }));
     } catch (error) {
       console.error('Error creating comment:', error);
-      showNotification.error(error instanceof Error ? error.message : 'Error al crear el comentario');
+      showNotification.error(error instanceof Error ? error.message : 'Error creating comment');
     } finally {
       setSubmitting(false);
     }
   };
 
+  // Handle vote on comment
   const handleVote = async (commentId: string, voteType: 'up' | 'down') => {
     if (!session) {
       showNotification.error(t('torrentDetail.comments.error.loginRequired'));
@@ -185,10 +191,10 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Error al votar');
+        throw new Error('Error voting');
       }
 
-      // Update local state
+      // Update local state optimistically
       setComments(prev => prev.map(comment => {
         if (comment.id === commentId) {
           const currentVote = comment.userVote;
@@ -224,10 +230,11 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
       showNotification.success(t('torrentDetail.comments.success.vote'));
     } catch (error) {
       console.error('Error voting:', error);
-      showNotification.error('Error al votar');
+      showNotification.error('Error voting');
     }
   };
 
+  // Format date for display
   const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('es-ES', {
       year: 'numeric',
@@ -238,6 +245,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
     });
   };
 
+  // Format user role for display
   const formatUserRole = (role: string): string => {
     const roles: Record<string, string> = {
       admin: t('torrentDetail.comments.roles.admin'),
@@ -248,6 +256,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
     return roles[role] || role;
   };
 
+  // Close modal and reset form
   const closeModal = () => {
     setShowModal(false);
     setNewComment('');
@@ -255,7 +264,6 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
 
   return (
     <>
-
       {/* Comments List */}
       {loading ? (
         <div className="text-center py-8">
