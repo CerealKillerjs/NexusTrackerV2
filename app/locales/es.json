@@ -47,6 +47,14 @@
         "good": "Buena",
         "strong": "Fuerte"
       },
+      "securityRecommendations": "Recomendaciones para la seguridad",
+      "passwordRequirements": {
+        "minLength": "Al menos 8 caracteres",
+        "uppercase": "Al menos una mayúscula",
+        "lowercase": "Al menos una minúscula",
+        "number": "Al menos un número",
+        "special": "Al menos un carácter especial"
+      },
       "success": {
         "firstUser": "Usuario registrado exitosamente. Eres el administrador y tu correo ha sido verificado automáticamente.",
         "withVerification": "Usuario registrado exitosamente. Por favor revisa tu correo para verificar tu cuenta."
