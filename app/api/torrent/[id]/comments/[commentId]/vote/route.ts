@@ -30,24 +30,18 @@ export async function POST(
       return new NextResponse('Comment not found', { status: 404 });
     }
     // Check if user already voted
-    const existingVote = await prisma.vote.findUnique({
+    const existingVote = await prisma.vote.findFirst({
       where: {
-        userId_commentId_type: {
-          userId: session.user.id,
-          commentId,
-          type,
-        },
+        userId: session.user.id,
+        commentId,
+        type,
       },
     });
     if (existingVote) {
       // Remove existing vote (toggle)
       await prisma.vote.delete({
         where: {
-          userId_commentId_type: {
-            userId: session.user.id,
-            commentId,
-            type,
-          },
+          id: existingVote.id,
         },
       });
       return NextResponse.json({ message: 'Vote removed' });

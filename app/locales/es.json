@@ -517,8 +517,13 @@
       },
       "success": {
         "created": "Comentario creado exitosamente",
+        "replied": "Respuesta creada exitosamente",
         "vote": "Voto registrado"
-      }
+      },
+      "reply": "Responder",
+      "replyPlaceholder": "Escribe tu respuesta aquí...",
+      "submitReply": "Enviar respuesta",
+      "cancel": "Cancelar"
     },
     "actions": {
       "title": "Acciones",
