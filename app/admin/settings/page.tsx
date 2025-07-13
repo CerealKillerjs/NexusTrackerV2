@@ -9,15 +9,65 @@ import { FormField } from "@/app/components/ui/FigmaFloatingLabelInput"
 import { SelectField } from "@/app/components/ui/FigmaFloatingLabelSelect"
 import { showNotification } from "@/app/utils/notifications"
 import { ToggleSwitch } from "@/app/components/ui/ToggleSwitch"
+import { useI18n } from '@/app/hooks/useI18n'
+// Icon imports for menu items
+import { Cog } from '@styled-icons/boxicons-regular/Cog'
+import { Envelope } from '@styled-icons/boxicons-regular/Envelope'
+import { UserPlus } from '@styled-icons/boxicons-regular/UserPlus'
+import { Globe } from '@styled-icons/boxicons-regular/Globe'
+import { Palette } from '@styled-icons/boxicons-regular/Palette'
+import { Support } from '@styled-icons/boxicons-regular/Support'
 
 export default function AdminSettingsPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { t } = useI18n()
   const [config, setConfig] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [activeSection, setActiveSection] = useState('tracker')
+
+  // Configuration sections with translations
+  const CONFIG_SECTIONS = [
+    {
+      id: 'tracker',
+      title: t('admin.settings.sections.tracker'),
+      icon: Cog,
+      description: t('admin.settings.tracker.description')
+    },
+    {
+      id: 'email',
+      title: t('admin.settings.sections.email'),
+      icon: Envelope,
+      description: t('admin.settings.email.description')
+    },
+    {
+      id: 'support',
+      title: t('admin.settings.sections.support'),
+      icon: Support,
+      description: t('admin.settings.support.description')
+    },
+    {
+      id: 'registration',
+      title: t('admin.settings.sections.registration'),
+      icon: UserPlus,
+      description: t('admin.settings.registration.description')
+    },
+    {
+      id: 'browsing',
+      title: t('admin.settings.sections.browsing'),
+      icon: Globe,
+      description: t('admin.settings.browsing.description')
+    },
+    {
+      id: 'branding',
+      title: t('admin.settings.sections.branding'),
+      icon: Palette,
+      description: t('admin.settings.branding.description')
+    }
+  ]
 
   // Only allow admins
   useEffect(() => {
@@ -64,7 +114,7 @@ export default function AdminSettingsPage() {
         body: JSON.stringify(config),
       })
       if (!res.ok) throw new Error("Failed to save configuration")
-      showNotification.success("Configuration saved")
+      showNotification.success(t('admin.settings.actions.saved'))
       setSuccess(true)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Error saving configuration")
@@ -74,7 +124,7 @@ export default function AdminSettingsPage() {
   }
 
   if (loading) {
-    return <AdminLayout><div className="p-8">Loading configuration...</div></AdminLayout>
+    return <AdminLayout><div className="p-8">{t('common.loading')}</div></AdminLayout>
   }
   if (error) {
     return <AdminLayout><div className="p-8 text-red-600">{error}</div></AdminLayout>
@@ -87,57 +137,61 @@ export default function AdminSettingsPage() {
   const emailEnabled = config[emailEnabledKey] !== "false"
   const supportEmailKey = "SUPPORT_EMAIL"
 
-  return (
-    <AdminLayout>
-      <div className="max-w-3xl mx-auto py-10">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text mb-2">System Settings</h1>
-          <p className="text-text-secondary">Manage system-wide configuration for your tracker. Changes are applied instantly.</p>
-        </div>
-
-        <div className="bg-surface border border-border rounded-lg p-8 shadow-sm">
-          <form
-            onSubmit={e => {
-              e.preventDefault()
-              handleSave()
-            }}
-            className="space-y-8"
-          >
-            {/* Tracker Section */}
+  // Render section content
+  const renderSectionContent = () => {
+    switch (activeSection) {
+      case 'tracker':
+        return (
+          <div className="space-y-6">
             <div>
-              <h2 className="text-xl font-semibold text-text mb-4">Tracker</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {trackerKeys.map((key) => (
-                  <div key={key}>
-                    <FormField
-                      label={key.replace(/_/g, ' ')}
-                      value={config[key] || ''}
-                      onChange={val => handleChange(key, val)}
-                      className="w-full text-white"
-                    />
-                  </div>
-                ))}
-              </div>
+              <h2 className="text-xl font-semibold text-text mb-4">{t('admin.settings.tracker.title')}</h2>
+              <p className="text-text-secondary mb-6">{t('admin.settings.tracker.description')}</p>
             </div>
-
-            {/* SMTP Section */}
-            <div>
-              <div className="flex items-center justify-between mb-4 mt-6">
-                <h2 className="text-xl font-semibold text-text">Email (SMTP)</h2>
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-white">Enable Email</span>
-                  <ToggleSwitch
-                    checked={emailEnabled}
-                    onChange={e => handleChange(emailEnabledKey, e.target.checked ? "true" : "false")}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {trackerKeys.map((key) => (
+                <div key={key}>
+                  <FormField
+                    label={t('admin.settings.tracker.trackerUrl')}
+                    value={config[key] || ''}
+                    onChange={val => handleChange(key, val)}
+                    className="w-full text-white"
                   />
                 </div>
+              ))}
+            </div>
+          </div>
+        )
+
+      case 'email':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold text-text mb-4">{t('admin.settings.email.title')}</h2>
+              <p className="text-text-secondary mb-6">{t('admin.settings.email.description')}</p>
+            </div>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-medium text-text">{t('admin.settings.email.enableEmail')}</h3>
+                <p className="text-sm text-text-secondary">{t('admin.settings.email.enableEmailDesc')}</p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {smtpKeys.map((key) => (
+              <ToggleSwitch
+                checked={emailEnabled}
+                onChange={e => handleChange(emailEnabledKey, e.target.checked ? "true" : "false")}
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {smtpKeys.map((key) => {
+                // Map SMTP keys to translation keys
+                const translationKey = key === "SMTP_HOST" ? "smtpHost" :
+                                     key === "SMTP_PORT" ? "smtpPort" :
+                                     key === "SMTP_USER" ? "smtpUser" :
+                                     key === "SMTP_PASS" ? "smtpPass" :
+                                     key === "SMTP_FROM" ? "smtpFrom" : key.toLowerCase()
+                
+                return (
                   <div key={key}>
                     <FormField
-                      label={key.replace(/_/g, ' ')}
+                      label={t(`admin.settings.email.${translationKey}`)}
                       value={config[key] || ''}
                       onChange={val => handleChange(key, val)}
                       type={key === "SMTP_PASS" ? "password" : "text"}
@@ -145,118 +199,215 @@ export default function AdminSettingsPage() {
                       className="w-full text-white"
                     />
                   </div>
-                ))}
-              </div>
+                )
+              })}
             </div>
+          </div>
+        )
 
-            {/* Support Email Section */}
+      case 'support':
+        return (
+          <div className="space-y-6">
             <div>
-              <h2 className="text-xl font-semibold text-text mb-4 mt-8">Support Email</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <FormField
-                    label="Support Email"
-                    value={config[supportEmailKey] || ''}
-                    onChange={val => handleChange(supportEmailKey, val)}
-                    className="w-full text-white"
-                    type="email"
-                  />
-                </div>
+              <h2 className="text-xl font-semibold text-text mb-4">{t('admin.settings.support.title')}</h2>
+              <p className="text-text-secondary mb-6">{t('admin.settings.support.description')}</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <FormField
+                  label={t('admin.settings.support.supportEmail')}
+                  value={config[supportEmailKey] || ''}
+                  onChange={val => handleChange(supportEmailKey, val)}
+                  className="w-full text-white"
+                  type="email"
+                />
+                <p className="text-sm text-text-secondary mt-2">
+                  {t('admin.settings.support.supportEmailDesc')}
+                </p>
               </div>
             </div>
+          </div>
+        )
 
-            {/* Registration Section */}
+      case 'registration':
+        return (
+          <div className="space-y-6">
             <div>
-              <h2 className="text-xl font-semibold text-text mb-4 mt-6">Registration & Invites</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <SelectField
-                    label="Registration Mode"
-                    options={[
-                      { value: "open", label: "Open Registration" },
-                      { value: "invite_only", label: "Invite Only" },
-                      { value: "closed", label: "Closed" },
-                    ]}
-                    value={config["REGISTRATION_MODE"] || 'open'}
-                    onChange={val => handleChange("REGISTRATION_MODE", val)}
-                    className="w-full text-white"
-                  />
-                </div>
-                <div>
-                  <FormField
-                    label="Invite Expiry (hours)"
-                    value={config["INVITE_EXPIRY_HOURS"] || '6'}
-                    onChange={val => handleChange("INVITE_EXPIRY_HOURS", val)}
-                    className="w-full text-white"
-                    type="number"
-                    // min and max are not supported by FormField, but can be added if needed
-                  />
-                </div>
-                <div>
-                  <FormField
-                    label="Max Invites Per User"
-                    value={config["MAX_INVITES_PER_USER"] || '5'}
-                    onChange={val => handleChange("MAX_INVITES_PER_USER", val)}
-                    className="w-full text-white"
-                    type="number"
-                    // min and max are not supported by FormField, but can be added if needed
-                  />
-                </div>
+              <h2 className="text-xl font-semibold text-text mb-4">{t('admin.settings.registration.title')}</h2>
+              <p className="text-text-secondary mb-6">{t('admin.settings.registration.description')}</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <SelectField
+                  label={t('admin.settings.registration.registrationMode')}
+                  options={[
+                    { value: "open", label: t('admin.settings.registration.modes.open') },
+                    { value: "invite_only", label: t('admin.settings.registration.modes.inviteOnly') },
+                    { value: "closed", label: t('admin.settings.registration.modes.closed') },
+                  ]}
+                  value={config["REGISTRATION_MODE"] || 'open'}
+                  onChange={val => handleChange("REGISTRATION_MODE", val)}
+                  className="w-full text-white"
+                />
+                <p className="text-sm text-text-secondary mt-2">
+                  {t('admin.settings.registration.registrationModeDesc')}
+                </p>
+              </div>
+              <div>
+                <FormField
+                  label={t('admin.settings.registration.inviteExpiry')}
+                  value={config["INVITE_EXPIRY_HOURS"] || '6'}
+                  onChange={val => handleChange("INVITE_EXPIRY_HOURS", val)}
+                  className="w-full text-white"
+                  type="number"
+                />
+                <p className="text-sm text-text-secondary mt-2">
+                  {t('admin.settings.registration.inviteExpiryDesc')}
+                </p>
+              </div>
+              <div>
+                <FormField
+                  label={t('admin.settings.registration.maxInvites')}
+                  value={config["MAX_INVITES_PER_USER"] || '5'}
+                  onChange={val => handleChange("MAX_INVITES_PER_USER", val)}
+                  className="w-full text-white"
+                  type="number"
+                />
+                <p className="text-sm text-text-secondary mt-2">
+                  {t('admin.settings.registration.maxInvitesDesc')}
+                </p>
               </div>
             </div>
+          </div>
+        )
 
-            {/* Public Browsing Section */}
+      case 'browsing':
+        return (
+          <div className="space-y-6">
             <div>
-              <h2 className="text-xl font-semibold text-text mb-4 mt-6">Public Browsing</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <SelectField
-                    label="Browsing Mode"
-                    options={[
-                      { value: "PUBLIC", label: "Public - Search Engine Style" },
-                      { value: "PRIVATE", label: "Private - Login Required" },
-                    ]}
-                    value={config["PUBLIC_BROWSING_MODE"] || 'PUBLIC'}
-                    onChange={val => handleChange("PUBLIC_BROWSING_MODE", val)}
-                    className="w-full text-white"
-                  />
-                  <p className="text-sm text-text-secondary mt-1">
-                    {config["PUBLIC_BROWSING_MODE"] === 'PUBLIC' 
-                      ? 'Home page shows public torrent search (current design)'
-                      : 'Home page shows simple login/register interface'
-                    }
-                  </p>
-                </div>
+              <h2 className="text-xl font-semibold text-text mb-4">{t('admin.settings.browsing.title')}</h2>
+              <p className="text-text-secondary mb-6">{t('admin.settings.browsing.description')}</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <SelectField
+                  label={t('admin.settings.browsing.browsingMode')}
+                  options={[
+                    { value: "PUBLIC", label: t('admin.settings.browsing.public') },
+                    { value: "PRIVATE", label: t('admin.settings.browsing.private') },
+                  ]}
+                  value={config["PUBLIC_BROWSING_MODE"] || 'PUBLIC'}
+                  onChange={val => handleChange("PUBLIC_BROWSING_MODE", val)}
+                  className="w-full text-white"
+                />
+                <p className="text-sm text-text-secondary mt-2">
+                  {config["PUBLIC_BROWSING_MODE"] === 'PUBLIC' 
+                    ? t('admin.settings.browsing.publicDesc')
+                    : t('admin.settings.browsing.privateDesc')
+                  }
+                </p>
               </div>
             </div>
+          </div>
+        )
 
-            {/* Branding Section */}
+      case 'branding':
+        return (
+          <div className="space-y-6">
             <div>
-              <h2 className="text-xl font-semibold text-text mb-4 mt-6">Branding</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <FormField
-                    label="Tracker Name"
-                    value={config["BRANDING_NAME"] || ''}
-                    onChange={val => handleChange("BRANDING_NAME", val)}
-                    className="w-full text-white"
-                    placeholder="e.g., MyTracker, AwesomeTracker, etc."
-                  />
-                  <p className="text-sm text-text-secondary mt-1">
-                    This name will appear in headers, titles, and downloaded torrent files
-                  </p>
-                </div>
+              <h2 className="text-xl font-semibold text-text mb-4">{t('admin.settings.branding.title')}</h2>
+              <p className="text-text-secondary mb-6">{t('admin.settings.branding.description')}</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <FormField
+                  label={t('admin.settings.branding.trackerName')}
+                  value={config["BRANDING_NAME"] || ''}
+                  onChange={val => handleChange("BRANDING_NAME", val)}
+                  className="w-full text-white"
+                  placeholder={t('admin.settings.branding.placeholder')}
+                />
+                <p className="text-sm text-text-secondary mt-2">
+                  {t('admin.settings.branding.trackerNameDesc')}
+                </p>
               </div>
             </div>
+          </div>
+        )
 
-            {/* Save Button and Success Message */}
-            <div className="flex items-center space-x-4 mt-8">
-              <Button type="submit" disabled={saving} variant="accent">
-                {saving ? "Saving..." : "Save Settings"}
-              </Button>
-              {success && <span className="text-green-600 text-sm">Settings saved!</span>}
+      default:
+        return <div>Select a section from the menu</div>
+    }
+  }
+
+  return (
+    <AdminLayout>
+      <div className="max-w-7xl mx-auto py-10">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-text mb-2">{t('admin.settings.title')}</h1>
+          <p className="text-text-secondary">{t('admin.settings.description')}</p>
+        </div>
+
+        {/* Two-column layout */}
+        <div className="flex gap-6">
+          {/* Left sidebar - Menu */}
+          <div className="w-80 flex-shrink-0">
+            <div className="bg-surface border border-border rounded-lg overflow-hidden">
+              <div className="p-4 border-b border-border bg-surface-light">
+                <h2 className="text-lg font-semibold text-text">{t('admin.settings.sections.title')}</h2>
+              </div>
+              <nav className="p-2">
+                {CONFIG_SECTIONS.map((section) => {
+                  const IconComponent = section.icon
+                  return (
+                    <button
+                      key={section.id}
+                      onClick={() => setActiveSection(section.id)}
+                      className={`w-full text-left p-3 rounded-lg mb-1 transition-colors flex items-center space-x-3 ${
+                        activeSection === section.id
+                          ? 'bg-primary/10 text-primary'
+                          : 'text-text hover:bg-surface-light'
+                      }`}
+                    >
+                      <div className="w-5 h-5 flex items-center justify-center">
+                        <IconComponent size={20} />
+                      </div>
+                      <div>
+                        <div className="font-medium">{section.title}</div>
+                        <div className={`text-xs ${activeSection === section.id ? 'text-primary/80' : 'text-text-secondary'}`}>
+                          {section.description}
+                        </div>
+                      </div>
+                    </button>
+                  )
+                })}
+              </nav>
             </div>
-          </form>
+          </div>
+
+          {/* Right content area */}
+          <div className="flex-1">
+            <div className="bg-surface border border-border rounded-lg p-8 shadow-sm">
+              <form
+                onSubmit={e => {
+                  e.preventDefault()
+                  handleSave()
+                }}
+              >
+                {/* Section content */}
+                {renderSectionContent()}
+
+                {/* Save Button and Success Message */}
+                <div className="flex items-center space-x-4 mt-8 pt-6 border-t border-border">
+                  <Button type="submit" disabled={saving} variant="accent">
+                    {saving ? t('admin.settings.actions.saving') : t('admin.settings.actions.save')}
+                  </Button>
+                  {success && <span className="text-green-600 text-sm">{t('admin.settings.actions.saved')}</span>}
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </AdminLayout>

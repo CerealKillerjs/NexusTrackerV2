@@ -771,19 +771,71 @@
       "title": "Configuración del Sistema",
       "description": "Gestiona la configuración del sistema para tu tracker. Los cambios se aplican instantáneamente.",
       "sections": {
+        "title": "Secciones de Configuración",
         "tracker": "Tracker",
-        "smtp": "Email (SMTP)",
+        "email": "Email (SMTP)",
         "support": "Email de Soporte",
         "registration": "Registro e Invitaciones",
-        "publicBrowsing": "Navegación Pública"
+        "browsing": "Navegación Pública",
+        "branding": "Marca"
       },
-      "publicBrowsing": {
-        "title": "Navegación Pública",
-        "description": "Configura el modo de navegación pública para motores de búsqueda",
+      "tracker": {
+        "title": "Configuración del Tracker",
+        "description": "Configura los ajustes básicos del tracker y URLs.",
+        "trackerUrl": "URL del Tracker"
+      },
+      "email": {
+        "title": "Configuración de Email (SMTP)",
+        "description": "Configura los ajustes del servidor de correo para notificaciones y comunicaciones de usuarios.",
+        "enableEmail": "Habilitar Email",
+        "enableEmailDesc": "Habilitar o deshabilitar la funcionalidad de email",
+        "smtpHost": "Servidor SMTP",
+        "smtpPort": "Puerto SMTP",
+        "smtpUser": "Usuario SMTP",
+        "smtpPass": "Contraseña SMTP",
+        "smtpFrom": "Email de Origen"
+      },
+      "support": {
+        "title": "Configuración de Email de Soporte",
+        "description": "Configura la información de contacto de soporte para usuarios.",
+        "supportEmail": "Email de Soporte",
+        "supportEmailDesc": "Este email se usará para consultas de soporte y comunicaciones con usuarios."
+      },
+      "registration": {
+        "title": "Registro e Invitaciones",
+        "description": "Configura el sistema de registro de usuarios e invitaciones.",
+        "registrationMode": "Modo de Registro",
+        "registrationModeDesc": "Controla cómo los nuevos usuarios pueden registrarse en tu tracker.",
+        "inviteExpiry": "Expiración de Invitaciones (horas)",
+        "inviteExpiryDesc": "Cuánto tiempo permanecen válidas las invitaciones antes de expirar.",
+        "maxInvites": "Máximo de Invitaciones por Usuario",
+        "maxInvitesDesc": "Número máximo de invitaciones que cada usuario puede generar.",
+        "modes": {
+          "open": "Registro Abierto",
+          "inviteOnly": "Solo por Invitación",
+          "closed": "Cerrado"
+        }
+      },
+      "browsing": {
+        "title": "Configuración de Navegación Pública",
+        "description": "Configura el acceso público a tu tracker.",
+        "browsingMode": "Modo de Navegación",
         "public": "Público - Estilo Motor de Búsqueda",
         "private": "Privado - Requiere Login",
         "publicDesc": "La página principal muestra búsqueda pública de torrents (diseño actual)",
         "privateDesc": "La página principal muestra interfaz simple de login/registro"
+      },
+      "branding": {
+        "title": "Configuración de Marca",
+        "description": "Personaliza la apariencia y marca de tu tracker.",
+        "trackerName": "Nombre del Tracker",
+        "trackerNameDesc": "Este nombre aparecerá en encabezados, títulos y archivos de torrent descargados.",
+        "placeholder": "ej., MiTracker, TrackerIncreíble, etc."
+      },
+      "actions": {
+        "save": "Guardar Configuración",
+        "saving": "Guardando...",
+        "saved": "¡Configuración guardada!"
       }
     }
   }

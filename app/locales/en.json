@@ -773,19 +773,71 @@
       "title": "System Settings",
       "description": "Manage system-wide configuration for your tracker. Changes are applied instantly.",
       "sections": {
+        "title": "Configuration Sections",
         "tracker": "Tracker",
-        "smtp": "Email (SMTP)",
+        "email": "Email (SMTP)",
         "support": "Support Email",
         "registration": "Registration & Invites",
-        "publicBrowsing": "Public Browsing"
+        "browsing": "Public Browsing",
+        "branding": "Branding"
       },
-      "publicBrowsing": {
-        "title": "Public Browsing",
-        "description": "Configure public browsing mode for search engines",
+      "tracker": {
+        "title": "Tracker Configuration",
+        "description": "Configure basic tracker settings and URLs.",
+        "trackerUrl": "Tracker URL"
+      },
+      "email": {
+        "title": "Email (SMTP) Configuration",
+        "description": "Configure email server settings for notifications and user communications.",
+        "enableEmail": "Enable Email",
+        "enableEmailDesc": "Enable or disable email functionality",
+        "smtpHost": "SMTP Host",
+        "smtpPort": "SMTP Port",
+        "smtpUser": "SMTP User",
+        "smtpPass": "SMTP Password",
+        "smtpFrom": "SMTP From"
+      },
+      "support": {
+        "title": "Support Email Configuration",
+        "description": "Configure support contact information for users.",
+        "supportEmail": "Support Email",
+        "supportEmailDesc": "This email will be used for support inquiries and user communications."
+      },
+      "registration": {
+        "title": "Registration & Invites",
+        "description": "Configure user registration and invitation system.",
+        "registrationMode": "Registration Mode",
+        "registrationModeDesc": "Control how new users can register on your tracker.",
+        "inviteExpiry": "Invite Expiry (hours)",
+        "inviteExpiryDesc": "How long invites remain valid before expiring.",
+        "maxInvites": "Max Invites Per User",
+        "maxInvitesDesc": "Maximum number of invites each user can generate.",
+        "modes": {
+          "open": "Open Registration",
+          "inviteOnly": "Invite Only",
+          "closed": "Closed"
+        }
+      },
+      "browsing": {
+        "title": "Public Browsing Configuration",
+        "description": "Configure public access to your tracker.",
+        "browsingMode": "Browsing Mode",
         "public": "Public - Search Engine Style",
         "private": "Private - Login Required",
         "publicDesc": "Home page shows public torrent search (current design)",
         "privateDesc": "Home page shows simple login/register interface"
+      },
+      "branding": {
+        "title": "Branding Configuration",
+        "description": "Customize your tracker's appearance and branding.",
+        "trackerName": "Tracker Name",
+        "trackerNameDesc": "This name will appear in headers, titles, and downloaded torrent files.",
+        "placeholder": "e.g., MyTracker, AwesomeTracker, etc."
+      },
+      "actions": {
+        "save": "Save Settings",
+        "saving": "Saving...",
+        "saved": "Settings saved!"
       }
     }
   }
