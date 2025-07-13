@@ -150,8 +150,8 @@ export default function AdminUsersPage() {
   // Show loading while checking authentication and admin status
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-gray-900 dark:text-white text-lg">{t('common.loading')}</div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-text text-lg">{t('common.loading')}</div>
       </div>
     );
   }

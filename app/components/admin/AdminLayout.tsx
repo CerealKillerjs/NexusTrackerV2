@@ -19,6 +19,7 @@ import { Cog } from '@styled-icons/boxicons-regular/Cog';
 import { LogOutCircle } from '@styled-icons/boxicons-regular/LogOutCircle';
 import { ChevronDown } from '@styled-icons/boxicons-regular/ChevronDown';
 import { Shield } from '@styled-icons/boxicons-solid/Shield';
+import { ArrowBack } from '@styled-icons/boxicons-regular/ArrowBack';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -98,6 +99,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               </button>
               {userDropdownOpen && (
                 <div className="absolute right-0 top-full mt-2 w-48 bg-surface border border-border rounded-lg shadow-lg z-50">
+                  <Link 
+                    href="/dashboard"
+                    className="block px-4 py-3 text-text hover:bg-surface-light transition-colors border-b border-border"
+                    onClick={() => setUserDropdownOpen(false)}
+                  >
+                    <ArrowBack size={18} className="mr-2 inline" /> {t('admin.backToSite')}
+                  </Link>
                   <Link 
                     href="/profile"
                     className="block px-4 py-3 text-text hover:bg-surface-light transition-colors"
