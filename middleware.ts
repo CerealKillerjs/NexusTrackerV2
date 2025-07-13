@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Rutas públicas que deben ser bloqueadas en modo PRIVATE
+// Rutas públicas que están bloqueadas ya que el tracker es siempre privado
 const PUBLIC_ROUTES = [
   '/torrents/public',
   '/api/torrent/public',
@@ -15,34 +15,8 @@ export async function middleware(request: NextRequest) {
   const isPublicRoute = PUBLIC_ROUTES.some(route => pathname.startsWith(route));
 
   if (isPublicRoute) {
-    try {
-      // Verificar el modo de navegación pública haciendo una petición al endpoint
-      // Usar una URL absoluta para evitar problemas de routing
-      const baseUrl = request.nextUrl.protocol + '//' + request.nextUrl.host;
-      const configResponse = await fetch(`${baseUrl}/api/config/public-browsing`, {
-        headers: {
-          'User-Agent': request.headers.get('user-agent') || '',
-        }
-      });
-      
-      if (configResponse.ok) {
-        const config = await configResponse.json();
-        
-        // Si está en modo PRIVATE, bloquear acceso
-        if (config.mode === 'PRIVATE') {
-          console.log(`Blocking public route ${pathname} - mode is PRIVATE`);
-          return NextResponse.redirect(new URL('/', request.url));
-        }
-      } else {
-        console.log(`Error fetching config, blocking ${pathname} for security`);
-        // En caso de error, bloquear por seguridad
-        return NextResponse.redirect(new URL('/', request.url));
-      }
-    } catch (error) {
-      console.error('Error checking public browsing mode:', error);
-      // En caso de error, bloquear por seguridad
-      return NextResponse.redirect(new URL('/', request.url));
-    }
+    console.log(`Blocking public route ${pathname} - tracker is private-only`);
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   return NextResponse.next();

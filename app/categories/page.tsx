@@ -146,7 +146,7 @@ export default function CategoriesPage() {
 
         // Fetch category stats
         const statsPromises = categories.map(async (category) => {
-          const response = await fetch(`/api/torrent/public?category=${category.id}&limit=5&sortBy=createdAt&sortOrder=desc`);
+          const response = await fetch(`/api/torrent?category=${category.id}&limit=5&sortBy=createdAt&sortOrder=desc`);
           if (response.ok) {
             const data = await response.json();
             return {

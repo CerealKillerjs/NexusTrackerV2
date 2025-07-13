@@ -14,7 +14,7 @@ import { useI18n } from '@/app/hooks/useI18n'
 import { Cog } from '@styled-icons/boxicons-regular/Cog'
 import { Envelope } from '@styled-icons/boxicons-regular/Envelope'
 import { UserPlus } from '@styled-icons/boxicons-regular/UserPlus'
-import { Globe } from '@styled-icons/boxicons-regular/Globe'
+
 import { Palette } from '@styled-icons/boxicons-regular/Palette'
 import { Support } from '@styled-icons/boxicons-regular/Support'
 
@@ -55,12 +55,7 @@ export default function AdminSettingsPage() {
       icon: UserPlus,
       description: t('admin.settings.registration.description')
     },
-    {
-      id: 'browsing',
-      title: t('admin.settings.sections.browsing'),
-      icon: Globe,
-      description: t('admin.settings.browsing.description')
-    },
+
     {
       id: 'branding',
       title: t('admin.settings.sections.branding'),
@@ -281,35 +276,7 @@ export default function AdminSettingsPage() {
           </div>
         )
 
-      case 'browsing':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold text-text mb-4">{t('admin.settings.browsing.title')}</h2>
-              <p className="text-text-secondary mb-6">{t('admin.settings.browsing.description')}</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <SelectField
-                  label={t('admin.settings.browsing.browsingMode')}
-                  options={[
-                    { value: "PUBLIC", label: t('admin.settings.browsing.public') },
-                    { value: "PRIVATE", label: t('admin.settings.browsing.private') },
-                  ]}
-                  value={config["PUBLIC_BROWSING_MODE"] || 'PUBLIC'}
-                  onChange={val => handleChange("PUBLIC_BROWSING_MODE", val)}
-                  className="w-full text-white"
-                />
-                <p className="text-sm text-text-secondary mt-2">
-                  {config["PUBLIC_BROWSING_MODE"] === 'PUBLIC' 
-                    ? t('admin.settings.browsing.publicDesc')
-                    : t('admin.settings.browsing.privateDesc')
-                  }
-                </p>
-              </div>
-            </div>
-          </div>
-        )
+
 
       case 'branding':
         return (

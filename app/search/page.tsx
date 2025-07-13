@@ -106,7 +106,7 @@ function SearchResultsForm() {
         params.append('category', category);
       }
 
-      const response = await fetch(`/api/torrent/public?${params}`);
+      const response = await fetch(`/api/torrent?${params}`);
       
       if (!response.ok) {
         throw new Error('Error fetching torrents');
@@ -280,7 +280,7 @@ function SearchResultsForm() {
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           <Link
-                            href={`/torrents/public/${torrent.id}`}
+                            href={`/torrents/${torrent.id}`}
                             className="text-primary hover:text-accent transition-colors font-medium text-lg"
                           >
                             {torrent.title}

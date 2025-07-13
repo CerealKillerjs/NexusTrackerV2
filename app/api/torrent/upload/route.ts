@@ -14,7 +14,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/app/lib/auth';
 import { prisma } from '@/app/lib/prisma';
-
 import bencode from 'bencode';
 
 export async function POST(request: NextRequest) {
@@ -72,8 +71,6 @@ export async function POST(request: NextRequest) {
     // Extract optional files
     const imageFile = formData.get('image') as File | null;
     const nfoFile = formData.get('nfo') as File | null;
-    
-
 
     // Validate required fields
     if (!torrentFile || !name || !description || !category || !source) {
@@ -119,6 +116,143 @@ export async function POST(request: NextRequest) {
         { error: 'Invalid torrent file - missing info' },
         { status: 400 }
       );
+    }
+
+    // Validate private torrent requirements (tracker is always private)
+    const isPrivate = torrentInfo.private === 1 || (torrentInfo.info && torrentInfo.info.private === 1);
+    
+    // Debug: Log torrent structure (only in development)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Torrent info structure:', JSON.stringify(torrentInfo, null, 2));
+      console.log('Info object structure:', JSON.stringify(info, null, 2));
+      console.log('torrentInfo.private:', torrentInfo.private);
+      console.log('info.private:', info.private);
+      console.log('Is torrent private:', isPrivate);
+    }
+    
+    if (!isPrivate) {
+      return NextResponse.json(
+        { error: 'All torrents must have the private flag set to 1' },
+        { status: 400 }
+      );
+    }
+
+    // Get user's passkey for validation
+    const userWithPasskey = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { passkey: true }
+    });
+
+    if (!userWithPasskey?.passkey) {
+      return NextResponse.json(
+        { error: 'User passkey not found' },
+        { status: 400 }
+      );
+    }
+
+    // Get tracker URL configuration
+    const trackerUrlConfig = await prisma.configuration.findUnique({
+      where: { key: 'NEXT_PUBLIC_TRACKER_URL' }
+    });
+
+    const trackerUrl = trackerUrlConfig?.value || process.env.NEXT_PUBLIC_TRACKER_URL;
+    
+    if (!trackerUrl) {
+      return NextResponse.json(
+        { error: 'Tracker URL not configured' },
+        { status: 500 }
+      );
+    }
+
+    // Validate announce URL contains only our tracker with user's passkey
+    const expectedAnnounceUrl = `${trackerUrl}/announce?passkey=${userWithPasskey.passkey}`;
+    
+    // Debug logs (only in development)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Expected announce URL:', expectedAnnounceUrl);
+      console.log('User passkey:', userWithPasskey.passkey);
+      console.log('Tracker URL from config:', trackerUrl);
+    }
+    
+    // Check main announce
+    if (torrentInfo.announce) {
+      // Debug logs (only in development)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('torrentInfo.announce type:', typeof torrentInfo.announce);
+        console.log('torrentInfo.announce constructor:', torrentInfo.announce.constructor.name);
+        console.log('Is Buffer:', Buffer.isBuffer(torrentInfo.announce));
+        console.log('Is Array:', Array.isArray(torrentInfo.announce));
+        console.log('torrentInfo.announce value:', torrentInfo.announce);
+      }
+      
+      let announceStr: string;
+      
+      if (Buffer.isBuffer(torrentInfo.announce)) {
+        announceStr = torrentInfo.announce.toString('utf8');
+        if (process.env.NODE_ENV === 'development') console.log('Converted from Buffer');
+      } else if (torrentInfo.announce instanceof Uint8Array) {
+        // Handle Uint8Array
+        announceStr = String.fromCharCode(...torrentInfo.announce);
+        if (process.env.NODE_ENV === 'development') console.log('Converted from Uint8Array');
+      } else if (Array.isArray(torrentInfo.announce)) {
+        // Handle array of bytes (numeric array)
+        announceStr = String.fromCharCode(...torrentInfo.announce);
+        if (process.env.NODE_ENV === 'development') console.log('Converted from Array');
+      } else {
+        announceStr = String(torrentInfo.announce);
+        if (process.env.NODE_ENV === 'development') console.log('Converted from String');
+      }
+        
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Torrent announce URL:', announceStr);
+        console.log('URLs match:', announceStr === expectedAnnounceUrl);
+      }
+      
+      if (announceStr !== expectedAnnounceUrl) {
+        return NextResponse.json(
+          { error: 'Torrent must use only our tracker announce URL with your passkey' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Check announce-list (should only contain our tracker)
+    if (torrentInfo['announce-list']) {
+      const announceList = torrentInfo['announce-list'] as unknown as unknown[][];
+      let hasOtherTrackers = false;
+      
+      for (const trackerGroup of announceList) {
+        if (Array.isArray(trackerGroup)) {
+          for (const tracker of trackerGroup) {
+            let trackerStr: string;
+            
+            if (Buffer.isBuffer(tracker)) {
+              trackerStr = tracker.toString('utf8');
+            } else if (tracker instanceof Uint8Array) {
+              // Handle Uint8Array
+              trackerStr = String.fromCharCode(...tracker);
+            } else if (Array.isArray(tracker)) {
+              // Handle array of bytes (numeric array)
+              trackerStr = String.fromCharCode(...tracker);
+            } else {
+              trackerStr = String(tracker);
+            }
+              
+            if (trackerStr && trackerStr !== expectedAnnounceUrl) {
+              hasOtherTrackers = true;
+              break;
+            }
+          }
+        }
+        if (hasOtherTrackers) break;
+      }
+      
+      if (hasOtherTrackers) {
+        return NextResponse.json(
+          { error: 'Torrent must contain only our tracker in announce-list' },
+          { status: 400 }
+        );
+      }
     }
 
     // Calculate info hash
@@ -252,7 +386,6 @@ export async function POST(request: NextRequest) {
     });
 
     // Update user upload stats
-    // TODO: Make sure your Prisma User model includes the 'uploaded' field. If not, add it to your schema and migrate.
     await prisma.user.update({
       where: { id: session.user.id },
       data: {

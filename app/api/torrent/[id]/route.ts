@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/app/lib/auth';
 import { prisma } from '@/app/lib/prisma';
+import bencode from 'bencode';
 
 // Function to decode file paths properly
 function decodeFilePaths(files: unknown[]): Array<{ path: string; size: number }> {
@@ -131,6 +132,20 @@ export async function GET(
     const rawFiles = Array.isArray(torrent.files) ? torrent.files : [];
     const files = decodeFilePaths(rawFiles);
 
+    // Determine if torrent is private by analyzing the binary data
+    let isPrivate = false;
+    try {
+      const torrentBuffer = Buffer.from(torrent.binary, 'base64');
+      const torrentInfo = bencode.decode(torrentBuffer);
+      
+      // Check if the torrent has the private flag set to 1
+      if (torrentInfo.private === 1 || (torrentInfo.info && torrentInfo.info.private === 1)) {
+        isPrivate = true;
+      }
+    } catch (error) {
+      console.warn('Error parsing torrent binary for private flag:', error);
+    }
+
     // Format response
     const response = {
       id: torrent.id,
@@ -148,6 +163,7 @@ export async function GET(
       anonymous: torrent.anonymous,
       image: torrent.image || undefined,
       nfo: torrent.nfo || undefined,
+      isPrivate: isPrivate,
       user: torrent.anonymous ? undefined : (torrent.user ? {
         username: torrent.user.username,
         ratio: Number(torrent.user.ratio),

@@ -540,7 +540,9 @@
     },
     "header": {
       "downloads": "descargas",
-      "freeleech": "Freeleech"
+      "freeleech": "Freeleech",
+      "private": "Privado",
+      "public": "Público"
     },
     "torrentInfo": {
       "title": "Información del Torrent",
@@ -776,7 +778,7 @@
         "email": "Email (SMTP)",
         "support": "Email de Soporte",
         "registration": "Registro e Invitaciones",
-        "browsing": "Navegación Pública",
+
         "branding": "Marca"
       },
       "tracker": {
@@ -816,15 +818,7 @@
           "closed": "Cerrado"
         }
       },
-      "browsing": {
-        "title": "Configuración de Navegación Pública",
-        "description": "Configura el acceso público a tu tracker.",
-        "browsingMode": "Modo de Navegación",
-        "public": "Público - Estilo Motor de Búsqueda",
-        "private": "Privado - Requiere Login",
-        "publicDesc": "La página principal muestra búsqueda pública de torrents (diseño actual)",
-        "privateDesc": "La página principal muestra interfaz simple de login/registro"
-      },
+
       "branding": {
         "title": "Configuración de Marca",
         "description": "Personaliza la apariencia y marca de tu tracker.",

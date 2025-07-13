@@ -1,8 +1,7 @@
 /**
  * Home Page
- * Displays the main page with search bar, navigation, and footer
- * Includes a search bar for quick search and navigation links
- * Shows public search or private login based on configuration
+ * Displays the main page with login/register forms for private tracker
+ * Always shows private login/register page since tracker is private-only
  */
 
 'use client';
@@ -11,26 +10,22 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
-import SearchBar from './components/SearchBar';
 import { useTranslation } from 'react-i18next';
-import PrivateHomePage from './components/PrivateHomePage';
-import { usePublicBrowsing } from './hooks/usePublicBrowsing';
 
 export default function Home() {
   const { status } = useSession();
   const router = useRouter();
   const { t } = useTranslation();
-  const { mode, loading, error } = usePublicBrowsing();
 
-  // Redirect authenticated users to dashboard in private mode
+  // Redirect authenticated users to dashboard
   useEffect(() => {
-    if (mode === 'PRIVATE' && status === 'authenticated') {
+    if (status === 'authenticated') {
       router.push('/dashboard');
     }
-  }, [mode, status, router]);
+  }, [status, router]);
 
-  // Show loading while checking configuration
-  if (loading) {
+  // Show loading while checking session
+  if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-text text-lg">Loading...</div>
@@ -38,82 +33,56 @@ export default function Home() {
     );
   }
 
-  // Show error state
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-red-500 text-lg">Error loading configuration</div>
-      </div>
-    );
-  }
-
-  // Private mode - show simple login/register page
-  if (mode === 'PRIVATE') {
-    if (status === 'loading') {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="text-text text-lg">Loading...</div>
-        </div>
-      );
-    }
-
-    return <PrivateHomePage />;
-  }
-
-  // Public mode - show the original design (current page.tsx content)
+  // Show private home page for unauthenticated users
   return (
     <div className="min-h-screen flex flex-col bg-background text-text">
-      <main className="flex-1 flex flex-col items-center justify-center p-8 w-full max-w-7xl mx-auto">
+      <main className="flex-1 flex flex-col items-center justify-center p-8">
         <div className="text-center mb-8">
-          <h1 className="text-6xl tracking-tighter text-primary">
+          <h1 className="text-6xl tracking-tighter text-primary mb-4">
             Nexus<span className="text-accent">Tracker</span> <span className="text-text-secondary text-4xl">V2</span>
           </h1>
-          <small className="block mt-2 text-text-secondary">
-            {t('home.subtitle')}
-          </small>
+          <p className="text-text-secondary text-lg">
+            A modern BitTorrent tracker
+          </p>
         </div>
         
-        <SearchBar />
+        <div className="flex space-x-6 mb-8">
+          <Link 
+            href="/auth/signin"
+            className="px-8 py-3 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors font-medium text-lg"
+          >
+            {t('home.footer.login')}
+          </Link>
+          <Link 
+            href="/auth/signup"
+            className="px-8 py-3 bg-surface border border-border text-text rounded-lg hover:bg-surface-light transition-colors font-medium text-lg"
+          >
+            {t('home.footer.register')}
+          </Link>
+        </div>
 
-        <nav className="mt-8 text-center">
-          <Link href="/browse" className="px-4 py-2 text-text hover:text-primary transition-colors">
-            {t('home.nav.browse')}
-          </Link>
-          <span className="text-border mx-2">|</span>
-          <Link href="/recent" className="px-4 py-2 text-text hover:text-primary transition-colors">
-            {t('home.nav.recent')}
-          </Link>
-          <span className="text-border mx-2">|</span>
-          <Link href="/top100" className="px-4 py-2 text-text hover:text-primary transition-colors">
-            {t('home.nav.top')}
-          </Link>
-          <span className="text-border mx-2">|</span>
-          <Link href="/stats" className="px-4 py-2 text-text hover:text-primary transition-colors">
-            {t('home.nav.stats')}
-          </Link>
-        </nav>
+        <div className="text-center text-text-secondary">
+          <p className="mb-4">
+            Welcome to NexusTracker V2
+          </p>
+          <p className="text-sm">
+            Please login or register to access the tracker
+          </p>
+        </div>
       </main>
 
       <footer className="text-center p-8 bg-surface border-t border-border">
         <p className="text-text-secondary mb-4">{t('home.footer.description')}</p>
-        <nav>
-          <Link href="/auth/signin" className="px-4 text-text hover:text-primary transition-colors">
-            {t('home.footer.login')}
-          </Link>
-          <span className="text-border mx-2">|</span>
-          <Link href="/auth/signup" className="px-4 text-text hover:text-primary transition-colors">
-            {t('home.footer.register')}
-          </Link>
-          <span className="text-border mx-2">|</span>
-          <Link href="/about" className="px-4 text-text hover:text-primary transition-colors">
+        <nav className="flex justify-center space-x-4">
+          <Link href="/about" className="text-text hover:text-primary transition-colors">
             {t('home.footer.about')}
           </Link>
-          <span className="text-border mx-2">|</span>
-          <Link href="/stats" className="px-4 text-text hover:text-primary transition-colors">
+          <span className="text-border">|</span>
+          <Link href="/stats" className="text-text hover:text-primary transition-colors">
             {t('home.footer.stats')}
           </Link>
-          <span className="text-border mx-2">|</span>
-          <Link href="/api" className="px-4 text-text hover:text-primary transition-colors">
+          <span className="text-border">|</span>
+          <Link href="/api" className="text-text hover:text-primary transition-colors">
             {t('home.footer.api')}
           </Link>
         </nav>

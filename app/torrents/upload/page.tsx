@@ -25,6 +25,7 @@ import { z } from 'zod';
 import DashboardLayout from '@/app/components/dashboard/DashboardLayout';
 import { usePermissions } from '@/app/hooks/usePermissions';
 import { useI18n } from '@/app/hooks/useI18n';
+
 import { detectCategory } from '@/app/utils/categoryDetection';
 import { generateTagSuggestions } from '@/app/utils/tagSuggestions';
 import { showNotification } from '@/app/utils/notifications';
@@ -387,6 +388,8 @@ export default function UploadPage() {
             {t('upload.subtitle')}
           </p>
         </div>
+
+
 
         {/* Upload Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

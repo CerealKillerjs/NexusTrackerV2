@@ -55,6 +55,7 @@ interface TorrentData {
   anonymous: boolean;
   image?: string; // Base64 encoded image
   nfo?: string; // NFO file content
+
   user?: {
     username: string;
     ratio: number;
@@ -319,6 +320,7 @@ export default function TorrentDetailPage() {
                 {t('torrentDetail.header.freeleech')}
               </span>
             )}
+
           </div>
         </div>
 

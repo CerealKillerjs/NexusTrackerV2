@@ -778,7 +778,7 @@
         "email": "Email (SMTP)",
         "support": "Support Email",
         "registration": "Registration & Invites",
-        "browsing": "Public Browsing",
+
         "branding": "Branding"
       },
       "tracker": {
@@ -818,15 +818,7 @@
           "closed": "Closed"
         }
       },
-      "browsing": {
-        "title": "Public Browsing Configuration",
-        "description": "Configure public access to your tracker.",
-        "browsingMode": "Browsing Mode",
-        "public": "Public - Search Engine Style",
-        "private": "Private - Login Required",
-        "publicDesc": "Home page shows public torrent search (current design)",
-        "privateDesc": "Home page shows simple login/register interface"
-      },
+
       "branding": {
         "title": "Branding Configuration",
         "description": "Customize your tracker's appearance and branding.",
