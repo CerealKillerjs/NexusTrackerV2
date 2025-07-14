@@ -1,103 +1,105 @@
 /**
- * Forgot Password page component
- * Handles password reset requests
- * Provides form to enter email/username for password reset
+ * Forgot Password page component - Optimized for maximum performance
+ * Server Component with direct database access and server-side translations
+ * Minimal client-side JavaScript for better performance
  */
 
-'use client';
-
-import { useState } from 'react';
-import { useI18n } from '@/app/hooks/useI18n';
-import Link from 'next/link';
+import { Suspense } from 'react';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { auth } from '@/app/lib/auth';
+import { serverT, getPreferredLanguage } from '@/app/lib/server-i18n';
 import AuthCard from '../../components/auth/AuthCard';
-import AuthInput from '../../components/auth/AuthInput';
-import { showNotification } from '@/app/utils/notifications';
+import { ForgotPasswordForm } from '@/app/components/auth/ForgotPasswordForm';
+import { FormFieldSkeleton, ButtonSkeleton, TextSkeleton } from '../../components/ui/Skeleton';
+import { LanguageSync } from '../../components/ui/LanguageSync';
 
-export default function ForgotPasswordPage() {
-  const { t } = useI18n();
-  const [formData, setFormData] = useState({
-    login: ''
+// Enhanced loading component with theme-consistent styling
+function ForgotPasswordLoading() {
+  return (
+    <div className="space-y-6">
+      {/* Form fields skeleton */}
+      <div className="space-y-4">
+        <FormFieldSkeleton label="Correo electrónico o Usuario" placeholder="Ingresa tu correo electrónico o usuario" />
+        <ButtonSkeleton />
+      </div>
+
+      {/* Links skeleton */}
+      <div className="space-y-4">
+        <div className="text-center">
+          <TextSkeleton width="w-64" />
+        </div>
+        <div className="text-center">
+          <TextSkeleton width="w-48" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default async function ForgotPasswordPage() {
+  // Get headers for language detection
+  const headersList = await headers();
+  const language = await getPreferredLanguage(headersList);
+  
+  // Check authentication server-side
+  const session = await auth();
+  
+  // Redirect authenticated users to dashboard
+  if (session) {
+    redirect('/dashboard');
+  }
+
+  // Server-side translations with debug logging
+  const title = serverT('auth.forgotPassword.title', language);
+  const loginLabel = serverT('auth.login', language);
+  const submitButton = serverT('auth.forgotPassword.button', language);
+  const rememberPassword = serverT('auth.forgotPassword.rememberPassword', language);
+  const signInButton = serverT('auth.signin.button', language);
+  const noAccount = serverT('auth.signin.noAccount', language);
+  const signUpLink = serverT('auth.signin.signUpLink', language);
+  
+  // Error messages
+  const successMessage = serverT('auth.forgotPassword.success', language);
+  const errorMessage = serverT('auth.forgotPassword.error', language);
+  const generalError = serverT('auth.notification.error', language);
+  const loadingText = serverT('common.loading', language);
+
+  // Debug logging
+  console.log('🔍 ForgotPassword Page Server Translations:', {
+    language,
+    title,
+    loginLabel,
+    submitButton,
+    rememberPassword,
+    signInButton,
+    noAccount,
+    signUpLink
   });
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const response = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept-Language': navigator.language.startsWith('en') ? 'en' : 'es',
-        },
-        body: JSON.stringify({
-          login: formData.login
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        showNotification.success(data.message || t('auth.forgotPassword.success'));
-        setFormData({ login: '' }); // Clear the form
-      } else {
-        showNotification.error(data.error || t('auth.notification.error'));
-      }
-    } catch (error) {
-      console.error('Error during password reset request:', error);
-      showNotification.error(t('auth.notification.error'));
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
-    <AuthCard title={t('auth.forgotPassword.title')}>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <AuthInput
-          label={t('auth.login')}
-          type="text"
-          value={formData.login}
-          onChange={(e) => setFormData(prev => ({ ...prev, login: e.target.value }))}
-          required
-          autoFocus
-        />
-        
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-primary text-background py-2 rounded 
-                   hover:bg-primary-dark transition-colors font-medium
-                   disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? t('common.loading') : t('auth.forgotPassword.button')}
-        </button>
-      </form>
-
-      <div className="mt-6 text-center text-sm">
-        <span className="text-text-secondary">
-          {t('auth.forgotPassword.rememberPassword')}{' '}
-        </span>
-        <Link 
-          href="/auth/signin"
-          className="text-primary hover:text-primary-dark transition-colors"
-        >
-          {t('auth.signin.button')}
-        </Link>
-      </div>
-
-      <div className="mt-4 text-center text-sm">
-        <span className="text-text-secondary">
-          {t('auth.signin.noAccount')}{' '}
-        </span>
-        <Link 
-          href="/auth/signup"
-          className="text-primary hover:text-primary-dark transition-colors"
-        >
-          {t('auth.signin.signUpLink')}
-        </Link>
-      </div>
-    </AuthCard>
+    <>
+      <LanguageSync serverLanguage={language} />
+      <AuthCard title={title}>
+        <Suspense fallback={<ForgotPasswordLoading />}>
+          <ForgotPasswordForm 
+            language={language}
+            serverTranslations={{
+              title,
+              loginLabel,
+              submitButton,
+              rememberPassword,
+              signInButton,
+              noAccount,
+              signUpLink,
+              successMessage,
+              errorMessage,
+              generalError,
+              loadingText
+            }}
+          />
+        </Suspense>
+      </AuthCard>
+    </>
   );
 } 
