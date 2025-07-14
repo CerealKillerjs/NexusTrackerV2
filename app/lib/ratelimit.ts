@@ -22,7 +22,7 @@ export async function getAnnounceConfig() {
   };
 }
 
-export async function checkRateLimit(userId: string, torrentId: string, ip: string) {
+export async function checkRateLimit(userId: string, torrentId: string) {
   const config = await getAnnounceConfig();
   if (!config.rateLimitingEnabled) {
     return { allowed: true, retryAfter: 0 };

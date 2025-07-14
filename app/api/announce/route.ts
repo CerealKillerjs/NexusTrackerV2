@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
       '127.0.0.1';
 
     // Check rate limiting before processing
-    const rateLimitCheck = await checkRateLimit(user.id, torrent.id, ip);
+    const rateLimitCheck = await checkRateLimit(user.id, torrent.id);
     if (!rateLimitCheck.allowed) {
       const failure = bencode.encode({ 
         'failure reason': 'Rate limit exceeded',
