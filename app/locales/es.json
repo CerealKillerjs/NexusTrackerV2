@@ -778,7 +778,7 @@
         "email": "Email (SMTP)",
         "support": "Email de Soporte",
         "registration": "Registro e Invitaciones",
-
+        "rateLimiting": "Limitación de Velocidad",
         "branding": "Marca"
       },
       "tracker": {
@@ -817,6 +817,18 @@
           "inviteOnly": "Solo por Invitación",
           "closed": "Cerrado"
         }
+      },
+      "rateLimiting": {
+        "title": "Limitación de Velocidad de Anuncios",
+        "description": "Configura la limitación de velocidad para las solicitudes de anuncio de BitTorrent para prevenir abuso.",
+        "enableRateLimiting": "Habilitar Limitación de Velocidad",
+        "enableRateLimitingDesc": "Habilitar o deshabilitar la limitación de velocidad de anuncios",
+        "announceInterval": "Intervalo de Anuncio (segundos)",
+        "announceIntervalDesc": "Con qué frecuencia deben anunciar los clientes (predeterminado: 900 segundos)",
+        "minInterval": "Intervalo Mínimo (segundos)",
+        "minIntervalDesc": "Tiempo mínimo entre anuncios (predeterminado: 300 segundos)",
+        "rateLimitPerHour": "Límite de Velocidad por Hora",
+        "rateLimitPerHourDesc": "Máximo de anuncios por hora por usuario por torrent (predeterminado: 60)"
       },
 
       "branding": {

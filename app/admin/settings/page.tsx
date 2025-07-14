@@ -14,7 +14,7 @@ import { useI18n } from '@/app/hooks/useI18n'
 import { Cog } from '@styled-icons/boxicons-regular/Cog'
 import { Envelope } from '@styled-icons/boxicons-regular/Envelope'
 import { UserPlus } from '@styled-icons/boxicons-regular/UserPlus'
-
+import { Shield } from '@styled-icons/boxicons-regular/Shield'
 import { Palette } from '@styled-icons/boxicons-regular/Palette'
 import { Support } from '@styled-icons/boxicons-regular/Support'
 
@@ -55,7 +55,12 @@ export default function AdminSettingsPage() {
       icon: UserPlus,
       description: t('admin.settings.registration.description')
     },
-
+    {
+      id: 'rateLimiting',
+      title: t('admin.settings.sections.rateLimiting'),
+      icon: Shield,
+      description: t('admin.settings.rateLimiting.description')
+    },
     {
       id: 'branding',
       title: t('admin.settings.sections.branding'),
@@ -276,7 +281,63 @@ export default function AdminSettingsPage() {
           </div>
         )
 
-
+      case 'rateLimiting':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold text-text mb-4">{t('admin.settings.rateLimiting.title')}</h2>
+              <p className="text-text-secondary mb-6">{t('admin.settings.rateLimiting.description')}</p>
+            </div>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-medium text-text">{t('admin.settings.rateLimiting.enableRateLimiting')}</h3>
+                <p className="text-sm text-text-secondary">{t('admin.settings.rateLimiting.enableRateLimitingDesc')}</p>
+              </div>
+              <ToggleSwitch
+                checked={config["ANNOUNCE_RATE_LIMITING_ENABLED"] === "true"}
+                onChange={e => handleChange("ANNOUNCE_RATE_LIMITING_ENABLED", e.target.checked ? "true" : "false")}
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <FormField
+                  label={t('admin.settings.rateLimiting.announceInterval')}
+                  value={config["ANNOUNCE_INTERVAL"] || '900'}
+                  onChange={val => handleChange("ANNOUNCE_INTERVAL", val)}
+                  className="w-full text-white"
+                  type="number"
+                />
+                <p className="text-sm text-text-secondary mt-2">
+                  {t('admin.settings.rateLimiting.announceIntervalDesc')}
+                </p>
+              </div>
+              <div>
+                <FormField
+                  label={t('admin.settings.rateLimiting.minInterval')}
+                  value={config["ANNOUNCE_MIN_INTERVAL"] || '300'}
+                  onChange={val => handleChange("ANNOUNCE_MIN_INTERVAL", val)}
+                  className="w-full text-white"
+                  type="number"
+                />
+                <p className="text-sm text-text-secondary mt-2">
+                  {t('admin.settings.rateLimiting.minIntervalDesc')}
+                </p>
+              </div>
+              <div>
+                <FormField
+                  label={t('admin.settings.rateLimiting.rateLimitPerHour')}
+                  value={config["ANNOUNCE_RATE_LIMIT_PER_HOUR"] || '60'}
+                  onChange={val => handleChange("ANNOUNCE_RATE_LIMIT_PER_HOUR", val)}
+                  className="w-full text-white"
+                  type="number"
+                />
+                <p className="text-sm text-text-secondary mt-2">
+                  {t('admin.settings.rateLimiting.rateLimitPerHourDesc')}
+                </p>
+              </div>
+            </div>
+          </div>
+        )
 
       case 'branding':
         return (

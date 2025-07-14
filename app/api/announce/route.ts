@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import bencode from 'bencode';
+import { checkRateLimit, updateRateLimit, getAnnounceConfig } from '@/app/lib/ratelimit';
 
 // Toggle for peer list format: 'compact' (production) or 'dictionary' (debug)
 const PEER_LIST_FORMAT: 'compact' | 'dictionary' = 'compact';
@@ -89,7 +90,23 @@ export async function GET(request: NextRequest) {
       request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
       request.headers.get('x-real-ip') ||
       searchParams.get('ip') ||
-      '127.0.0.1'; // fallback for local testing
+      '127.0.0.1';
+
+    // Check rate limiting before processing
+    const rateLimitCheck = await checkRateLimit(user.id, torrent.id);
+    if (!rateLimitCheck.allowed) {
+      const failure = bencode.encode({ 
+        'failure reason': 'Rate limit exceeded',
+        'retry after': rateLimitCheck.retryAfter
+      });
+      return new NextResponse(failure, { 
+        status: 429, 
+        headers: { 
+          'Content-Type': 'text/plain',
+          'Retry-After': rateLimitCheck.retryAfter.toString()
+        } 
+      });
+    }
 
     // Handle announce events
     if (event === 'stopped') {
@@ -161,6 +178,9 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    // Update rate limit tracking
+    await updateRateLimit(user.id, torrent.id, ip);
+
     // Clean up old peers (not announced in 45 minutes)
     const cutoff = new Date(Date.now() - 45 * 60 * 1000);
     await prisma.peer.deleteMany({
@@ -195,9 +215,12 @@ export async function GET(request: NextRequest) {
       where: { torrentId: torrent.id },
     });
 
+    // Get configurable intervals
+    const config = await getAnnounceConfig();
+
     const response: Record<string, unknown> = {
-      interval: 1800,
-      'min interval': 900,
+      interval: config.interval,
+      'min interval': config.minInterval,
       complete,
       incomplete,
       downloaded,

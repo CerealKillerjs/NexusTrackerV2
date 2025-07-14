@@ -778,7 +778,7 @@
         "email": "Email (SMTP)",
         "support": "Support Email",
         "registration": "Registration & Invites",
-
+        "rateLimiting": "Rate Limiting",
         "branding": "Branding"
       },
       "tracker": {
@@ -817,6 +817,18 @@
           "inviteOnly": "Invite Only",
           "closed": "Closed"
         }
+      },
+      "rateLimiting": {
+        "title": "Announce Rate Limiting",
+        "description": "Configure rate limiting for BitTorrent announce requests to prevent abuse.",
+        "enableRateLimiting": "Enable Rate Limiting",
+        "enableRateLimitingDesc": "Enable or disable announce rate limiting",
+        "announceInterval": "Announce Interval (seconds)",
+        "announceIntervalDesc": "How often clients should announce (default: 900 seconds)",
+        "minInterval": "Minimum Interval (seconds)",
+        "minIntervalDesc": "Minimum time between announces (default: 300 seconds)",
+        "rateLimitPerHour": "Rate Limit Per Hour",
+        "rateLimitPerHourDesc": "Maximum announces per hour per user per torrent (default: 60)"
       },
 
       "branding": {
