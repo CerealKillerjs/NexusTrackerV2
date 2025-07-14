@@ -139,7 +139,13 @@
     }
   },
   "home": {
+    "title": "NexusTracker V2",
     "subtitle": "El Rastreador de Torrents SobrePotenciado",
+    "description": "Un rastreador de torrents moderno",
+    "welcome": {
+      "title": "Bienvenido a NexusTracker V2",
+      "description": "Por favor inicia sesión o regístrate para acceder al rastreador"
+    },
     "nav": {
       "browse": "Explorar",
       "recent": "Recientes",

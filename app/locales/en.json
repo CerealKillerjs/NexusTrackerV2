@@ -139,7 +139,13 @@
     }
   },
   "home": {
+    "title": "NexusTracker V2",
     "subtitle": "The OverPowered Torrent Tracker",
+    "description": "A modern BitTorrent tracker",
+    "welcome": {
+      "title": "Welcome to NexusTracker V2",
+      "description": "Please login or register to access the tracker"
+    },
     "nav": {
       "browse": "Browse",
       "recent": "Recent",
