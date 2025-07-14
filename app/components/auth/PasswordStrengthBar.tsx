@@ -1,6 +1,7 @@
 /**
- * Password Strength Bar component
+ * Password Strength Bar component - Optimized for server-side translations
  * Displays the strength of a password with visual feedback and security recommendations
+ * Uses server translations to prevent flashing on page reload
  */
 
 import React from 'react';
@@ -8,10 +9,33 @@ import { useI18n } from '@/app/hooks/useI18n';
 
 interface PasswordStrengthBarProps {
   password: string;
+  serverTranslations?: {
+    securityRecommendations: string;
+    weak: string;
+    fair: string;
+    good: string;
+    strong: string;
+    minLength: string;
+    uppercase: string;
+    lowercase: string;
+    number: string;
+    special: string;
+  };
 }
 
-const PasswordStrengthBar: React.FC<PasswordStrengthBarProps> = ({ password }) => {
+const PasswordStrengthBar: React.FC<PasswordStrengthBarProps> = ({ 
+  password, 
+  serverTranslations 
+}) => {
   const { t } = useI18n();
+
+  // Get server translations with fallbacks
+  const getServerTranslation = (key: string, fallbackKey: string) => {
+    if (serverTranslations && key in serverTranslations) {
+      return serverTranslations[key as keyof typeof serverTranslations];
+    }
+    return t(fallbackKey);
+  };
 
   const calculateStrength = (): { strength: number; message: string } => {
     let strength = 0;
@@ -23,10 +47,10 @@ const PasswordStrengthBar: React.FC<PasswordStrengthBarProps> = ({ password }) =
     if (/[0-9]/.test(password)) strength += 20;
     if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 20;
 
-    let message = t('auth.register.passwordStrength.weak');
-    if (strength > 20) message = t('auth.register.passwordStrength.fair');
-    if (strength > 60) message = t('auth.register.passwordStrength.good');
-    if (strength > 80) message = t('auth.register.passwordStrength.strong');
+    let message = getServerTranslation('weak', 'auth.register.passwordStrength.weak');
+    if (strength > 20) message = getServerTranslation('fair', 'auth.register.passwordStrength.fair');
+    if (strength > 60) message = getServerTranslation('good', 'auth.register.passwordStrength.good');
+    if (strength > 80) message = getServerTranslation('strong', 'auth.register.passwordStrength.strong');
 
     return { strength, message };
   };
@@ -44,23 +68,23 @@ const PasswordStrengthBar: React.FC<PasswordStrengthBarProps> = ({ password }) =
   const requirements = [
     { 
       met: password.length >= 8, 
-      text: t('auth.register.passwordRequirements.minLength', 'Al menos 8 caracteres') 
+      text: getServerTranslation('minLength', 'auth.register.passwordRequirements.minLength')
     },
     { 
       met: /[A-Z]/.test(password), 
-      text: t('auth.register.passwordRequirements.uppercase', 'Al menos una mayúscula') 
+      text: getServerTranslation('uppercase', 'auth.register.passwordRequirements.uppercase')
     },
     { 
       met: /[a-z]/.test(password), 
-      text: t('auth.register.passwordRequirements.lowercase', 'Al menos una minúscula') 
+      text: getServerTranslation('lowercase', 'auth.register.passwordRequirements.lowercase')
     },
     { 
       met: /[0-9]/.test(password), 
-      text: t('auth.register.passwordRequirements.number', 'Al menos un número') 
+      text: getServerTranslation('number', 'auth.register.passwordRequirements.number')
     },
     { 
       met: /[!@#$%^&*(),.?":{}|<>]/.test(password), 
-      text: t('auth.register.passwordRequirements.special', 'Al menos un carácter especial') 
+      text: getServerTranslation('special', 'auth.register.passwordRequirements.special')
     }
   ];
 
@@ -69,7 +93,7 @@ const PasswordStrengthBar: React.FC<PasswordStrengthBarProps> = ({ password }) =
       {/* Security Recommendations Header */}
       <div className="mb-3">
         <h4 className="text-sm font-medium text-text mb-2">
-          {t('auth.register.securityRecommendations', 'Recomendaciones para la seguridad')}
+          {getServerTranslation('securityRecommendations', 'auth.register.securityRecommendations')}
         </h4>
         
         {/* Requirements List */}

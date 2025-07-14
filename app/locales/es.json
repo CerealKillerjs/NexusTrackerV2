@@ -66,7 +66,12 @@
         "deactivated": "Esta invitación ha sido desactivada",
         "expired": "Esta invitación ha expirado"
       },
-      "registrationClosed": "El registro está cerrado actualmente"
+      "registrationClosed": "El registro está cerrado actualmente",
+      "registrationClosedMessage": "En este momento no se aceptan nuevos registros en la plataforma.",
+      "registrationClosedDescription": "Si tienes un código de invitación válido o necesitas acceso especial, contacta a un administrador.",
+      "goToLogin": "Ir al Login",
+      "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+      "signInHere": "Inicia sesión aquí"
     },
     "notification": {
       "successLogin": "¡Inicio de sesión exitoso!",
