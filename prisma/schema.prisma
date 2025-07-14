@@ -121,11 +121,14 @@ model Comment {
   content   String
   userId    String
   torrentId String?
+  parentId  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   torrent   Torrent? @relation(fields: [torrentId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   votes     Vote[]
+  parent    Comment? @relation("CommentToReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentToReplies")
 
   @@map("comments")
 }
