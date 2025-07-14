@@ -6,18 +6,29 @@
 
 import { FormField } from '../ui/FigmaFloatingLabelInput';
 
-interface AuthInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface AuthInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   label: string;
   error?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function AuthInput({ label, error, onChange, ...props }: AuthInputProps) {
-  // Handle the onChange event to convert from React.ChangeEvent to string value
-  const handleChange = (value: string) => {
+export default function AuthInput({ 
+  label, 
+  error, 
+  onChange, 
+  value = '',
+  ...props 
+}: AuthInputProps) {
+  // Handle the onChange event to convert from string to React.ChangeEvent
+  const handleChange = (newValue: string) => {
     if (onChange) {
       // Create a synthetic event that mimics the original onChange
       const syntheticEvent = {
-        target: { value }
+        target: { 
+          value: newValue,
+          name: props.name || '',
+          type: props.type || 'text'
+        }
       } as React.ChangeEvent<HTMLInputElement>;
       onChange(syntheticEvent);
     }
@@ -27,7 +38,7 @@ export default function AuthInput({ label, error, onChange, ...props }: AuthInpu
     <div className="mb-5">
       <FormField
         label={label}
-        value={props.value as string || ''}
+        value={value as string}
         onChange={handleChange}
         type={props.type || 'text'}
         placeholder={props.placeholder}

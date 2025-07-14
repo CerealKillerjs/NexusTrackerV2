@@ -1,149 +1,119 @@
 /**
- * Login page component
- * Handles user authentication
- * Provides login form and navigation
+ * Login page component - Optimized for maximum performance
+ * Server Component with direct database access and server-side translations
+ * Minimal client-side JavaScript for better performance
  */
 
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useI18n } from '@/app/hooks/useI18n';
-import Link from 'next/link';
+import { Suspense } from 'react';
+import { headers } from 'next/headers';
+import { getRegistrationMode } from '@/app/lib/config';
+import { serverT, getPreferredLanguage } from '@/app/lib/server-i18n';
 import AuthCard from '../../components/auth/AuthCard';
-import AuthInput from '../../components/auth/AuthInput';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { showNotification } from '@/app/utils/notifications';
-import i18n from '@/app/lib/i18n';
+import SignInForm from '../../components/auth/SignInForm';
+import { FormFieldSkeleton, ButtonSkeleton, TextSkeleton } from '../../components/ui/Skeleton';
+import { LanguageSync } from '../../components/ui/LanguageSync';
 
-export default function LoginPage() {
-  const { t } = useI18n();
-  const router = useRouter();
-  const [formData, setFormData] = useState({
-    login: '',
-    password: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const [registrationMode, setRegistrationMode] = useState<string>('open');
-
-  // Get registration mode on component mount
-  useEffect(() => {
-    const fetchRegistrationMode = async () => {
-      try {
-        const response = await fetch('/api/config/registration-mode');
-        if (response.ok) {
-          const data = await response.json();
-          setRegistrationMode(data.registrationMode || 'open');
-        }
-      } catch (error) {
-        console.error('Error fetching registration mode:', error);
-      } finally {
-      }
-    };
-
-    fetchRegistrationMode();
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      // First, check if the user exists and their status
-      const statusResponse = await fetch(`/api/auth/check-user-status?login=${encodeURIComponent(formData.login)}`);
-      
-      if (statusResponse.ok) {
-        const statusData = await statusResponse.json();
-        
-        // If user exists and is banned, show specific message
-        if (statusData.exists && statusData.status === 'BANNED') {
-          const message = t('auth.errors.userBanned');
-          const currentLang = i18n.language || 'es';
-          const fallbackMessage = currentLang === 'en' ? 'Your account is permanently banned' : 'Tu cuenta está permanentemente baneada';
-          showNotification.error(message === 'auth.errors.userBanned' ? fallbackMessage : message);
-          setLoading(false);
-          return;
-        }
-      }
-
-      // Proceed with normal login
-      const result = await signIn('credentials', {
-        login: formData.login,
-        password: formData.password,
-        redirect: false,
-      });
-      
-      if (result?.error) {
-        if (result.error === 'EMAIL_NOT_VERIFIED') {
-          router.push('/auth/unverified?login=' + encodeURIComponent(formData.login));
-        } else {
-          showNotification.error(t('auth.register.errors.invalidCredentials'));
-        }
-      } else {
-        showNotification.success(t('auth.notification.successLogin'));
-        router.push('/dashboard');
-      }
-    } catch (error) {
-      console.error('Error durante el login:', error);
-      showNotification.error(t('auth.notification.error'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
+// Enhanced loading component with theme-consistent styling
+function SignInLoading() {
   return (
-    <AuthCard title={t('auth.signin.title')}>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <AuthInput
-          label={t('auth.login')}
-          type="text"
-          value={formData.login}
-          onChange={(e) => setFormData(prev => ({ ...prev, login: e.target.value }))}
-          required
-          autoFocus
-        />
-        <AuthInput
-          label={t('auth.password')}
-          type="password"
-          value={formData.password}
-          onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-          required
-        />
-        
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-primary text-background py-2 rounded 
-                   hover:bg-primary-dark transition-colors font-medium
-                   disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? t('common.loading') : t('auth.signin.button')}
-        </button>
-      </form>
-
-      <div className="mt-6 text-center text-sm">
-        <Link 
-          href="/auth/forgot-password"
-          className="text-primary hover:text-primary-dark transition-colors"
-        >
-          {t('auth.signin.forgotPassword')}
-        </Link>
+    <div className="space-y-6">
+      {/* Form fields skeleton */}
+      <div className="space-y-4">
+        <FormFieldSkeleton label="Login" placeholder="Ingresa tu email o usuario" />
+        <FormFieldSkeleton label="Contraseña" placeholder="Ingresa tu contraseña" />
+        <ButtonSkeleton />
       </div>
 
-      {/* Only show registration link if registration is not closed */}
-      {registrationMode !== 'closed' && (
-        <div className="mt-4 text-center text-sm">
-          <span className="text-text-secondary">
-            {t('auth.signin.noAccount')}{' '}
-          </span>
-          <Link 
-            href="/auth/signup"
-            className="text-primary hover:text-primary-dark transition-colors"
-          >
-            {t('auth.signin.signUpLink')}
-          </Link>
+      {/* Links skeleton */}
+      <div className="space-y-4">
+        <div className="text-center">
+          <TextSkeleton width="w-32" />
         </div>
-      )}
-    </AuthCard>
+        <div className="text-center">
+          <TextSkeleton width="w-48" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default async function LoginPage() {
+  // Get headers for language detection
+  const headersList = await headers();
+  const language = await getPreferredLanguage(headersList);
+  
+  // Direct database access - no HTTP overhead
+  const registrationMode = await getRegistrationMode();
+
+  // Server-side translations with debug logging
+  const title = serverT('auth.signin.title', language);
+  const loginLabel = serverT('auth.login', language);
+  const passwordLabel = serverT('auth.password', language);
+  const loginPlaceholder = serverT('auth.placeholders.login', language);
+  const passwordPlaceholder = serverT('auth.placeholders.password', language);
+  
+  // Additional translations to prevent poping
+  const submitButton = serverT('auth.signin.button', language);
+  const loadingText = serverT('common.loading', language);
+  const forgotPassword = serverT('auth.signin.forgotPassword', language);
+  const noAccount = serverT('auth.signin.noAccount', language);
+  const signUpLink = serverT('auth.signin.signUpLink', language);
+  
+  // Error messages
+  const loginRequired = serverT('auth.errors.loginRequired', language);
+  const loginMinLength = serverT('auth.errors.loginMinLength', language);
+  const passwordRequired = serverT('auth.errors.passwordRequired', language);
+  const passwordMinLength = serverT('auth.errors.passwordMinLength', language);
+  const userBanned = serverT('auth.errors.userBanned', language);
+  const invalidCredentials = serverT('auth.register.errors.invalidCredentials', language);
+  const successLogin = serverT('auth.notification.successLogin', language);
+  const errorNotification = serverT('auth.notification.error', language);
+
+  // Debug logging
+  console.log('🔍 Server Translations Debug:', {
+    language,
+    title,
+    loginLabel,
+    passwordLabel,
+    loginPlaceholder,
+    passwordPlaceholder,
+    submitButton,
+    loadingText,
+    forgotPassword,
+    noAccount,
+    signUpLink
+  });
+
+  return (
+    <>
+      <LanguageSync serverLanguage={language} />
+      <AuthCard title={title}>
+        <Suspense fallback={<SignInLoading />}>
+          <SignInForm 
+            registrationMode={registrationMode} 
+            language={language}
+            serverTranslations={{
+              loginLabel,
+              passwordLabel,
+              loginPlaceholder,
+              passwordPlaceholder,
+              submitButton,
+              loadingText,
+              forgotPassword,
+              noAccount,
+              signUpLink,
+              loginRequired,
+              loginMinLength,
+              passwordRequired,
+              passwordMinLength,
+              userBanned,
+              invalidCredentials,
+              successLogin,
+              errorNotification
+            }}
+          />
+        </Suspense>
+      </AuthCard>
+    </>
   );
 } 
