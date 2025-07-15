@@ -66,6 +66,12 @@ export default function AdminSettingsPage() {
       title: t('admin.settings.sections.branding'),
       icon: Palette,
       description: t('admin.settings.branding.description')
+    },
+    {
+      id: 'ratioSettings',
+      title: t('admin.settings.sections.ratioSettings'),
+      icon: Shield,
+      description: t('admin.settings.ratioSettings.description')
     }
   ]
 
@@ -136,6 +142,30 @@ export default function AdminSettingsPage() {
   const emailEnabledKey = "EMAIL_ENABLED"
   const emailEnabled = config[emailEnabledKey] !== "false"
   const supportEmailKey = "SUPPORT_EMAIL"
+
+  // Announce rules config keys
+  const ratioKeys = [
+    { key: 'MINIMUM_RATIO', label: t('admin.settings.ratioSettings.minimumRatio'), type: 'number' },
+    { key: 'BONUS_PER_GB', label: t('admin.settings.ratioSettings.bonusPerGb'), type: 'number' },
+    { key: 'MAXIMUM_HITNRUNS', label: t('admin.settings.ratioSettings.maxHitnRuns'), type: 'number' },
+    { key: 'RATIO_GRACE_MB', label: t('admin.settings.ratioSettings.graceMb'), type: 'number' }, // Grace period in MB
+  ];
+
+  // Preset values
+  const ratioPresets = [
+    {
+      name: t('admin.settings.ratioSettings.presets.easy'),
+      values: { MINIMUM_RATIO: '0.2', BONUS_PER_GB: '2', MAXIMUM_HITNRUNS: '10' }
+    },
+    {
+      name: t('admin.settings.ratioSettings.presets.balanced'),
+      values: { MINIMUM_RATIO: '0.4', BONUS_PER_GB: '1', MAXIMUM_HITNRUNS: '5' }
+    },
+    {
+      name: t('admin.settings.ratioSettings.presets.strict'),
+      values: { MINIMUM_RATIO: '0.8', BONUS_PER_GB: '3', MAXIMUM_HITNRUNS: '2' }
+    },
+  ];
 
   // Render section content
   const renderSectionContent = () => {
@@ -359,6 +389,48 @@ export default function AdminSettingsPage() {
                   {t('admin.settings.branding.trackerNameDesc')}
                 </p>
               </div>
+            </div>
+          </div>
+        )
+
+      case 'ratioSettings':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold text-text mb-4">{t('admin.settings.ratioSettings.title')}</h2>
+              <p className="text-text-secondary mb-6">{t('admin.settings.ratioSettings.description')}</p>
+            </div>
+            {/* Recommended presets card */}
+            <div className="mb-6 p-4 bg-surface-light border border-border rounded-lg">
+              <h3 className="font-semibold mb-2">{t('admin.settings.ratioSettings.recommendedTitle')}</h3>
+              <div className="flex flex-wrap gap-4">
+                {ratioPresets.map((preset) => (
+                  <Button
+                    key={preset.name}
+                    type="button"
+                    variant="secondary"
+                    onClick={() => {
+                      Object.entries(preset.values).forEach(([key, value]) => handleChange(key, value))
+                    }}
+                  >
+                    {preset.name}
+                  </Button>
+                ))}
+              </div>
+              <div className="text-xs text-text-secondary mt-2">{t('admin.settings.ratioSettings.recommendedDesc')}</div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {ratioKeys.map(({ key, label, type }) => (
+                <div key={key}>
+                  <FormField
+                    label={label}
+                    value={config[key] || ''}
+                    onChange={val => handleChange(key, val)}
+                    className="w-full text-white"
+                    type={type}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         )

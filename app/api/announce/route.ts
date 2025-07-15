@@ -8,6 +8,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import bencode from 'bencode';
 import { checkRateLimit, updateRateLimit, getAnnounceConfig } from '@/app/lib/ratelimit';
+import { checkAndUpdateRatio } from './ratio';
+import { awardBonusPoints } from './bonus';
+import { checkAndUpdateHitnRun } from './hitnrun';
 
 // Toggle for peer list format: 'compact' (production) or 'dictionary' (debug)
 const PEER_LIST_FORMAT: 'compact' | 'dictionary' = 'compact';
@@ -50,7 +53,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const passkey = searchParams.get('passkey');
-    const peerId = searchParams.get('peer_id');
+    const rawPeerId = searchParams.get('peer_id');
     const port = searchParams.get('port');
     const left = searchParams.get('left');
     const event = searchParams.get('event');
@@ -59,6 +62,9 @@ export async function GET(request: NextRequest) {
     const urlString = request.url;
     const infoHashMatch = urlString.match(/info_hash=([^&]+)/);
     const encodedInfoHash = infoHashMatch ? infoHashMatch[1] : null;
+    
+    // Encode peerId to hex to handle binary data safely
+    const peerId = rawPeerId ? percentDecodeToBuffer(rawPeerId).toString('hex') : null;
     
     if (!passkey || !encodedInfoHash || !peerId || !port) {
       // Return bencoded failure reason
@@ -109,6 +115,88 @@ export async function GET(request: NextRequest) {
     }
 
     // Handle announce events
+    const infoHash = percentDecodeToBuffer(encodedInfoHash).toString('hex').toLowerCase();
+    const uploaded = Number(searchParams.get('uploaded') || '0');
+    const downloadedValue = Number(searchParams.get('downloaded') || '0');
+    const leftNum = Number(left || '0');
+    const progressId = `${user.id}_${infoHash}_${peerId}`;
+    // Determine mode
+    let mode: string;
+    if (Number(leftNum) === 0) {
+      mode = 'seeding';
+    } else if (uploaded > 0) {
+      mode = 'upload';
+    } else {
+      mode = 'download';
+    }
+
+    // Debug: Log incoming announce parameters
+    console.log('[ANNOUNCE] Incoming params:', {
+      userId: user.id,
+      username: user.username,
+      infoHash,
+      peerId,
+      uploaded,
+      downloaded: downloadedValue,
+      left: leftNum,
+      event,
+      mode,
+      ip,
+      port,
+    });
+
+    // Calculate uploadDelta as the difference from previous max uploaded for this user/infoHash/peerId
+    const prevMaxProgress = await prisma.progress.findFirst({
+      where: { userId: user.id, infoHash, peerId },
+      orderBy: { updatedAt: 'desc' },
+    });
+    let uploadDelta = 0;
+    let prevLeft = null;
+    if (prevMaxProgress) {
+      uploadDelta = Math.max(0, uploaded - Number(prevMaxProgress.uploaded ?? 0));
+      prevLeft = typeof prevMaxProgress.left === 'bigint' ? Number(prevMaxProgress.left) : Number(prevMaxProgress.left ?? 0);
+    } else {
+      uploadDelta = uploaded;
+      prevLeft = null;
+    }
+
+    // Always create a new Progress record for every announce session
+    const progressRecord = await prisma.progress.create({
+      data: {
+        userId: user.id,
+        infoHash,
+        peerId,
+        mode,
+        uploaded,
+        downloaded: downloadedValue,
+        left: BigInt(leftNum),
+        lastSeen: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+    // Debug: Log the created Progress record
+    console.log('[ANNOUNCE] Created Progress record:', progressRecord);
+
+    // Robust completion detection: create TorrentCompletion when left transitions from non-zero to zero
+    if ((prevLeft === null || prevLeft > 0) && leftNum === 0) {
+      // Prevent duplicate completions for same user/torrent/peerId
+      const existingCompletion = await prisma.torrentCompletion.findFirst({
+        where: { userId: user.id, torrentId: torrent.id, peerId },
+      });
+      if (!existingCompletion) {
+        await prisma.torrentCompletion.create({
+          data: {
+            torrentId: torrent.id,
+            userId: user.id,
+            peerId,
+            uploaded,
+            downloaded: downloadedValue,
+          },
+        });
+        console.log('[ANNOUNCE] TorrentCompletion created (left=0 transition)', { userId: user.id, torrentId: torrent.id, peerId, uploaded, downloaded: downloadedValue });
+      }
+    }
+
     if (event === 'stopped') {
       await prisma.peer.deleteMany({
         where: {
@@ -116,16 +204,8 @@ export async function GET(request: NextRequest) {
           torrentId: torrent.id,
         },
       });
-    } else if (event === 'completed') {
-      // Record a completion event
-      await prisma.torrentCompletion.create({
-        data: {
-          torrentId: torrent.id,
-          userId: user.id,
-          peerId,
-        },
-      });
-      // Upsert peer info, including 'left'
+    } else {
+      // Upsert peer info for peer list
       await prisma.peer.upsert({
         where: {
           peerId_torrentId: {
@@ -139,6 +219,8 @@ export async function GET(request: NextRequest) {
           lastAnnounce: new Date(),
           userId: user.id,
           left: left ? BigInt(left) : BigInt(0),
+          uploaded: uploaded,
+          downloaded: downloadedValue,
         },
         create: {
           peerId,
@@ -148,35 +230,69 @@ export async function GET(request: NextRequest) {
           userId: user.id,
           lastAnnounce: new Date(),
           left: left ? BigInt(left) : BigInt(0),
-        },
-      });
-    } else if (event === 'started' || !event) {
-      // Upsert peer info, including 'left'
-      await prisma.peer.upsert({
-        where: {
-          peerId_torrentId: {
-            peerId,
-            torrentId: torrent.id,
-          },
-        },
-        update: {
-          ip,
-          port: parseInt(port, 10),
-          lastAnnounce: new Date(),
-          userId: user.id,
-          left: left ? BigInt(left) : BigInt(0),
-        },
-        create: {
-          peerId,
-          ip,
-          port: parseInt(port, 10),
-          torrentId: torrent.id,
-          userId: user.id,
-          lastAnnounce: new Date(),
-          left: left ? BigInt(left) : BigInt(0),
+          uploaded: uploaded,
+          downloaded: downloadedValue,
         },
       });
     }
+
+    // Aggregate Progress for user stats
+    // Use the maximum uploaded/downloaded value per (infoHash, peerId)
+    const allUserProgress = await prisma.progress.findMany({
+      where: { userId: user.id },
+      orderBy: [{ infoHash: 'asc' }, { peerId: 'asc' }, { updatedAt: 'desc' }],
+    });
+    const progressByKey = new Map();
+    for (const p of allUserProgress) {
+      const key = `${p.infoHash}_${p.peerId}`;
+      const uploaded = Number(p.uploaded ?? 0);
+      const downloaded = Number(p.downloaded ?? 0);
+      if (!progressByKey.has(key)) {
+        progressByKey.set(key, { uploaded, downloaded });
+      } else {
+        const prev = progressByKey.get(key);
+        progressByKey.set(key, {
+          uploaded: Math.max(prev.uploaded, uploaded),
+          downloaded: Math.max(prev.downloaded, downloaded),
+        });
+      }
+    }
+    const totalUploaded = Array.from(progressByKey.values()).reduce((sum, p) => sum + p.uploaded, 0);
+    const totalDownloaded = Array.from(progressByKey.values()).reduce((sum, p) => sum + p.downloaded, 0);
+    const ratio = totalDownloaded === 0 ? 0 : Number((totalUploaded / totalDownloaded).toFixed(2));
+    // Debug: Log aggregation results
+    console.log('[ANNOUNCE] Aggregated user stats (max per peer):', {
+      userId: user.id,
+      totalUploaded,
+      totalDownloaded,
+      ratio,
+      progressByKey,
+    });
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        uploaded: BigInt(totalUploaded),
+        downloaded: BigInt(totalDownloaded),
+        ratio,
+      },
+    });
+
+    // Enforce ratio rule (use Progress aggregation)
+    const ratioResult = await checkAndUpdateRatio(user.id);
+    if (!ratioResult.allowed) {
+      const failure = bencode.encode({ 'failure reason': ratioResult.failureReason });
+      return new NextResponse(failure, { status: 403, headers: { 'Content-Type': 'text/plain' } });
+    }
+
+    // Enforce hit'n'run rule (use Progress aggregation)
+    const hitnrunResult = await checkAndUpdateHitnRun(user.id);
+    if (!hitnrunResult.allowed) {
+      const failure = bencode.encode({ 'failure reason': hitnrunResult.failureReason });
+      return new NextResponse(failure, { status: 403, headers: { 'Content-Type': 'text/plain' } });
+    }
+
+    // Award bonus points (use Progress upload delta)
+    await awardBonusPoints(user.id, uploadDelta);
 
     // Update rate limit tracking
     await updateRateLimit(user.id, torrent.id, ip);
@@ -208,7 +324,14 @@ export async function GET(request: NextRequest) {
     }
 
     // Peer list for response (exclude self)
-    const peers = allPeers.filter(p => p.peerId !== peerId).slice(0, numwant);
+    // Decode hex peerIds back to binary for client response
+    const peers = allPeers
+      .filter(p => p.peerId !== peerId) // peerId is already hex, so this comparison works
+      .map(p => ({
+        ...p,
+        peerId: Buffer.from(p.peerId, 'hex').toString('binary')
+      }))
+      .slice(0, numwant);
 
     // Get times downloaded (completed)
     const downloaded = await prisma.torrentCompletion.count({

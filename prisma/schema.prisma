@@ -209,6 +209,8 @@ model TorrentCompletion {
   userId      String
   peerId      String
   completedAt DateTime @default(now())
+  uploaded    BigInt   // New: uploaded at completion
+  downloaded  BigInt   // New: downloaded at completion
   torrent     Torrent  @relation(fields: [torrentId], references: [id], onDelete: Cascade)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -234,10 +236,11 @@ model AnnounceRateLimit {
 }
 
 model Progress {
-  id         String   @id
+  id         String   @id @default(uuid())
   userId     String
   infoHash   String
   peerId     String
+  mode       String   // 'download', 'upload', 'seeding', etc.
   uploaded   Json
   downloaded Json
   left       BigInt   @default(0)
@@ -245,11 +248,9 @@ model Progress {
   updatedAt  DateTime
   User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, infoHash, peerId])
+  @@index([userId])
   @@index([infoHash])
   @@index([lastSeen])
-  @@index([peerId])
-  @@index([userId])
 }
 
 enum UserStatus {

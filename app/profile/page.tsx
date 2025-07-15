@@ -18,28 +18,6 @@ import DashboardLayout from '../components/dashboard/DashboardLayout';
 import RecentActivity from '../components/profile/RecentActivity';
 import { UserProfile } from '../types/profile';
 
-// Mock profile data
-const mockProfile: UserProfile = {
-  id: 1,
-  username: 'testuser',
-  email: 'test@example.com',
-  joinDate: '2024-01-15',
-  avatar: null,
-  stats: {
-    uploaded: '1.5 TB',
-    downloaded: '500 GB',
-    ratio: 3.0,
-    points: 1500,
-    rank: 'Power User'
-  },
-  preferences: {
-    notifications: true,
-    privateProfile: false,
-    language: 'en',
-    theme: 'dark'
-  }
-};
-
 // Extension of session user type to include passkey
 interface SessionUser {
   id: string;
@@ -56,7 +34,7 @@ export default function ProfilePage() {
   const { currentLanguage } = useLanguage();
   const { data: session } = useSession();
   const user = session?.user as SessionUser | undefined;
-  const [profile, setProfile] = useState<UserProfile>(mockProfile);
+  const [profile, setProfile] = useState<UserProfile | null>(null); // TODO: Fetch real user profile from API
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -104,7 +82,7 @@ export default function ProfilePage() {
   }, [announceUrl, t]);
 
   // Format join date (using mock data for now)
-  const formattedJoinDate = profile.joinDate 
+  const formattedJoinDate = profile?.joinDate 
     ? format(new Date(profile.joinDate), 'PPP', { locale: getLocale() })
     : '';
 
@@ -235,9 +213,9 @@ export default function ProfilePage() {
                 <div className="space-y-4">
                   {/* Avatar */}
                   <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-background">
-                    {(previewUrl || profile.avatar) ? (
+                    {(previewUrl || profile?.avatar) ? (
                       <Image
-                        src={previewUrl || profile.avatar!}
+                        src={previewUrl || profile?.avatar!}
                         alt="Profile avatar"
                         fill
                         className="object-cover"
@@ -260,7 +238,7 @@ export default function ProfilePage() {
                     >
                       {t('profile.actions.uploadAvatar')}
                     </button>
-                    {(previewUrl || profile.avatar) && (
+                    {(previewUrl || profile?.avatar) && (
                       <button
                         type="button"
                         onClick={handleRemoveAvatar}
@@ -302,15 +280,15 @@ export default function ProfilePage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-text-secondary">{t('profile.fields.ratio')}</span>
-                      <span className="font-medium">{profile.stats.ratio.toFixed(2)}</span>
+                      <span className="font-medium">{profile?.stats?.ratio?.toFixed(2) ?? '0.00'}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-text-secondary">{t('profile.fields.points')}</span>
-                      <span className="font-medium">{profile.stats.points}</span>
+                      <span className="font-medium">{profile?.stats?.points ?? 0}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-text-secondary">{t('profile.fields.rank')}</span>
-                      <span className="font-medium">{profile.stats.rank}</span>
+                      <span className="font-medium">{profile?.stats?.rank ?? ''}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-text-secondary">{t('profile.fields.joinDate')}</span>
@@ -360,13 +338,13 @@ export default function ProfilePage() {
                       <span className="block text-sm text-text-secondary">
                         {t('profile.fields.uploaded')}
                       </span>
-                      <span className="text-lg font-medium text-green">{profile.stats.uploaded}</span>
+                      <span className="text-lg font-medium text-green">{profile?.stats?.uploaded ?? '0 B'}</span>
                     </div>
                     <div>
                       <span className="block text-sm text-text-secondary">
                         {t('profile.fields.downloaded')}
                       </span>
-                      <span className="text-lg font-medium text-primary">{profile.stats.downloaded}</span>
+                      <span className="text-lg font-medium text-primary">{profile?.stats?.downloaded ?? '0 B'}</span>
                     </div>
                   </div>
                 </div>
@@ -637,29 +615,38 @@ export default function ProfilePage() {
               <section className="bg-surface rounded-lg border border-border p-6">
                 <h2 className="text-xl font-semibold mb-4">{t('profile.sections.preferences')}</h2>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span>{t('profile.preferences.notifications')}</span>
+                  {/* Preferences toggles */}
+                  <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={profile.preferences.notifications}
-                      onChange={(e) => setProfile({
-                        ...profile,
-                        preferences: { ...profile.preferences, notifications: e.target.checked }
-                      })}
+                      checked={!!profile?.preferences?.notifications}
+                      onChange={(e) => {
+                        if (profile) {
+                          setProfile({
+                            ...profile,
+                            preferences: { ...profile.preferences, notifications: e.target.checked }
+                          });
+                        }
+                      }}
                       className="h-4 w-4"
                     />
+                    <span>{t('profile.fields.notifications')}</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span>{t('profile.preferences.privateProfile')}</span>
+                  <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={profile.preferences.privateProfile}
-                      onChange={(e) => setProfile({
-                        ...profile,
-                        preferences: { ...profile.preferences, privateProfile: e.target.checked }
-                      })}
+                      checked={!!profile?.preferences?.privateProfile}
+                      onChange={(e) => {
+                        if (profile) {
+                          setProfile({
+                            ...profile,
+                            preferences: { ...profile.preferences, privateProfile: e.target.checked }
+                          });
+                        }
+                      }}
                       className="h-4 w-4"
                     />
+                    <span>{t('profile.fields.privateProfile')}</span>
                   </div>
                 </div>
               </section>
