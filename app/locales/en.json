@@ -16,6 +16,13 @@
       "signUpLink": "Sign up",
       "forgotPassword": "Forgot Password?"
     },
+    "errors": {
+      "loginRequired": "Email or username is required",
+      "loginMinLength": "Email or username must be at least 3 characters",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "userBanned": "Your account is permanently banned"
+    },
     "signup": {
       "title": "Sign Up",
       "subtitle": "Create your account",

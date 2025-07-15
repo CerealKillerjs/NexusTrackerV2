@@ -16,6 +16,13 @@
       "signUpLink": "Registrarse",
       "forgotPassword": "¿Olvidaste tu contraseña?"
     },
+    "errors": {
+      "loginRequired": "El correo electrónico o usuario es requerido",
+      "loginMinLength": "El correo electrónico o usuario debe tener al menos 3 caracteres",
+      "passwordRequired": "La contraseña es requerida",
+      "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+      "userBanned": "Tu cuenta está permanentemente baneada"
+    },
     "signup": {
       "title": "Registrarse",
       "subtitle": "Crea tu cuenta",
