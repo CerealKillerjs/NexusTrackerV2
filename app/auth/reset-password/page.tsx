@@ -12,6 +12,7 @@ import { serverT, getPreferredLanguage } from '@/app/lib/server-i18n';
 import AuthCard from '@/app/components/auth/AuthCard';
 import ResetPasswordForm from '@/app/components/auth/ResetPasswordForm';
 import ResetPasswordSkeleton from '@/app/components/auth/ResetPasswordSkeleton';
+import { LanguageSync } from '@/app/components/ui/LanguageSync';
 
 export default async function ResetPasswordPage() {
   // Check if user is already authenticated
@@ -44,10 +45,13 @@ export default async function ResetPasswordPage() {
   };
 
   return (
-    <AuthCard title={translations.title}>
-      <Suspense fallback={<ResetPasswordSkeleton />}>
-        <ResetPasswordForm translations={translations} />
-      </Suspense>
-    </AuthCard>
+    <>
+      <LanguageSync serverLanguage={language} />
+      <AuthCard title={translations.title}>
+        <Suspense fallback={<ResetPasswordSkeleton />}>
+          <ResetPasswordForm translations={translations} />
+        </Suspense>
+      </AuthCard>
+    </>
   );
 } 

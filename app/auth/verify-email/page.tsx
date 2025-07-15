@@ -1,84 +1,50 @@
-"use client";
+/**
+ * Verify Email page component
+ * Server Component for email verification with token validation
+ * Provides verification status with server-side translations
+ */
 
-import { useEffect, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import AuthCard from "@/app/components/auth/AuthCard";
-import { useI18n } from "@/app/hooks/useI18n";
+import { Suspense } from 'react';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { auth } from '@/app/lib/auth';
+import { serverT, getPreferredLanguage } from '@/app/lib/server-i18n';
+import AuthCard from '@/app/components/auth/AuthCard';
+import VerifyEmailForm from '@/app/components/auth/VerifyEmailForm';
+import VerifyEmailSkeleton from '@/app/components/auth/VerifyEmailSkeleton';
+import { LanguageSync } from '@/app/components/ui/LanguageSync';
 
-function VerifyEmailForm() {
-  const { t } = useI18n();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
-  const [message, setMessage] = useState("");
+export default async function VerifyEmailPage() {
+  // Check if user is already authenticated
+  const session = await auth();
+  if (session) {
+    redirect('/dashboard');
+  }
 
-  useEffect(() => {
-    const token = searchParams.get("token");
-    if (!token) {
-      setStatus("error");
-      setMessage(t('auth.emailVerification.verify.missingToken'));
-      return;
-    }
-    const verify = async () => {
-      try {
-        const res = await fetch(`/api/auth/verify-email?token=${token}`);
-        const data = await res.json();
-        if (res.ok) {
-          setStatus("success");
-          setMessage(data.message || t('auth.emailVerification.verify.success'));
-        } else {
-          setStatus("error");
-          setMessage(data.error || t('auth.emailVerification.verify.error'));
-        }
-      } catch {
-        setStatus("error");
-        setMessage(t('auth.emailVerification.verify.verificationFailed'));
-      }
-    };
-    verify();
-  }, [searchParams, t]);
+  // Get language from headers
+  const headersList = await headers();
+  const language = await getPreferredLanguage(headersList);
+
+  // Prepare translations for the client component
+  const translations = {
+    title: serverT('auth.emailVerification.verify.title', language),
+    verifying: serverT('auth.emailVerification.verify.verifying', language),
+    success: serverT('auth.emailVerification.verify.success', language),
+    error: serverT('auth.emailVerification.verify.error', language),
+    missingToken: serverT('auth.emailVerification.verify.missingToken', language),
+    verificationFailed: serverT('auth.emailVerification.verify.verificationFailed', language),
+    goToSignIn: serverT('auth.emailVerification.verify.goToSignIn', language),
+    goToSignUp: serverT('auth.emailVerification.verify.goToSignUp', language),
+  };
 
   return (
-    <AuthCard title={t('auth.emailVerification.verify.title')}>
-      <div className="text-center">
-        {status === "loading" && <p className="text-text-secondary">{t('auth.emailVerification.verify.verifying')}</p>}
-        {status === "success" && (
-          <>
-            <p className="text-green-600 font-semibold mb-2">{message}</p>
-            <button
-              className="mt-4 px-4 py-2 bg-primary text-white rounded"
-              onClick={() => router.push("/auth/signin")}
-            >
-              {t('auth.emailVerification.verify.goToSignIn')}
-            </button>
-          </>
-        )}
-        {status === "error" && (
-          <>
-            <p className="text-red-600 font-semibold mb-2">{message}</p>
-            <button
-              className="mt-4 px-4 py-2 bg-primary text-white rounded"
-              onClick={() => router.push("/auth/signup")}
-            >
-              {t('auth.emailVerification.verify.goToSignUp')}
-            </button>
-          </>
-        )}
-      </div>
-    </AuthCard>
-  );
-}
-
-export default function VerifyEmailPage() {
-  return (
-    <Suspense fallback={
-      <AuthCard title="Email Verification">
-        <div className="text-center">
-          <p className="text-text-secondary">Verifying email...</p>
-        </div>
+    <>
+      <LanguageSync serverLanguage={language} />
+      <AuthCard title={translations.title}>
+        <Suspense fallback={<VerifyEmailSkeleton />}>
+          <VerifyEmailForm translations={translations} />
+        </Suspense>
       </AuthCard>
-    }>
-      <VerifyEmailForm />
-    </Suspense>
+    </>
   );
 } 
