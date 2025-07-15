@@ -94,8 +94,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }, []);
 
   // Handle search
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearch = () => {
     if (searchQuery.trim()) {
       router.push(`/torrents/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }

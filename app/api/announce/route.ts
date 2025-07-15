@@ -119,7 +119,6 @@ export async function GET(request: NextRequest) {
     const uploaded = Number(searchParams.get('uploaded') || '0');
     const downloadedValue = Number(searchParams.get('downloaded') || '0');
     const leftNum = Number(left || '0');
-    const progressId = `${user.id}_${infoHash}_${peerId}`;
     // Determine mode
     let mode: string;
     if (Number(leftNum) === 0) {

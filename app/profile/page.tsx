@@ -213,9 +213,9 @@ export default function ProfilePage() {
                 <div className="space-y-4">
                   {/* Avatar */}
                   <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-background">
-                    {(previewUrl || profile?.avatar) ? (
+                    {typeof (previewUrl || profile?.avatar) === 'string' && (previewUrl || profile?.avatar) ? (
                       <Image
-                        src={previewUrl || profile?.avatar!}
+                        src={previewUrl || profile?.avatar as string}
                         alt="Profile avatar"
                         fill
                         className="object-cover"
