@@ -74,7 +74,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             hitnrunCount: Number(data.user.hitnrunCount || 0),
           });
         }
-      } catch (e) {
+      } catch {
         // ignore
       }
     }
