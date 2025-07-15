@@ -1,78 +1,50 @@
-"use client";
+/**
+ * Unverified page component
+ * Server Component for unverified email status
+ * Provides resend verification functionality with server-side translations
+ */
 
-import { useSearchParams, useRouter } from "next/navigation";
-import { useState, Suspense } from "react";
-import AuthCard from "@/app/components/auth/AuthCard";
-import { showNotification } from "@/app/utils/notifications";
-import { useI18n } from "@/app/hooks/useI18n";
+import { Suspense } from 'react';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { auth } from '@/app/lib/auth';
+import { serverT, getPreferredLanguage } from '@/app/lib/server-i18n';
+import AuthCard from '@/app/components/auth/AuthCard';
+import UnverifiedForm from '@/app/components/auth/UnverifiedForm';
+import UnverifiedSkeleton from '@/app/components/auth/UnverifiedSkeleton';
+import { LanguageSync } from '@/app/components/ui/LanguageSync';
 
-function UnverifiedForm() {
-  const { t } = useI18n();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const login = searchParams.get("login") || "";
-  const [loading, setLoading] = useState(false);
+export default async function UnverifiedPage() {
+  // Check if user is already authenticated
+  const session = await auth();
+  if (session) {
+    redirect('/dashboard');
+  }
 
-  const handleResend = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/auth/resend-verification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ login }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        showNotification.success(data.message || t('auth.emailVerification.unverified.resendSuccess'));
-      } else {
-        showNotification.error(data.error || t('auth.emailVerification.unverified.resendError'));
-      }
-    } catch {
-      showNotification.error(t('auth.emailVerification.unverified.resendError'));
-    } finally {
-      setLoading(false);
-    }
+  // Get language from headers
+  const headersList = await headers();
+  const language = await getPreferredLanguage(headersList);
+
+  // Prepare translations for the client component
+  const translations = {
+    title: serverT('auth.emailVerification.unverified.title', language),
+    message: serverT('auth.emailVerification.unverified.message', language),
+    resendButton: serverT('auth.emailVerification.unverified.resendButton', language),
+    resending: serverT('auth.emailVerification.unverified.resending', language),
+    resendSuccess: serverT('auth.emailVerification.unverified.resendSuccess', language),
+    resendError: serverT('auth.emailVerification.unverified.resendError', language),
+    alreadyVerified: serverT('auth.emailVerification.unverified.alreadyVerified', language),
+    goToSignIn: serverT('auth.emailVerification.unverified.goToSignIn', language),
   };
 
   return (
-    <AuthCard title={t('auth.emailVerification.unverified.title')}>
-      <div className="text-center">
-        <p className="text-red-600 font-semibold mb-4">
-          {t('auth.emailVerification.unverified.message')}
-        </p>
-        <button
-          className="mt-4 px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
-          onClick={handleResend}
-          disabled={loading}
-        >
-          {loading ? t('auth.emailVerification.unverified.resending') : t('auth.emailVerification.unverified.resendButton')}
-        </button>
-        <div className="mt-6 text-sm text-text-secondary">
-          <span>
-            {t('auth.emailVerification.unverified.alreadyVerified')}{' '}
-            <button
-              className="text-primary hover:underline"
-              onClick={() => router.push('/auth/signin')}
-            >
-              {t('auth.emailVerification.unverified.goToSignIn')}
-            </button>
-          </span>
-        </div>
-      </div>
-    </AuthCard>
-  );
-}
-
-export default function UnverifiedPage() {
-  return (
-    <Suspense fallback={
-      <AuthCard title="Email Verification">
-        <div className="text-center">
-          <p className="text-text-secondary">Loading...</p>
-        </div>
+    <>
+      <LanguageSync serverLanguage={language} />
+      <AuthCard title={translations.title}>
+        <Suspense fallback={<UnverifiedSkeleton />}>
+          <UnverifiedForm translations={translations} />
+        </Suspense>
       </AuthCard>
-    }>
-      <UnverifiedForm />
-    </Suspense>
+    </>
   );
 } 
