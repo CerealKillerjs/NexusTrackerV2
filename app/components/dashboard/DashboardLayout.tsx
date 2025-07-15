@@ -47,6 +47,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [userStats, setUserStats] = useState({ uploaded: 0, downloaded: 0, ratio: 0, bonusPoints: 0, hitnrunCount: 0 });
 
   // Navigation items with translations
   const navItems = [
@@ -59,14 +60,26 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { href: '/bookmarks', label: t('sidebar.nav.bookmarks'), icon: Bookmark },
   ];
 
-  // Mock user stats (in real app, fetch from API)
-  const mockUserStats = {
-    ratio: 2.5,
-    upload: 1024 * 1024 * 1024 * 50, // 50 GB
-    download: 1024 * 1024 * 1024 * 20, // 20 GB
-    hitnruns: 0,
-    bp: 1500,
-  };
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const res = await fetch('/api/user/current');
+        const data = await res.json();
+        if (data.user) {
+          setUserStats({
+            uploaded: Number(data.user.uploaded || 0),
+            downloaded: Number(data.user.downloaded || 0),
+            ratio: typeof data.user.ratio === 'number' ? data.user.ratio : 0,
+            bonusPoints: Number(data.user.bonusPoints || 0),
+            hitnrunCount: Number(data.user.hitnrunCount || 0),
+          });
+        }
+      } catch {
+        // ignore
+      }
+    }
+    fetchStats();
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -81,8 +94,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }, []);
 
   // Handle search
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearch = () => {
     if (searchQuery.trim()) {
       router.push(`/torrents/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
@@ -142,19 +154,23 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="hidden lg:flex items-center space-x-4 text-sm text-text-secondary">
               <div className="flex items-center space-x-1">
                 <Upload size={18} className="text-green-500" />
-                <span>{formatBytes(mockUserStats.upload)}</span>
+                <span>{formatBytes(userStats.uploaded)}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <Download size={18} className="text-red-500" />
-                <span>{formatBytes(mockUserStats.download)}</span>
+                <span>{formatBytes(userStats.downloaded)}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <BarChartSquare size={18} className="text-blue-500" />
-                <span>{mockUserStats.ratio.toFixed(2)}</span>
+                <span>{userStats.ratio.toFixed(2)}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <Award size={18} className="text-yellow-500" />
-                <span>{mockUserStats.bp} BP</span>
+                <span>{userStats.bonusPoints} BP</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Award size={18} className="text-pink-500" />
+                <span>{userStats.hitnrunCount} H&R</span>
               </div>
             </div>
 

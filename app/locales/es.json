@@ -779,7 +779,8 @@
         "support": "Email de Soporte",
         "registration": "Registro e Invitaciones",
         "rateLimiting": "Limitación de Velocidad",
-        "branding": "Marca"
+        "branding": "Marca",
+        "ratioSettings": "Configuración de Ratio"
       },
       "tracker": {
         "title": "Configuración del Tracker",
@@ -829,6 +830,21 @@
         "minIntervalDesc": "Tiempo mínimo entre anuncios (predeterminado: 300 segundos)",
         "rateLimitPerHour": "Límite de Velocidad por Hora",
         "rateLimitPerHourDesc": "Máximo de anuncios por hora por usuario por torrent (predeterminado: 60)"
+      },
+      "ratioSettings": {
+        "title": "Configuración de Ratio",
+        "description": "Configura las reglas de ratio del tracker: ratio mínimo, puntos de bonificación por GB y límite de hit'n'run.",
+        "minimumRatio": "Ratio Mínimo",
+        "bonusPerGb": "Puntos de Bonificación por GB Subido",
+        "maxHitnRuns": "Máx. Hit'n'Runs",
+        "graceMb": "Período de gracia de ratio (MB)",
+        "recommendedTitle": "Preajustes Recomendados",
+        "recommendedDesc": "Elige un preajuste para aplicar rápidamente valores recomendados para la política de tu tracker.",
+        "presets": {
+          "easy": "Fácil",
+          "balanced": "Equilibrado",
+          "strict": "Estricto"
+        }
       },
 
       "branding": {
