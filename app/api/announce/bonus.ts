@@ -10,7 +10,7 @@ export async function getBonusConfig(): Promise<BonusConfig> {
 // Award bonus points for upload delta (in bytes)
 export async function awardBonusPoints(userId: string, uploadDelta: number): Promise<number> {
   const { perGb } = await getBonusConfig();
-  const GB = 1e6; // 1 MB for testing
+  const GB = 1e9;
   if (uploadDelta < GB) {
     console.log('[BONUS] Not enough upload for bonus:', { userId, uploadDelta, perGb });
     return 0;
