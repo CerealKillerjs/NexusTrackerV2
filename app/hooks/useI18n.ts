@@ -11,11 +11,11 @@ import i18n from '@/app/lib/i18n'
  */
 export function useI18n() {
   // Track whether i18next is ready to use
-  const [isReady, setIsReady] = useState(false)
+  const [isReady, setIsReady] = useState(i18n.isInitialized)
   // Track whether component has mounted on client side
   const [mounted, setMounted] = useState(false)
   // Get translation function from react-i18next
-  const { t } = useTranslation()
+  const { t, i18n: i18nInstance } = useTranslation()
 
   useEffect(() => {
     // Mark component as mounted to prevent SSR issues
@@ -45,13 +45,25 @@ export function useI18n() {
     }
   }, [])
 
+  // Función de traducción que evita el flashing
+  const safeT = (key: string, options?: Record<string, unknown>) => {
+    // Si no estamos listos o no estamos montados, devolvemos una cadena vacía
+    // para evitar el flashing de las claves de traducción
+    if (!mounted || !isReady) {
+      return '';
+    }
+    return t(key, options);
+  };
+
   return {
     // Return translation function only if component is mounted and i18next is ready
-    // Otherwise return a fallback function that just returns the key
-    t: (mounted && isReady) ? t : ((key: string) => key) as typeof t,
+    // Otherwise return a fallback function that returns empty string to prevent flashing
+    t: safeT as typeof t,
     // Only consider ready if both mounted and i18next is initialized
     isReady: mounted && isReady,
     // Track if component has mounted on client
-    mounted
+    mounted,
+    // Expose i18n instance for direct access
+    i18n: i18nInstance
   }
 } 

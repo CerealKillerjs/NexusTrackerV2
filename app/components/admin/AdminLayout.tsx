@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useI18n } from '@/app/hooks/useI18n';
+import { useBranding } from '@/app/contexts/BrandingContext';
 // Icons for administration
 import { Home } from '@styled-icons/boxicons-regular/Home';
 import { User } from '@styled-icons/boxicons-regular/User';
@@ -30,6 +31,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const router = useRouter();
   const { data: session, status } = useSession();
   const { t } = useI18n();
+  const { branding } = useBranding();
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -72,6 +74,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return null;
   }
 
+  // Obtener el nombre del branding o usar el valor por defecto
+  const brandingName = branding.BRANDING_NAME || "NexusTracker V2";
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -80,7 +85,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {/* Logo and admin title */}
           <div className="flex items-center">
             <Shield size={24} className="text-primary mr-2" />
-            <h1 className="text-xl font-bold text-primary">{t('admin.title')}</h1>
+            <h1 className="text-xl font-bold text-primary">
+              {brandingName} - {t('admin.title')}
+            </h1>
           </div>
           {/* User menu */}
           <div className="flex items-center space-x-4">

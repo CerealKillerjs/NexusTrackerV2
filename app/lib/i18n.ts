@@ -15,6 +15,14 @@ const resources = {
   }
 }
 
+// Determinar el idioma inicial del lado del servidor
+const getInitialLanguage = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('i18nextLng') || 'es';
+  }
+  return 'es';
+};
+
 // Initialize i18next with configuration for internationalization
 i18n
   .use(LanguageDetector) // Automatically detect user's preferred language
@@ -22,7 +30,7 @@ i18n
   .init({
     debug: false, // Disable debug mode in production
     fallbackLng: "es", // Default language if detection fails
-    lng: "es", // Set explicit default language
+    lng: getInitialLanguage(), // Set explicit default language
     interpolation: {
       escapeValue: false, // Don't escape HTML in translations
     },
@@ -34,11 +42,15 @@ i18n
     },
     react: {
       useSuspense: false, // Disable Suspense to prevent SSR issues
+      transEmptyNodeValue: '', // Empty value for empty nodes
+      transSupportBasicHtmlNodes: true, // Support basic HTML in translations
+      transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'], // Keep these HTML nodes
     },
     returnNull: false, // Return empty string instead of null for missing keys
     keySeparator: '.', // Use dots for nested translation keys
     nsSeparator: ':', // Use colons for namespace separation
     initImmediate: false, // Prevent immediate initialization to avoid SSR issues
+    load: 'languageOnly', // Only load language code, not region specific
   })
 
 // Listen for language changes and automatically save to localStorage

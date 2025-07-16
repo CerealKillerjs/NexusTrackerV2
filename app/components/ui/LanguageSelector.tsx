@@ -20,9 +20,11 @@ export function LanguageSelector() {
   // State to control dropdown visibility
   const [isOpen, setIsOpen] = useState(false)
   // State to track current language
-  const [currentLang, setCurrentLang] = useState('es')
+  const [currentLang, setCurrentLang] = useState('')
   // Custom hook to handle i18next initialization
-  const { isReady } = useI18n()
+  const { isReady, i18n: i18nInstance } = useI18n()
+  // State to control visibility of the entire component
+  const [isVisible, setIsVisible] = useState(false)
 
   // Available languages configuration with flags and display names
   const languages = [
@@ -34,10 +36,13 @@ export function LanguageSelector() {
   useEffect(() => {
     if (isReady) {
       // Get current language from i18next or localStorage, fallback to Spanish
-      const lang = i18n.language || localStorage.getItem('i18nextLng') || 'es'
+      const lang = i18nInstance.language || localStorage.getItem('i18nextLng') || 'es'
       setCurrentLang(lang)
+      
+      // Solo mostrar el selector después de que el idioma esté cargado
+      setIsVisible(true)
     }
-  }, [isReady])
+  }, [isReady, i18nInstance])
 
   // Listen for language changes from other components
   useEffect(() => {
@@ -68,8 +73,8 @@ export function LanguageSelector() {
     i18n.changeLanguage(languageCode)
   }
 
-  // Don't render until i18n is ready to prevent hydration mismatch
-  if (!isReady) {
+  // Don't render until i18n is ready and component is visible
+  if (!isVisible) {
     return null
   }
 
