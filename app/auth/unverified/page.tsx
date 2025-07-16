@@ -17,7 +17,9 @@ import { LanguageSync } from '@/app/components/ui/LanguageSync';
 export default async function UnverifiedPage() {
   // Check if user is already authenticated
   const session = await auth();
-  if (session) {
+  
+  // Only redirect to dashboard if user is authenticated AND has verified email
+  if (session && session.user && 'emailVerified' in session.user && session.user.emailVerified === true) {
     redirect('/dashboard');
   }
 
@@ -35,6 +37,7 @@ export default async function UnverifiedPage() {
     resendError: serverT('auth.emailVerification.unverified.resendError', language),
     alreadyVerified: serverT('auth.emailVerification.unverified.alreadyVerified', language),
     goToSignIn: serverT('auth.emailVerification.unverified.goToSignIn', language),
+    logout: serverT('auth.emailVerification.unverified.logout', language),
   };
 
   return (

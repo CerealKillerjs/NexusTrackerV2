@@ -112,7 +112,8 @@
         "resendSuccess": "Email de verificación reenviado. Por favor revisa tu bandeja de entrada.",
         "resendError": "Error al reenviar email de verificación.",
         "alreadyVerified": "¿Ya verificado?",
-        "goToSignIn": "Ir a Iniciar Sesión"
+        "goToSignIn": "Ir a Iniciar Sesión",
+        "logout": "Cerrar Sesión"
       },
       "verify": {
         "title": "Verificar Email",

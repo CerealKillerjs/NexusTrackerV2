@@ -9,6 +9,7 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { signOut } from 'next-auth/react';
 
 interface UnverifiedFormProps {
   translations: {
@@ -20,6 +21,7 @@ interface UnverifiedFormProps {
     resendError: string;
     alreadyVerified: string;
     goToSignIn: string;
+    logout?: string; // Optional for backward compatibility
   };
 }
 
@@ -56,6 +58,19 @@ export default function UnverifiedForm({ translations }: UnverifiedFormProps) {
     router.push('/auth/signin');
   };
 
+  // Function to handle logout
+  const handleLogout = async () => {
+    try {
+      await signOut({
+        callbackUrl: "/auth/signin",
+        redirect: true,
+      });
+    } catch (error) {
+      console.error("Error during logout:", error);
+      toast.error("Error during logout");
+    }
+  };
+
   return (
     <div className="text-center">
       <div className="flex justify-center mb-4">
@@ -88,6 +103,16 @@ export default function UnverifiedForm({ translations }: UnverifiedFormProps) {
             {translations.goToSignIn}
           </button>
         </span>
+      </div>
+
+      {/* Logout button */}
+      <div className="mt-4 border-t pt-4">
+        <button
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors font-medium"
+          onClick={handleLogout}
+        >
+          {translations.logout || "Logout"}
+        </button>
       </div>
     </div>
   );

@@ -110,9 +110,10 @@
         "resendButton": "Resend Verification Email",
         "resending": "Resending...",
         "resendSuccess": "Verification email resent. Please check your inbox.",
-        "resendError": "Failed to resend verification email.",
+        "resendError": "Error resending verification email.",
         "alreadyVerified": "Already verified?",
-        "goToSignIn": "Go to Sign In"
+        "goToSignIn": "Go to Sign In",
+        "logout": "Logout"
       },
       "verify": {
         "title": "Verify Email",
