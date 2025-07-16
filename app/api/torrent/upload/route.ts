@@ -385,15 +385,15 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Update user upload stats
-    await prisma.user.update({
-      where: { id: session.user.id },
-      data: {
-        uploaded: {
-          increment: BigInt(totalSize)
-        }
-      }
-    });
+    // Removed: Update user upload stats
+    // await prisma.user.update({
+    //   where: { id: session.user.id },
+    //   data: {
+    //     uploaded: {
+    //       increment: BigInt(totalSize)
+    //     }
+    //   }
+    // });
 
     return NextResponse.json({
       message: 'Torrent uploaded successfully',

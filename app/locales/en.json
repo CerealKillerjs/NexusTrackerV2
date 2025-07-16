@@ -797,7 +797,8 @@
         "support": "Support Email",
         "registration": "Registration & Invites",
         "rateLimiting": "Rate Limiting",
-        "branding": "Branding"
+        "branding": "Branding",
+        "ratioSettings": "Ratio Settings"
       },
       "tracker": {
         "title": "Tracker Configuration",
@@ -855,6 +856,21 @@
         "trackerName": "Tracker Name",
         "trackerNameDesc": "This name will appear in headers, titles, and downloaded torrent files.",
         "placeholder": "e.g., MyTracker, AwesomeTracker, etc."
+      },
+      "ratioSettings": {
+        "title": "Ratio Settings",
+        "description": "Configure tracker ratio rules: minimum ratio, bonus points per GB, and hit'n'run limit.",
+        "minimumRatio": "Minimum Ratio",
+        "bonusPerGb": "Bonus Points per GB Uploaded",
+        "maxHitnRuns": "Max Hit'n'Runs",
+        "graceMb": "Ratio Grace Period (MB)",
+        "recommendedTitle": "Recommended Presets",
+        "recommendedDesc": "Choose a preset to quickly apply recommended values for your tracker policy.",
+        "presets": {
+          "easy": "Easy",
+          "balanced": "Balanced",
+          "strict": "Strict"
+        }
       },
       "actions": {
         "save": "Save Settings",
