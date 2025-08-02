@@ -40,6 +40,7 @@ export default async function TorrentDetailPage({ params }: { params: Promise<{ 
     
     // File list translations
     fileListCount: serverT('torrentDetail.fileList.count', language),
+    fileListSearch: serverT('torrentDetail.fileList.search', language),
     
     // Comments translations
     commentsCount: serverT('torrentDetail.comments.count', language),

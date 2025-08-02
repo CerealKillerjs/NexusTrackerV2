@@ -26,6 +26,7 @@ interface TorrentInfoProps {
   tags: string[];
   description?: string;
   nfo?: string;
+  loading?: boolean;
   translations: {
     torrentInfoTitle: string;
     size: string;
@@ -47,6 +48,7 @@ export default function TorrentInfo({
   tags, 
   description, 
   nfo, 
+  loading = false,
   translations 
 }: TorrentInfoProps) {
   const formatFileSize = (bytes: number): string => {
@@ -64,9 +66,11 @@ export default function TorrentInfo({
       </h2>
       
       {/* Torrent Image */}
-      {image && (
-        <div className="mb-6">
-          <div className="flex justify-center">
+      <div className="mb-6">
+        <div className="flex justify-center">
+          {loading ? (
+            <div className="w-48 h-48 bg-text-secondary/10 rounded-lg animate-pulse"></div>
+          ) : image ? (
             <Image
               src={`data:image/jpeg;base64,${image}`}
               alt="Torrent preview"
@@ -74,37 +78,61 @@ export default function TorrentInfo({
               height={384}
               className="max-w-full max-h-96 rounded-lg shadow-lg"
             />
-          </div>
+          ) : null}
         </div>
-      )}
+      </div>
       
       {/* Info Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div>
           <span className="text-text-secondary block text-sm">{translations.size}</span>
-          <span className="text-text font-medium">{formatFileSize(size)}</span>
+          {loading ? (
+            <div className="w-16 h-5 bg-text-secondary/10 rounded animate-pulse"></div>
+          ) : (
+            <span className="text-text font-medium">{formatFileSize(size)}</span>
+          )}
         </div>
         <div>
           <span className="text-text-secondary block text-sm">{translations.type}</span>
-          <span className="text-text font-medium">{type || 'N/A'}</span>
+          {loading ? (
+            <div className="w-12 h-5 bg-text-secondary/10 rounded animate-pulse"></div>
+          ) : (
+            <span className="text-text font-medium">{type || 'N/A'}</span>
+          )}
         </div>
         <div>
           <span className="text-text-secondary block text-sm">{translations.source}</span>
-          <span className="text-text font-medium">{source || 'N/A'}</span>
+          {loading ? (
+            <div className="w-16 h-5 bg-text-secondary/10 rounded animate-pulse"></div>
+          ) : (
+            <span className="text-text font-medium">{source || 'N/A'}</span>
+          )}
         </div>
         <div>
           <span className="text-text-secondary block text-sm">{translations.files}</span>
-          <span className="text-text font-medium">{files.length}</span>
+          {loading ? (
+            <div className="w-8 h-5 bg-text-secondary/10 rounded animate-pulse"></div>
+          ) : (
+            <span className="text-text font-medium">{files.length}</span>
+          )}
         </div>
       </div>
 
       {/* Tags */}
-      {tags.length > 0 && (
-        <div className="mb-6">
-          <span className="text-text-secondary block text-sm mb-2 flex items-center">
-            <Tag size={16} className="mr-1" />
-            {translations.tags}
-          </span>
+      <div className="mb-6">
+        <span className="text-text-secondary block text-sm mb-2 flex items-center">
+          <Tag size={16} className="mr-1" />
+          {translations.tags}
+        </span>
+        {loading ? (
+          <div className="flex flex-wrap gap-2">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="px-3 py-1 bg-primary/10 rounded-full animate-pulse">
+                <div className="w-12 h-4 bg-primary/20 rounded-full animate-pulse"></div>
+              </div>
+            ))}
+          </div>
+        ) : tags.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {tags.map(tag => (
               <span
@@ -115,28 +143,48 @@ export default function TorrentInfo({
               </span>
             ))}
           </div>
-        </div>
-      )}
+        ) : (
+          <span className="text-text-secondary text-sm">No tags available</span>
+        )}
+      </div>
 
       {/* Description */}
-      {description && (
-        <div>
-          <h3 className="text-lg font-medium text-text mb-2">{translations.description}</h3>
+      <div>
+        <h3 className="text-lg font-medium text-text mb-2">{translations.description}</h3>
+        {loading ? (
+          <div className="space-y-2">
+            <div className="w-full h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+            <div className="w-3/4 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+            <div className="w-1/2 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+          </div>
+        ) : description ? (
           <p className="text-text-secondary whitespace-pre-wrap">
             {description}
           </p>
-        </div>
-      )}
+        ) : (
+          <span className="text-text-secondary text-sm">No description available</span>
+        )}
+      </div>
 
       {/* NFO File */}
       {nfo && (
         <div className="mt-6">
           <h3 className="text-lg font-medium text-text mb-2">{translations.nfoFile}</h3>
-          <div className="bg-background border border-border rounded-lg p-4 max-h-96 overflow-y-auto">
-            <pre className="text-text-secondary text-sm whitespace-pre-wrap font-mono">
-              {nfo}
-            </pre>
-          </div>
+          {loading ? (
+            <div className="bg-background border border-border rounded-lg p-4 max-h-96 overflow-y-auto">
+              <div className="space-y-1">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                  <div key={i} className="w-full h-3 bg-text-secondary/10 rounded animate-pulse"></div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="bg-background border border-border rounded-lg p-4 max-h-96 overflow-y-auto">
+              <pre className="text-text-secondary text-sm whitespace-pre-wrap font-mono">
+                {nfo}
+              </pre>
+            </div>
+          )}
         </div>
       )}
     </div>

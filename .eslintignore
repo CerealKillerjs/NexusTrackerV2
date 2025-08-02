@@ -1,7 +1,0 @@
-# Prisma generated files
-app/generated/
-node_modules/
-.next/
-out/
-dist/
-*.min.js 

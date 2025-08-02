@@ -406,42 +406,152 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
       {/* Comments List */}
       {loading ? (
         <div className="space-y-4">
-          {/* Comment Skeleton 1 */}
-          <div className="border-b border-border pb-4">
-            <div className="flex items-center space-x-3 mb-2">
-              <div className="w-8 h-8 bg-text-secondary/10 rounded-full animate-pulse"></div>
-              <div className="w-24 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
-              <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
-            </div>
-            <div className="space-y-2">
-              <div className="w-full h-4 bg-text-secondary/10 rounded animate-pulse"></div>
-              <div className="w-3/4 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+          {/* Comment Skeleton 1 - Root Level */}
+          <div className="mb-4">
+            <div className="flex">
+              <div className="flex-1 min-w-0">
+                {/* Comment header skeleton */}
+                <div className="flex items-center space-x-2 mb-2">
+                  {/* Avatar skeleton */}
+                  <div className="w-6 h-6 bg-text-secondary/10 rounded-full animate-pulse"></div>
+                  <div className="flex items-center space-x-2">
+                    {/* Username skeleton */}
+                    <div className="w-20 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                    {/* Role badge skeleton */}
+                    <div className="w-12 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                    {/* Date skeleton */}
+                    <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                  </div>
+                </div>
+                
+                {/* Comment content skeleton */}
+                <div className="text-sm leading-relaxed mb-3 space-y-2">
+                  <div className="w-full h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                  <div className="w-3/4 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                  <div className="w-1/2 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                </div>
+                
+                {/* Comment actions skeleton */}
+                <div className="flex items-center space-x-4 mb-3">
+                  {/* Vote buttons skeleton */}
+                  <div className="flex items-center space-x-1">
+                    <div className="w-6 h-6 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-8 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-6 h-6 bg-text-secondary/10 rounded animate-pulse"></div>
+                  </div>
+                  {/* Reply button skeleton */}
+                  <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                </div>
+              </div>
             </div>
           </div>
           
-          {/* Comment Skeleton 2 */}
-          <div className="border-b border-border pb-4">
-            <div className="flex items-center space-x-3 mb-2">
-              <div className="w-8 h-8 bg-text-secondary/10 rounded-full animate-pulse"></div>
-              <div className="w-20 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
-              <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
-            </div>
-            <div className="space-y-2">
-              <div className="w-full h-4 bg-text-secondary/10 rounded animate-pulse"></div>
-              <div className="w-1/2 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+          {/* Comment Skeleton 2 - With Reply (Level 1) */}
+          <div className="mb-4">
+            <div className="flex">
+              {/* Vertical line for threading */}
+              <div className="flex flex-col items-center mr-3 min-w-[24px]">
+                <div className="w-px bg-border h-full min-h-[60px]"></div>
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                {/* Comment header skeleton */}
+                <div className="flex items-center space-x-2 mb-2">
+                  <div className="w-6 h-6 bg-text-secondary/10 rounded-full animate-pulse"></div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                  </div>
+                </div>
+                
+                {/* Comment content skeleton */}
+                <div className="text-sm leading-relaxed mb-3 space-y-2">
+                  <div className="w-full h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                  <div className="w-2/3 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                </div>
+                
+                {/* Comment actions skeleton */}
+                <div className="flex items-center space-x-4 mb-3">
+                  <div className="flex items-center space-x-1">
+                    <div className="w-6 h-6 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-8 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-6 h-6 bg-text-secondary/10 rounded animate-pulse"></div>
+                  </div>
+                  <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                </div>
+              </div>
             </div>
           </div>
           
-          {/* Comment Skeleton 3 */}
-          <div className="border-b border-border pb-4">
-            <div className="flex items-center space-x-3 mb-2">
-              <div className="w-8 h-8 bg-text-secondary/10 rounded-full animate-pulse"></div>
-              <div className="w-28 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
-              <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+          {/* Comment Skeleton 3 - Root Level with OP badge */}
+          <div className="mb-4">
+            <div className="flex">
+              <div className="flex-1 min-w-0">
+                {/* Comment header skeleton */}
+                <div className="flex items-center space-x-2 mb-2">
+                  <div className="w-6 h-6 bg-text-secondary/10 rounded-full animate-pulse"></div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-24 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-8 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-12 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                  </div>
+                </div>
+                
+                {/* Comment content skeleton */}
+                <div className="text-sm leading-relaxed mb-3 space-y-2">
+                  <div className="w-full h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                  <div className="w-4/5 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                  <div className="w-1/3 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                </div>
+                
+                {/* Comment actions skeleton */}
+                <div className="flex items-center space-x-4 mb-3">
+                  <div className="flex items-center space-x-1">
+                    <div className="w-6 h-6 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-8 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-6 h-6 bg-text-secondary/10 rounded animate-pulse"></div>
+                  </div>
+                  <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                </div>
+              </div>
             </div>
-            <div className="space-y-2">
-              <div className="w-full h-4 bg-text-secondary/10 rounded animate-pulse"></div>
-              <div className="w-2/3 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+          </div>
+          
+          {/* Comment Skeleton 4 - Deep Reply (Level 2) */}
+          <div className="mb-4">
+            <div className="flex">
+              {/* Vertical line for threading - deeper level */}
+              <div className="flex flex-col items-center mr-3 min-w-[24px]">
+                <div className="w-px bg-border h-full min-h-[60px]" style={{ marginLeft: '8px' }}></div>
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                {/* Comment header skeleton */}
+                <div className="flex items-center space-x-2 mb-2">
+                  <div className="w-6 h-6 bg-text-secondary/10 rounded-full animate-pulse"></div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-18 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                  </div>
+                </div>
+                
+                {/* Comment content skeleton */}
+                <div className="text-sm leading-relaxed mb-3 space-y-2">
+                  <div className="w-full h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                  <div className="w-1/2 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                </div>
+                
+                {/* Comment actions skeleton */}
+                <div className="flex items-center space-x-4 mb-3">
+                  <div className="flex items-center space-x-1">
+                    <div className="w-6 h-6 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-8 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                    <div className="w-6 h-6 bg-text-secondary/10 rounded animate-pulse"></div>
+                  </div>
+                  <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

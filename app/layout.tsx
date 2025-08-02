@@ -6,6 +6,7 @@ import { I18nProvider } from "./providers/I18nProvider";
 import { BrandingProvider } from "./contexts/BrandingContext";
 import { LanguageSelector } from "./components/ui/LanguageSelector";
 import { Toaster } from 'react-hot-toast';
+import SWRProvider from "./providers/SWRProvider";
 
 /**
  * Font configuration for the application
@@ -81,8 +82,10 @@ export default function RootLayout({
         <I18nProvider>
           <AuthProvider>
             <BrandingProvider>
-              {children}
-              <LanguageSelector />
+              <SWRProvider>
+                {children}
+                <LanguageSelector />
+              </SWRProvider>
             </BrandingProvider>
           </AuthProvider>
         </I18nProvider>

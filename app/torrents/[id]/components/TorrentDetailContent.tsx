@@ -13,8 +13,9 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import useSWR from 'swr';
 import CommentsSection from './CommentsSection';
 import TorrentHeader from './TorrentHeader';
 import TorrentActions from './TorrentActions';
@@ -76,6 +77,7 @@ interface ServerTranslations {
   
   // File list translations
   fileListCount: string;
+  fileListSearch: string;
   
   // Comments translations
   commentsCount: string;
@@ -133,35 +135,29 @@ interface TorrentDetailContentProps {
 
 export default function TorrentDetailContent({ torrentId, serverTranslations }: TorrentDetailContentProps) {
   const { data: session } = useSession();
-  const [torrent, setTorrent] = useState<TorrentData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchTorrentData = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/torrent/${torrentId}`);
-      
-      if (!response.ok) {
-        throw new Error(serverTranslations.notFound);
-      }
-
-      const data = await response.json();
-      setTorrent(data);
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : serverTranslations.loadError;
-      setError(errorMessage);
-      showNotification.error(serverTranslations.fetchError);
-    } finally {
-      setLoading(false);
+  
+  // Use SWR for data fetching with caching
+  const { 
+    data: torrent, 
+    error, 
+    isLoading: loading,
+    mutate: mutateTorrent 
+  } = useSWR<TorrentData>(
+    torrentId ? `/api/torrent/${torrentId}` : null,
+    {
+      // Disable revalidation on focus to prevent unnecessary requests
+      revalidateOnFocus: false,
+      // Disable revalidation on reconnect to maintain cache
+      revalidateOnReconnect: false,
+      // Deduplicate requests within 60 seconds
+      dedupingInterval: 60000,
+      // Error handling
+      onError: (error) => {
+        console.error('Torrent fetch error:', error);
+        showNotification.error(serverTranslations.fetchError);
+      },
     }
-  }, [torrentId, serverTranslations]);
-
-  useEffect(() => {
-    if (torrentId) {
-      fetchTorrentData();
-    }
-  }, [torrentId, fetchTorrentData]);
+  );
 
   useEffect(() => {
     if (session && typeof session.user === 'object' && session.user && 'emailVerified' in session.user && !session.user.emailVerified) {
@@ -170,23 +166,27 @@ export default function TorrentDetailContent({ torrentId, serverTranslations }: 
   }, [session]);
 
   const handleBookmarkChange = (isBookmarked: boolean) => {
-    setTorrent(prev => prev ? {
-      ...prev,
-      isBookmarked,
-      _count: {
-        ...prev._count,
-        bookmarks: isBookmarked 
-          ? (prev._count?.bookmarks || 0) + 1 
-          : (prev._count?.bookmarks || 1) - 1
-      }
-    } : null);
+    if (torrent) {
+      mutateTorrent({
+        ...torrent,
+        isBookmarked,
+        _count: {
+          ...torrent._count,
+          bookmarks: isBookmarked 
+            ? (torrent._count?.bookmarks || 0) + 1 
+            : (torrent._count?.bookmarks || 1) - 1
+        }
+      }, false); // false = don't revalidate
+    }
   };
 
   const handleVoteChange = (vote: 'up' | 'down' | null) => {
-    setTorrent(prev => prev ? {
-      ...prev,
-      userVote: vote
-    } : null);
+    if (torrent) {
+      mutateTorrent({
+        ...torrent,
+        userVote: vote
+      }, false); // false = don't revalidate
+    }
   };
 
   if (error || (!loading && !torrent)) {
@@ -231,74 +231,50 @@ export default function TorrentDetailContent({ torrentId, serverTranslations }: 
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Torrent Information - With skeleton for dynamic data */}
-          {torrent ? (
-            <TorrentInfo
-              image={torrent.image}
-              size={torrent.size}
-              type={torrent.type}
-              source={torrent.source}
-              files={torrent.files}
-              tags={torrent.tags}
-              description={torrent.description}
-              nfo={torrent.nfo}
-              translations={{
-                torrentInfoTitle: serverTranslations.torrentInfoTitle,
-                size: serverTranslations.size,
-                type: serverTranslations.type,
-                source: serverTranslations.source,
-                files: serverTranslations.files,
-                tags: serverTranslations.tags,
-                description: serverTranslations.description,
-                nfoFile: serverTranslations.nfoFile,
-              }}
-            />
-          ) : (
-            <div className="bg-surface rounded-lg border border-border p-6">
-              <div className="w-48 h-6 bg-text-secondary/10 rounded animate-pulse mb-4"></div>
-              <div className="space-y-4">
-                <div className="w-96 h-96 bg-text-secondary/10 rounded-lg animate-pulse mx-auto"></div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i}>
-                      <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse mb-1"></div>
-                      <div className="w-20 h-5 bg-text-secondary/10 rounded animate-pulse"></div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+          <TorrentInfo
+            image={torrent?.image}
+            size={torrent?.size || 0}
+            type={torrent?.type || ''}
+            source={torrent?.source || ''}
+            files={torrent?.files || []}
+            tags={torrent?.tags || []}
+            description={torrent?.description}
+            nfo={torrent?.nfo}
+            loading={loading}
+            translations={{
+              torrentInfoTitle: serverTranslations.torrentInfoTitle,
+              size: serverTranslations.size,
+              type: serverTranslations.type,
+              source: serverTranslations.source,
+              files: serverTranslations.files,
+              tags: serverTranslations.tags,
+              description: serverTranslations.description,
+              nfoFile: serverTranslations.nfoFile,
+            }}
+          />
 
           {/* File List - With skeleton while loading */}
-          {torrent ? (
-            <TorrentFiles
-              files={torrent.files}
-              translations={{
-                fileListCount: serverTranslations.fileListCount,
-              }}
-            />
-          ) : (
-            <div className="bg-surface rounded-lg border border-border p-6">
-              <div className="w-48 h-6 bg-text-secondary/10 rounded animate-pulse mb-4"></div>
-              <div className="space-y-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="flex items-center space-x-2">
-                    <div className="w-4 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
-                    <div className="flex-1">
-                      <div className="w-3/4 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
-                    </div>
-                    <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          <TorrentFiles
+            files={torrent?.files || []}
+            loading={loading}
+            translations={{
+              fileListCount: serverTranslations.fileListCount,
+              fileListSearch: serverTranslations.fileListSearch,
+            }}
+          />
 
           {/* Comments Section - Loads with its own skeleton */}
           <div className="bg-surface rounded-lg border border-border p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-text">
-                {serverTranslations.commentsCount.replace('{{count}}', (torrent?._count?.comments || 0).toString())}
+                {loading ? (
+                  <>
+                    {serverTranslations.commentsCount.replace(' ({{count}})', '')}
+                    <span className="text-text-secondary">(<div className="w-8 h-4 bg-text-secondary/10 rounded animate-pulse inline-block"></div>)</span>
+                  </>
+                ) : (
+                  serverTranslations.commentsCount.replace('{{count}}', (torrent?._count?.comments || 0).toString())
+                )}
               </h2>
               
               {session && (
