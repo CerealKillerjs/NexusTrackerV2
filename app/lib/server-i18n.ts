@@ -6,6 +6,7 @@
 
 import esTranslations from "../locales/es.json";
 import enTranslations from "../locales/en.json";
+import { cookies } from "next/headers";
 
 // Translation resources for server-side use
 const serverResources = {
@@ -46,10 +47,37 @@ export function getLanguageFromHeaders(headers: Headers): string {
 }
 
 /**
+ * Get user's preferred language from cookies
+ * Reads the i18nextLng cookie set by the client
+ */
+export async function getLanguageFromCookies(): Promise<string> {
+  try {
+    const cookieStore = await cookies();
+    const languageCookie = cookieStore.get("i18nextLng");
+    
+    if (languageCookie && (languageCookie.value === "es" || languageCookie.value === "en")) {
+      return languageCookie.value;
+    }
+  } catch (error) {
+    // If cookies() fails (e.g., in middleware), return default
+    console.warn("Could not read language cookie:", error);
+  }
+  
+  return DEFAULT_LANGUAGE;
+}
+
+/**
  * Get user's preferred language with fallback strategy
- * Priority: Header > Default
+ * Priority: Cookies > Headers > Default
  */
 export async function getPreferredLanguage(headers: Headers): Promise<string> {
+  // First try to get language from cookies (user's explicit choice)
+  const cookieLanguage = await getLanguageFromCookies();
+  if (cookieLanguage !== DEFAULT_LANGUAGE) {
+    return cookieLanguage;
+  }
+  
+  // Fallback to header detection
   return getLanguageFromHeaders(headers);
 }
 

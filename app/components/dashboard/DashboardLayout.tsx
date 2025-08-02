@@ -14,7 +14,7 @@
 import { ReactNode, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import DashboardHeader from '@/app/dashboard/components/DashboardHeader';
+import DashboardHeaderClient from '@/app/dashboard/components/DashboardHeaderClient';
 import DashboardSidebar from '@/app/dashboard/components/DashboardSidebar';
 import EmailVerificationCheck from '@/app/dashboard/components/EmailVerificationCheck';
 
@@ -53,7 +53,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <EmailVerificationCheck />
       
       {/* Header */}
-      <DashboardHeader />
+      <DashboardHeaderClient />
 
       {/* Main Layout */}
       <div className="flex pt-16">

@@ -12,11 +12,14 @@ import UploadButton from './UploadButton';
 
 interface DashboardHeaderProps {
   brandingName?: string;
+  language?: string;
 }
 
-export default function DashboardHeader({ brandingName = "NexusTracker V2" }: DashboardHeaderProps) {
-  // Precargar traducciones del servidor
-  const language = 'es'; // Por defecto español
+export default function DashboardHeader({ 
+  brandingName = "NexusTracker V2", 
+  language = "es" 
+}: DashboardHeaderProps) {
+  // Precargar traducciones del servidor con el idioma detectado
   const translations = {
     searchPlaceholder: serverT('header.search.placeholder', language),
     upload: serverT('header.upload', language),
