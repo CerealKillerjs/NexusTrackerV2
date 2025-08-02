@@ -239,8 +239,108 @@ export default function UploadContent() {
   // Check permissions
   if (status === 'loading') {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-text">{t('upload.status.loading')}</div>
+      <div className="max-w-4xl mx-auto p-6">
+        {/* Header Skeleton */}
+        <div className="mb-8">
+          <div className="w-64 h-8 bg-text-secondary/10 rounded animate-pulse mb-2"></div>
+          <div className="w-96 h-5 bg-text-secondary/10 rounded animate-pulse"></div>
+        </div>
+
+        {/* Form Skeletons */}
+        <div className="space-y-6">
+          {/* File Upload Areas Skeleton */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-surface rounded-lg border-2 border-dashed border-border p-6">
+              <div className="w-16 h-16 mx-auto mb-4 bg-text-secondary/10 rounded-lg animate-pulse"></div>
+              <div className="w-48 h-4 bg-text-secondary/10 rounded animate-pulse mx-auto mb-2"></div>
+              <div className="w-32 h-4 bg-text-secondary/10 rounded animate-pulse mx-auto"></div>
+            </div>
+            <div className="bg-surface rounded-lg border-2 border-dashed border-border p-6">
+              <div className="w-16 h-16 mx-auto mb-4 bg-text-secondary/10 rounded-lg animate-pulse"></div>
+              <div className="w-48 h-4 bg-text-secondary/10 rounded animate-pulse mx-auto mb-2"></div>
+              <div className="w-32 h-4 bg-text-secondary/10 rounded animate-pulse mx-auto"></div>
+            </div>
+          </div>
+
+          {/* Form Fields Skeleton */}
+          <div className="space-y-6">
+            {/* Name skeleton */}
+            <div>
+              <div className="w-24 h-5 bg-text-secondary/10 rounded animate-pulse mb-2"></div>
+              <div className="w-full h-12 bg-text-secondary/10 rounded animate-pulse"></div>
+            </div>
+            
+            {/* Category and Source skeletons */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <div className="w-20 h-5 bg-text-secondary/10 rounded animate-pulse mb-2"></div>
+                <div className="w-full h-12 bg-text-secondary/10 rounded animate-pulse"></div>
+              </div>
+              <div>
+                <div className="w-16 h-5 bg-text-secondary/10 rounded animate-pulse mb-2"></div>
+                <div className="w-full h-12 bg-text-secondary/10 rounded animate-pulse"></div>
+              </div>
+            </div>
+            
+            {/* Description skeleton */}
+            <div>
+              <div className="w-28 h-5 bg-text-secondary/10 rounded animate-pulse mb-2"></div>
+              <div className="w-full h-32 bg-text-secondary/10 rounded animate-pulse"></div>
+            </div>
+
+            {/* Tags skeleton */}
+            <div>
+              <div className="w-32 h-5 bg-text-secondary/10 rounded animate-pulse mb-2"></div>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div key={i} className="w-16 h-6 bg-text-secondary/10 rounded-full animate-pulse"></div>
+                ))}
+              </div>
+              <div className="flex space-x-2">
+                <div className="flex-1 h-10 bg-text-secondary/10 rounded animate-pulse"></div>
+                <div className="w-10 h-10 bg-text-secondary/10 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* NFO Upload Skeleton */}
+          <div>
+            <div className="w-32 h-5 bg-text-secondary/10 rounded animate-pulse mb-2"></div>
+            <div className="bg-surface rounded-lg border-2 border-dashed border-border p-6">
+              <div className="w-16 h-16 mx-auto mb-4 bg-text-secondary/10 rounded-lg animate-pulse"></div>
+              <div className="w-48 h-4 bg-text-secondary/10 rounded animate-pulse mx-auto mb-2"></div>
+              <div className="w-32 h-4 bg-text-secondary/10 rounded animate-pulse mx-auto"></div>
+            </div>
+          </div>
+
+          {/* Options Skeleton */}
+          <div className="space-y-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-5 h-5 bg-text-secondary/10 rounded animate-pulse"></div>
+              <div className="w-32 h-5 bg-text-secondary/10 rounded animate-pulse"></div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="w-5 h-5 bg-text-secondary/10 rounded animate-pulse"></div>
+              <div className="w-32 h-5 bg-text-secondary/10 rounded animate-pulse"></div>
+            </div>
+          </div>
+
+          {/* Actions Skeleton */}
+          <div className="flex space-x-4">
+            <div className="w-24 h-10 bg-text-secondary/10 rounded animate-pulse"></div>
+            <div className="w-32 h-10 bg-text-secondary/10 rounded animate-pulse"></div>
+          </div>
+        </div>
+
+        {/* Tips Skeleton */}
+        <div className="mt-8">
+          <div className="w-48 h-6 bg-text-secondary/10 rounded animate-pulse mb-4"></div>
+          <div className="space-y-3">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="w-full h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
