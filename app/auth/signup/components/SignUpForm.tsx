@@ -11,8 +11,8 @@
 import { useState, useCallback } from 'react';
 import { useI18n } from '@/app/hooks/useI18n';
 import Link from 'next/link';
-import AuthInput from './AuthInput';
-import PasswordStrengthBar from './PasswordStrengthBar';
+import AuthInput from '../../shared/AuthInput';
+import PasswordStrengthBar from '../../shared/PasswordStrengthBar';
 import { useRouter } from 'next/navigation';
 import { showNotification } from '@/app/utils/notifications';
 

@@ -4,7 +4,7 @@
  * Now uses the modern Figma floating label design
  */
 
-import { FormField } from '../ui/FigmaFloatingLabelInput';
+import { FormField } from '@/app/components/ui/FigmaFloatingLabelInput';
 
 interface AuthInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   label: string;

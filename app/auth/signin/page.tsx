@@ -8,8 +8,8 @@ import { Suspense } from 'react';
 import { headers } from 'next/headers';
 import { getRegistrationMode } from '@/app/lib/config';
 import { serverT, getPreferredLanguage } from '@/app/lib/server-i18n';
-import AuthCard from '../../components/auth/AuthCard';
-import SignInForm from '../../components/auth/SignInForm';
+import AuthCard from '../shared/AuthCard';
+import SignInForm from './components/SignInForm';
 import { FormFieldSkeleton, ButtonSkeleton, TextSkeleton } from '../../components/ui/Skeleton';
 import { LanguageSync } from '../../components/ui/LanguageSync';
 

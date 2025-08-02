@@ -11,7 +11,7 @@
 import { useState, useCallback } from 'react';
 import { useI18n } from '@/app/hooks/useI18n';
 import Link from 'next/link';
-import AuthInput from './AuthInput';
+import AuthInput from '../../shared/AuthInput';
 import { showNotification } from '@/app/utils/notifications';
 
 interface ForgotPasswordFormProps {

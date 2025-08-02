@@ -9,9 +9,9 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { auth } from '@/app/lib/auth';
 import { serverT, getPreferredLanguage } from '@/app/lib/server-i18n';
-import AuthCard from '@/app/components/auth/AuthCard';
-import VerifyEmailForm from '@/app/components/auth/VerifyEmailForm';
-import VerifyEmailSkeleton from '@/app/components/auth/VerifyEmailSkeleton';
+import AuthCard from '../shared/AuthCard';
+import VerifyEmailForm from './components/VerifyEmailForm';
+import VerifyEmailSkeleton from './components/VerifyEmailSkeleton';
 import { LanguageSync } from '@/app/components/ui/LanguageSync';
 
 export default async function VerifyEmailPage() {
