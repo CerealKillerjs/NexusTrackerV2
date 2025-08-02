@@ -362,7 +362,9 @@
       "joinDate": "Fecha de Registro",
       "uploaded": "Subido",
       "downloaded": "Descargado",
-      "announceUrl": "URL de Anuncio"
+      "announceUrl": "URL de Anuncio",
+      "notifications": "Notificaciones",
+      "privateProfile": "Perfil Privado"
     },
     "sections": {
       "stats": "Estadísticas",
@@ -392,6 +394,7 @@
     "notification": {
       "announceCopied": "URL de anuncio copiada al portapapeles",
       "copyError": "Error al copiar la URL",
+      "noAnnounceUrl": "No hay URL de anuncio disponible",
       "invalidImage": "Por favor selecciona un archivo de imagen válido"
     },
     "invitations": {
@@ -427,6 +430,7 @@
         "copyButton": "Copiar",
         "copied": "Enlace copiado",
         "copyError": "Error al copiar enlace",
+        "noLink": "No hay enlace disponible para copiar",
         "createdOn": "Creada el {{date}}",
         "tip": "💡 Puedes cancelar invitaciones no utilizadas para recuperar tu invitación disponible."
       },
