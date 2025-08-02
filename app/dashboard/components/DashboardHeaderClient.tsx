@@ -5,6 +5,7 @@ import { useI18n } from '@/app/hooks/useI18n';
 import DashboardUserMenu from './DashboardUserMenu';
 import UserStatsLoader from './UserStatsLoader';
 import UploadButton from './UploadButton';
+import BrandingName from './BrandingName';
 
 interface DashboardHeaderClientProps {
   brandingName?: string;
@@ -28,10 +29,10 @@ export default function DashboardHeaderClient({
   return (
     <header className="bg-surface border-b border-border h-16 fixed top-0 left-0 right-0 z-30">
       <div className="flex items-center justify-between h-full px-6">
-        {/* Left side - Logo */}
+        {/* Left side - Logo with dynamic branding */}
         <div className="flex items-center">
           <h1 className="text-xl font-bold text-primary">
-            {brandingName}
+            <BrandingName fallback={brandingName} />
           </h1>
         </div>
 
