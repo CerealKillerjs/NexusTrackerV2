@@ -275,6 +275,15 @@
   "bookmarks": {
     "title": "My Bookmarks",
     "description": "You have {{count}} bookmarked torrents",
+    "filter": {
+      "category": "Category",
+      "allCategories": "All categories",
+      "order": "Order",
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "search": "Search",
+      "searchPlaceholder": "Search torrents..."
+    },
     "list": {
       "title": "Bookmarks List",
       "count": "{{count}} of {{total}} bookmarks",

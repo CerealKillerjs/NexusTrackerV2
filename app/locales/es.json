@@ -275,6 +275,15 @@
   "bookmarks": {
     "title": "Mis Marcadores",
     "description": "Tienes {{count}} torrents marcados",
+    "filter": {
+      "category": "Categoría",
+      "allCategories": "Todas las categorías",
+      "order": "Orden",
+      "newest": "Más nuevo primero",
+      "oldest": "Más antiguo primero",
+      "search": "Buscar",
+      "searchPlaceholder": "Buscar torrents..."
+    },
     "list": {
       "title": "Lista de Marcadores",
       "count": "{{count}} de {{total}} marcadores",
