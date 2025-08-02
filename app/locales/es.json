@@ -492,7 +492,19 @@
       "category": {
         "label": "Categoría *",
         "placeholder": "Seleccionar categoría",
-        "autoDetected": "Detectada automáticamente"
+        "autoDetected": "Detectada automáticamente",
+        "errors": {
+          "required": "La categoría es requerida"
+        },
+        "options": {
+          "Movies": "Películas",
+          "TV": "Televisión",
+          "Music": "Música",
+          "Books": "Libros",
+          "Games": "Juegos",
+          "Software": "Software",
+          "Other": "Otros"
+        }
       },
       "source": {
         "label": "Fuente *",
