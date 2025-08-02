@@ -154,7 +154,7 @@ export default function TorrentDetailContent({ torrentId, serverTranslations }: 
       // Error handling
       onError: (error) => {
         console.error('Torrent fetch error:', error);
-        showNotification.error(serverTranslations.fetchError);
+      showNotification.error(serverTranslations.fetchError);
       },
     }
   );
@@ -217,7 +217,7 @@ export default function TorrentDetailContent({ torrentId, serverTranslations }: 
           }}
         />
       ) : (
-        <div className="mb-8">
+      <div className="mb-8">
           <div className="w-3/4 h-8 bg-text-secondary/10 rounded animate-pulse mb-2"></div>
           <div className="flex items-center space-x-4">
             <div className="w-32 h-4 bg-text-secondary/10 rounded animate-pulse"></div>

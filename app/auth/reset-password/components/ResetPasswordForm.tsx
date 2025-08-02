@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
-import AuthInput from './AuthInput';
+import AuthInput from '../../shared/AuthInput';
 
 interface ResetPasswordFormProps {
   translations: {

@@ -9,9 +9,9 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { auth } from '@/app/lib/auth';
 import { serverT, getPreferredLanguage } from '@/app/lib/server-i18n';
-import AuthCard from '@/app/components/auth/AuthCard';
-import ResetPasswordForm from '@/app/components/auth/ResetPasswordForm';
-import ResetPasswordSkeleton from '@/app/components/auth/ResetPasswordSkeleton';
+import AuthCard from '../shared/AuthCard';
+import ResetPasswordForm from './components/ResetPasswordForm';
+import ResetPasswordSkeleton from './components/ResetPasswordSkeleton';
 import { LanguageSync } from '@/app/components/ui/LanguageSync';
 
 export default async function ResetPasswordPage() {

@@ -9,8 +9,8 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { auth } from '@/app/lib/auth';
 import { serverT, getPreferredLanguage } from '@/app/lib/server-i18n';
-import AuthCard from '../../components/auth/AuthCard';
-import { ForgotPasswordForm } from '@/app/components/auth/ForgotPasswordForm';
+import AuthCard from '../shared/AuthCard';
+import { ForgotPasswordForm } from './components/ForgotPasswordForm';
 import { FormFieldSkeleton, ButtonSkeleton, TextSkeleton } from '../../components/ui/Skeleton';
 import { LanguageSync } from '../../components/ui/LanguageSync';
 

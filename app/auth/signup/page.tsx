@@ -10,8 +10,8 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/app/lib/auth';
 import { getRegistrationMode } from '@/app/lib/config';
 import { serverT, getPreferredLanguage } from '@/app/lib/server-i18n';
-import AuthCard from '../../components/auth/AuthCard';
-import { SignUpForm } from '../../components/auth/SignUpForm';
+import AuthCard from '../shared/AuthCard';
+import { SignUpForm } from './components/SignUpForm';
 import { FormFieldSkeleton, ButtonSkeleton, TextSkeleton } from '../../components/ui/Skeleton';
 import { LanguageSync } from '../../components/ui/LanguageSync';
 
@@ -94,7 +94,7 @@ export default async function RegisterPage() {
   const special = serverT('auth.register.passwordRequirements.special', language);
 
   // Debug logging
-  console.log('🔍 SignUp Page Server Translations:', {
+  console.log('�� SignUp Page Server Translations:', {
     language,
     title,
     usernameLabel,

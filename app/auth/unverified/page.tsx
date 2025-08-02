@@ -9,9 +9,9 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { auth } from '@/app/lib/auth';
 import { serverT, getPreferredLanguage } from '@/app/lib/server-i18n';
-import AuthCard from '@/app/components/auth/AuthCard';
-import UnverifiedForm from '@/app/components/auth/UnverifiedForm';
-import UnverifiedSkeleton from '@/app/components/auth/UnverifiedSkeleton';
+import AuthCard from '../shared/AuthCard';
+import UnverifiedForm from './components/UnverifiedForm';
+import UnverifiedSkeleton from './components/UnverifiedSkeleton';
 import { LanguageSync } from '@/app/components/ui/LanguageSync';
 
 export default async function UnverifiedPage() {

@@ -10,7 +10,7 @@
 import { useState, useCallback } from 'react';
 import { useI18n } from '@/app/hooks/useI18n';
 import Link from 'next/link';
-import AuthInput from './AuthInput';
+import AuthInput from '../../shared/AuthInput';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { showNotification } from '@/app/utils/notifications';
