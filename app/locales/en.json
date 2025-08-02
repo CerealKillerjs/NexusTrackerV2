@@ -362,7 +362,9 @@
       "joinDate": "Join Date",
       "uploaded": "Uploaded",
       "downloaded": "Downloaded",
-      "announceUrl": "Announce URL"
+      "announceUrl": "Announce URL",
+      "notifications": "Notifications",
+      "privateProfile": "Private Profile"
     },
     "sections": {
       "stats": "Statistics",
@@ -392,6 +394,7 @@
     "notification": {
       "announceCopied": "Announce URL copied to clipboard",
       "copyError": "Error copying URL",
+      "noAnnounceUrl": "No announce URL available",
       "invalidImage": "Please select a valid image file"
     },
     "invitations": {
@@ -427,6 +430,7 @@
         "copyButton": "Copy",
         "copied": "Link copied",
         "copyError": "Error copying link",
+        "noLink": "No link available to copy",
         "createdOn": "Created on {{date}}",
         "tip": "💡 You can cancel unused invitations to recover your available invitation."
       },

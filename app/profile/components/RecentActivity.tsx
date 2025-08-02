@@ -5,8 +5,8 @@
 
 'use client';
 
-import { useI18n } from '../../hooks/useI18n';
-import { ActivityItem } from '../../types/profile';
+import { useI18n } from '@/app/hooks/useI18n';
+import { ActivityItem } from '@/app/types/profile';
 
 // Mock activity data
 const mockActivity: ActivityItem[] = [
