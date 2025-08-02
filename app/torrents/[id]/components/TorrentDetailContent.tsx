@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
-import CommentsSection from '@/app/components/comments/CommentsSection';
-import FileTree from '@/app/components/torrents/FileTree';
+import CommentsSection from './CommentsSection';
+import FileTree from './FileTree';
 import { showNotification } from '@/app/utils/notifications';
 // Icon imports
 import { Download } from '@styled-icons/boxicons-regular/Download';
