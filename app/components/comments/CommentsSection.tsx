@@ -13,7 +13,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useI18n } from '@/app/hooks/useI18n';
 import { showNotification } from '@/app/utils/notifications';
@@ -75,6 +75,10 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
     totalPages: 0,
   });
 
+  // Use ref to store translation function to avoid infinite loops
+  const tRef = useRef(t);
+  tRef.current = t;
+
   // Fetch comments from API
   const fetchComments = useCallback(async () => {
     try {
@@ -90,11 +94,11 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
       setPagination(data.pagination);
     } catch (error) {
       console.error('Error fetching comments:', error);
-      showNotification.error(t('torrentDetail.comments.error.load'));
+      showNotification.error(tRef.current('torrentDetail.comments.error.load'));
     } finally {
       setLoading(false);
     }
-  }, [torrentId, pagination.page, pagination.limit, t]);
+  }, [torrentId, pagination.page, pagination.limit]);
 
   useEffect(() => {
     fetchComments();
@@ -128,11 +132,11 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session) {
-      showNotification.error(t('torrentDetail.comments.error.loginRequired'));
+      showNotification.error(tRef.current('torrentDetail.comments.error.loginRequired'));
       return;
     }
     if (!newComment.trim()) {
-      showNotification.error(t('torrentDetail.comments.error.empty'));
+      showNotification.error(tRef.current('torrentDetail.comments.error.empty'));
       return;
     }
     try {
@@ -149,7 +153,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
       await fetchComments();
       setNewComment('');
       setShowModal(false);
-      showNotification.success(t('torrentDetail.comments.success.created'));
+      showNotification.success(tRef.current('torrentDetail.comments.success.created'));
     } catch (error) {
       console.error('Error creating comment:', error);
       showNotification.error(error instanceof Error ? error.message : 'Error creating comment');
@@ -161,11 +165,11 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
   // Handle reply submission (nested)
   const handleSubmitReply = async (parentId: string) => {
     if (!session) {
-      showNotification.error(t('torrentDetail.comments.error.loginRequired'));
+      showNotification.error(tRef.current('torrentDetail.comments.error.loginRequired'));
       return;
     }
     if (!replyContent.trim()) {
-      showNotification.error(t('torrentDetail.comments.error.empty'));
+      showNotification.error(tRef.current('torrentDetail.comments.error.empty'));
       return;
     }
     try {
@@ -182,7 +186,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
       await fetchComments();
       setReplyingTo(null);
       setReplyContent('');
-      showNotification.success(t('torrentDetail.comments.success.replied'));
+      showNotification.success(tRef.current('torrentDetail.comments.success.replied'));
     } catch (error) {
       console.error('Error creating reply:', error);
       showNotification.error(error instanceof Error ? error.message : 'Error creating reply');
@@ -194,7 +198,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
   // Handle vote on comment
   const handleVote = async (commentId: string, voteType: 'upvote' | 'downvote') => {
     if (!session) {
-      showNotification.error(t('torrentDetail.comments.error.loginRequired'));
+      showNotification.error(tRef.current('torrentDetail.comments.error.loginRequired'));
       return;
     }
     try {
@@ -230,10 +234,10 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
   // Format user role for display
   const formatUserRole = (role: string): string => {
     const roles: Record<string, string> = {
-      admin: t('torrentDetail.comments.roles.admin'),
-      moderator: t('torrentDetail.comments.roles.moderator'),
-      user: t('torrentDetail.comments.roles.user'),
-      guest: t('torrentDetail.comments.roles.guest'),
+      admin: tRef.current('torrentDetail.comments.roles.admin'),
+      moderator: tRef.current('torrentDetail.comments.roles.moderator'),
+      user: tRef.current('torrentDetail.comments.roles.user'),
+      guest: tRef.current('torrentDetail.comments.roles.guest'),
     };
     return roles[role] || role;
   };
@@ -349,7 +353,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
-                  <span>{t('torrentDetail.comments.reply')}</span>
+                  <span>{tRef.current('torrentDetail.comments.reply')}</span>
                 </button>
               )}
             </div>
@@ -361,7 +365,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
                   <textarea
                     value={replyContent}
                     onChange={e => setReplyContent(e.target.value)}
-                    placeholder={t('torrentDetail.comments.replyPlaceholder')}
+                    placeholder={tRef.current('torrentDetail.comments.replyPlaceholder')}
                     className="w-full p-3 border border-border rounded-md text-sm resize-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2 bg-background text-text"
                     rows={3}
                   />
@@ -371,14 +375,14 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
                       className="px-3 py-1.5 bg-primary text-background text-sm rounded-md hover:bg-primary-dark disabled:opacity-50 transition-colors"
                       disabled={submitting || !replyContent.trim()}
                     >
-                      {t('torrentDetail.comments.submitReply')}
+                      {tRef.current('torrentDetail.comments.submitReply')}
                     </button>
                     <button
                       type="button"
                       className="px-3 py-1.5 border border-border text-text text-sm rounded-md hover:bg-surface transition-colors"
                       onClick={() => { setReplyingTo(null); setReplyContent(''); }}
                     >
-                      {t('torrentDetail.comments.cancel')}
+                      {tRef.current('torrentDetail.comments.cancel')}
                     </button>
                   </div>
                 </form>
@@ -402,12 +406,12 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
       {/* Comments List */}
       {loading ? (
         <div className="text-center py-8">
-          <div className="text-text">{t('torrentDetail.comments.loading')}</div>
+          <div className="text-text">{tRef.current('torrentDetail.comments.loading')}</div>
         </div>
       ) : comments.length === 0 ? (
         <div className="text-center py-8 text-text-secondary">
           <Comment size={48} className="mx-auto mb-4 opacity-50" />
-          <p>{t('torrentDetail.comments.empty')}</p>
+          <p>{tRef.current('torrentDetail.comments.empty')}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -423,17 +427,17 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
               disabled={pagination.page === 1}
               className="px-3 py-2 border border-border text-text rounded hover:bg-surface-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {t('torrentDetail.comments.pagination.previous')}
+              {tRef.current('torrentDetail.comments.pagination.previous')}
             </button>
             <span className="px-3 py-2 text-text-secondary">
-              {t('torrentDetail.comments.pagination.page').replace('{{current}}', pagination.page.toString()).replace('{{total}}', pagination.totalPages.toString())}
+              {tRef.current('torrentDetail.comments.pagination.page').replace('{{current}}', pagination.page.toString()).replace('{{total}}', pagination.totalPages.toString())}
             </span>
             <button
               onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
               disabled={pagination.page === pagination.totalPages}
               className="px-3 py-2 border border-border text-text rounded hover:bg-surface-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {t('torrentDetail.comments.pagination.next')}
+              {tRef.current('torrentDetail.comments.pagination.next')}
             </button>
           </div>
         </div>
@@ -450,7 +454,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-text">
-                {t('torrentDetail.comments.modal.title')}
+                {tRef.current('torrentDetail.comments.modal.title')}
               </h3>
               <button
                 onClick={closeModal}
@@ -463,7 +467,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
               <textarea
                 value={newComment}
                 onChange={e => setNewComment(e.target.value)}
-                placeholder={t('torrentDetail.comments.placeholder')}
+                placeholder={tRef.current('torrentDetail.comments.placeholder')}
                 className="w-full px-4 py-3 bg-background border border-border rounded-lg text-text placeholder-text-secondary focus:outline-none focus:border-primary transition-colors resize-none mb-4"
                 rows={4}
                 maxLength={280}
@@ -482,7 +486,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
                   disabled={submitting}
                   className="flex-1 px-4 py-2 border border-border text-text rounded-lg hover:bg-surface-light transition-colors disabled:opacity-50"
                 >
-                  {t('torrentDetail.comments.modal.cancel')}
+                  {tRef.current('torrentDetail.comments.modal.cancel')}
                 </button>
                 <button
                   type="submit"
@@ -490,7 +494,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
                   className="flex-1 px-4 py-2 bg-primary text-background rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                 >
                   <Send size={16} />
-                  <span>{submitting ? t('torrentDetail.comments.modal.sending') : t('torrentDetail.comments.modal.send')}</span>
+                  <span>{submitting ? tRef.current('torrentDetail.comments.modal.sending') : tRef.current('torrentDetail.comments.modal.send')}</span>
                 </button>
               </div>
             </form>
