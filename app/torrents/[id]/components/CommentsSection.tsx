@@ -405,8 +405,45 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
     <>
       {/* Comments List */}
       {loading ? (
-        <div className="text-center py-8">
-          <div className="text-text">{tRef.current('torrentDetail.comments.loading')}</div>
+        <div className="space-y-4">
+          {/* Comment Skeleton 1 */}
+          <div className="border-b border-border pb-4">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="w-8 h-8 bg-text-secondary/10 rounded-full animate-pulse"></div>
+              <div className="w-24 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+              <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="w-full h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+              <div className="w-3/4 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+            </div>
+          </div>
+          
+          {/* Comment Skeleton 2 */}
+          <div className="border-b border-border pb-4">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="w-8 h-8 bg-text-secondary/10 rounded-full animate-pulse"></div>
+              <div className="w-20 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+              <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="w-full h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+              <div className="w-1/2 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+            </div>
+          </div>
+          
+          {/* Comment Skeleton 3 */}
+          <div className="border-b border-border pb-4">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="w-8 h-8 bg-text-secondary/10 rounded-full animate-pulse"></div>
+              <div className="w-28 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+              <div className="w-16 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="w-full h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+              <div className="w-2/3 h-4 bg-text-secondary/10 rounded animate-pulse"></div>
+            </div>
+          </div>
         </div>
       ) : comments.length === 0 ? (
         <div className="text-center py-8 text-text-secondary">
