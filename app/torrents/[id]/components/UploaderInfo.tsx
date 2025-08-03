@@ -13,10 +13,13 @@
 'use client';
 
 import { User } from '@styled-icons/boxicons-regular/User';
+import { useAvatar } from '@/app/hooks/useAvatar';
+import Image from 'next/image';
 
 interface UploaderInfoProps {
   anonymous: boolean;
   user?: {
+    id: string;
     username: string;
     ratio: number;
     uploaded: number;
@@ -39,6 +42,8 @@ export default function UploaderInfo({
   loading = false, 
   translations 
 }: UploaderInfoProps) {
+  const { avatarUrl, isLoading: avatarLoading } = useAvatar(user?.id);
+  
   const formatFileSize = (bytes: number): string => {
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
     if (bytes === 0) return '0 B';
@@ -55,9 +60,24 @@ export default function UploaderInfo({
       
       <div className="space-y-3">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-            <User size={20} className="text-primary" />
-          </div>
+          {loading || avatarLoading ? (
+            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+              <User size={20} className="text-primary" />
+            </div>
+          ) : avatarUrl ? (
+            <div className="relative w-10 h-10 rounded-full overflow-hidden">
+              <Image
+                src={avatarUrl}
+                alt="Uploader avatar"
+                fill
+                className="object-cover"
+              />
+            </div>
+          ) : (
+            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+              <User size={20} className="text-primary" />
+            </div>
+          )}
           <div>
             {loading ? (
               <>

@@ -60,6 +60,7 @@ export async function GET(
       include: {
         user: {
           select: {
+            id: true,
             username: true,
             ratio: true,
             uploaded: true,
@@ -165,6 +166,7 @@ export async function GET(
       nfo: torrent.nfo || undefined,
       isPrivate: isPrivate,
       user: torrent.anonymous ? undefined : (torrent.user ? {
+        id: torrent.user.id,
         username: torrent.user.username,
         ratio: Number(torrent.user.ratio),
         uploaded: Number(torrent.user.uploaded),

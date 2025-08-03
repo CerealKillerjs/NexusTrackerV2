@@ -7,6 +7,8 @@ import { User } from '@styled-icons/boxicons-regular/User';
 import { Lock } from '@styled-icons/boxicons-regular/Lock';
 import { LogOutCircle } from '@styled-icons/boxicons-regular/LogOutCircle';
 import { ChevronDown } from '@styled-icons/boxicons-regular/ChevronDown';
+import { useCurrentUserAvatar } from '@/app/hooks/useAvatar';
+import Image from 'next/image';
 
 interface DashboardUserMenuProps {
   translations: {
@@ -19,6 +21,7 @@ interface DashboardUserMenuProps {
 
 export default function DashboardUserMenu({ translations }: DashboardUserMenuProps) {
   const { data: session, status } = useSession();
+  const { avatarUrl, isLoading: avatarLoading } = useCurrentUserAvatar();
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -34,7 +37,7 @@ export default function DashboardUserMenu({ translations }: DashboardUserMenuPro
   }, []);
 
   // Skeleton mientras carga la sesión
-  if (status === "loading") {
+  if (status === "loading" || avatarLoading) {
     return (
       <div className="flex items-center space-x-2 px-3 py-2">
         <div className="w-8 h-8 bg-primary/20 rounded-full animate-pulse"></div>
@@ -65,9 +68,20 @@ export default function DashboardUserMenu({ translations }: DashboardUserMenuPro
         onClick={() => setUserDropdownOpen(!userDropdownOpen)}
         className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-surface-light transition-colors"
       >
-        <span className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-background text-sm font-medium">
-          {session.user?.username?.charAt(0).toUpperCase() || 'U'}
-        </span>
+        {avatarUrl ? (
+          <div className="relative w-8 h-8 rounded-full overflow-hidden">
+            <Image
+              src={avatarUrl}
+              alt="User avatar"
+              fill
+              className="object-cover"
+            />
+          </div>
+        ) : (
+          <span className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-background text-sm font-medium">
+            {session.user?.username?.charAt(0).toUpperCase() || 'U'}
+          </span>
+        )}
         <span className="hidden md:block text-text font-medium">
           {session.user?.username || session.user?.email}
         </span>

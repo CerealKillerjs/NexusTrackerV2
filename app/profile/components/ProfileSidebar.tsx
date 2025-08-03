@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { useI18n } from '@/app/hooks/useI18n';
 import { showNotification } from '@/app/utils/notifications';
 import { UserProfile } from '@/app/types/profile';
+import { useCurrentUserAvatar } from '@/app/hooks/useAvatar';
 
 // Extension of session user type to include passkey
 interface SessionUser {
@@ -26,6 +27,7 @@ interface ProfileSidebarProps {
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   formattedJoinDate: string;
   onRemoveAvatar: () => void;
+  onAvatarUpload: (file: File) => Promise<void>;
   setPreviewUrl: (url: string | null) => void;
   loading?: boolean;
 }
@@ -37,10 +39,12 @@ export default function ProfileSidebar({
   fileInputRef,
   formattedJoinDate,
   onRemoveAvatar,
+  onAvatarUpload,
   setPreviewUrl,
   loading = false
 }: ProfileSidebarProps) {
   const { t } = useI18n();
+  const { avatarUrl, isLoading: avatarLoading } = useCurrentUserAvatar();
 
   return (
     <div className="space-y-6">
@@ -48,11 +52,11 @@ export default function ProfileSidebar({
         <div className="space-y-4">
           {/* Avatar */}
           <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-background">
-            {loading ? (
+            {loading || avatarLoading ? (
               <div className="w-full h-full bg-text-secondary/10 animate-pulse"></div>
-            ) : typeof (previewUrl || profile?.avatar) === 'string' && (previewUrl || profile?.avatar) ? (
+            ) : (previewUrl || avatarUrl) ? (
               <Image
-                src={previewUrl || profile?.avatar as string}
+                src={previewUrl || avatarUrl || ''}
                 alt="Profile avatar"
                 fill
                 className="object-cover"
@@ -82,7 +86,7 @@ export default function ProfileSidebar({
                 >
                   {t('profile.actions.uploadAvatar')}
                 </button>
-                {(previewUrl || profile?.avatar) && (
+                {(previewUrl || avatarUrl) && (
                   <button
                     type="button"
                     onClick={onRemoveAvatar}
@@ -101,15 +105,20 @@ export default function ProfileSidebar({
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={(e) => {
+            onChange={async (e) => {
               const file = e.target.files?.[0];
               if (file) {
                 if (!file.type.startsWith('image/')) {
                   showNotification.error(t('profile.notification.invalidImage'));
                   return;
                 }
+                
+                // Create preview URL
                 const url = URL.createObjectURL(file);
                 setPreviewUrl(url);
+                
+                // Upload avatar
+                await onAvatarUpload(file);
               }
             }}
           />

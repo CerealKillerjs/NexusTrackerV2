@@ -395,7 +395,11 @@
       "announceCopied": "URL de anuncio copiada al portapapeles",
       "copyError": "Error al copiar la URL",
       "noAnnounceUrl": "No hay URL de anuncio disponible",
-      "invalidImage": "Por favor selecciona un archivo de imagen válido"
+      "invalidImage": "Por favor selecciona un archivo de imagen válido",
+      "avatarUpdated": "Avatar actualizado exitosamente",
+      "avatarRemoved": "Avatar eliminado exitosamente",
+      "uploadError": "Error al subir el avatar",
+      "removalError": "Error al eliminar el avatar"
     },
     "invitations": {
       "title": "Invitaciones",

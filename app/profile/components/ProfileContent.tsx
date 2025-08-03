@@ -14,6 +14,7 @@ import { useI18n } from '@/app/hooks/useI18n';
 import { useLanguage } from '@/app/hooks/useLanguage';
 import { showNotification } from '@/app/utils/notifications';
 import { UserProfile } from '@/app/types/profile';
+import { useCurrentUserAvatar } from '@/app/hooks/useAvatar';
 
 // Import components
 import ProfileHeader from './ProfileHeader';
@@ -39,6 +40,7 @@ export default function ProfileContent() {
   const { currentLanguage } = useLanguage();
   const { data: session } = useSession();
   const user = session?.user as SessionUser | undefined;
+  const { mutate: refreshAvatar } = useCurrentUserAvatar();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -52,16 +54,78 @@ export default function ProfileContent() {
   const [loadingInvites, setLoadingInvites] = useState(false);
   const [maxInvitesPerUser, setMaxInvitesPerUser] = useState<number>(5);
 
+  // Handle avatar upload
+  const handleAvatarUpload = useCallback(async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('avatar', file);
+
+      const response = await fetch('/api/user/avatar', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Upload failed');
+      }
+
+      const result = await response.json();
+      
+      // Update preview with new avatar
+      if (result.user?.image) {
+        setPreviewUrl(`data:image/jpeg;base64,${result.user.image}`);
+      }
+      
+      // Refresh avatar cache
+      refreshAvatar();
+      
+      showNotification.success(t('profile.notification.avatarUpdated'));
+      
+      // Clear file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      
+    } catch (error) {
+      console.error('Avatar upload error:', error);
+      showNotification.error(t('profile.notification.uploadError'));
+    }
+  }, [t, refreshAvatar]);
+
   // Handle avatar removal
-  const handleRemoveAvatar = useCallback(() => {
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
+  const handleRemoveAvatar = useCallback(async () => {
+    try {
+      const response = await fetch('/api/user/avatar', {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Removal failed');
+      }
+
+      // Clear preview
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      setPreviewUrl(null);
+      
+      // Refresh avatar cache
+      refreshAvatar();
+      
+      showNotification.success(t('profile.notification.avatarRemoved'));
+      
+      // Clear file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      
+    } catch (error) {
+      console.error('Avatar removal error:', error);
+      showNotification.error(t('profile.notification.removalError'));
     }
-    setPreviewUrl(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  }, [previewUrl]);
+  }, [previewUrl, t, refreshAvatar]);
 
   // Get locale for date formatting
   const getLocale = useCallback(() => {
@@ -373,6 +437,7 @@ export default function ProfileContent() {
             fileInputRef={fileInputRef}
             formattedJoinDate={formattedJoinDate}
             onRemoveAvatar={handleRemoveAvatar}
+            onAvatarUpload={handleAvatarUpload}
             setPreviewUrl={setPreviewUrl}
             loading={!user}
           />
