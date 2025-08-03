@@ -1,5 +1,5 @@
 /**
- * AdminLayout - Visual clone of DashboardLayout for administration
+ * AdminLayout - Visual clone of DashboardWrapper for administration
  * Structure, colors and classes identical to user dashboard
  * Only changes the sidebar menu and texts for administration
  */
