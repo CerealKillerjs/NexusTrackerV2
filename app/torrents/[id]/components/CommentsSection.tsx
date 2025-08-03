@@ -17,6 +17,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useI18n } from '@/app/hooks/useI18n';
 import { showNotification } from '@/app/utils/notifications';
+import { useAvatar } from '@/app/hooks/useAvatar';
+import Image from 'next/image';
 // Icon imports
 import { Comment } from '@styled-icons/boxicons-regular/Comment';
 import { Send } from '@styled-icons/boxicons-regular/Send';
@@ -253,6 +255,38 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
     return upvotes - downvotes;
   };
 
+  // Component to render user avatar with fallback
+  const UserAvatar = ({ userId, username }: { userId: string; username: string }) => {
+    const { avatarUrl, isLoading } = useAvatar(userId);
+    
+    if (isLoading) {
+      return (
+        <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center text-background font-medium text-xs animate-pulse">
+          {username.charAt(0).toUpperCase()}
+        </div>
+      );
+    }
+    
+    if (avatarUrl) {
+      return (
+        <div className="relative w-6 h-6 rounded-full overflow-hidden">
+          <Image
+            src={avatarUrl}
+            alt={`${username} avatar`}
+            fill
+            className="object-cover"
+          />
+        </div>
+      );
+    }
+    
+    return (
+      <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-background font-medium text-xs">
+        {username.charAt(0).toUpperCase()}
+      </div>
+    );
+  };
+
   /**
    * Recursive render of a comment and its replies (Reddit-style)
    * @param comment The comment to render
@@ -277,9 +311,7 @@ export default function CommentsSection({ torrentId }: CommentsSectionProps) {
             {/* Comment header */}
             <div className="flex items-center space-x-2 mb-2">
               {/* User avatar - theme style */}
-              <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-background font-medium text-xs">
-                {comment.user.username.charAt(0).toUpperCase()}
-              </div>
+              <UserAvatar userId={comment.user.id} username={comment.user.username} />
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium text-text">{comment.user.username}</span>
                 {comment.user.role === 'ADMIN' && (

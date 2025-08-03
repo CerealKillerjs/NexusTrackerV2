@@ -46,6 +46,7 @@ interface TorrentData {
   nfo?: string; // NFO file content
 
   user?: {
+    id: string;
     username: string;
     ratio: number;
     uploaded: number;

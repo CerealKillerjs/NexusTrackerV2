@@ -395,7 +395,11 @@
       "announceCopied": "Announce URL copied to clipboard",
       "copyError": "Error copying URL",
       "noAnnounceUrl": "No announce URL available",
-      "invalidImage": "Please select a valid image file"
+      "invalidImage": "Please select a valid image file",
+      "avatarUpdated": "Avatar updated successfully",
+      "avatarRemoved": "Avatar removed successfully",
+      "uploadError": "Error uploading avatar",
+      "removalError": "Error removing avatar"
     },
     "invitations": {
       "title": "Invitations",
