@@ -521,6 +521,18 @@ export default function SettingsContent({ translations }: SettingsContentProps) 
                   type="number"
                 />
                 <FormField
+                  label="Required Seeding Minutes"
+                  value={config['REQUIRED_SEEDING_MINUTES'] || '4320'}
+                  onChange={(value) => handleChange('REQUIRED_SEEDING_MINUTES', value)}
+                  type="number"
+                />
+                <FormField
+                  label="Hit & Run Threshold"
+                  value={config['HIT_AND_RUN_THRESHOLD'] || '5'}
+                  onChange={(value) => handleChange('HIT_AND_RUN_THRESHOLD', value)}
+                  type="number"
+                />
+                <FormField
                   label="Ratio Grace MB"
                   value={config['RATIO_GRACE_MB'] || '50'}
                   onChange={(value) => handleChange('RATIO_GRACE_MB', value)}

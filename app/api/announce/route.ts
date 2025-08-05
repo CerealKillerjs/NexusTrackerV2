@@ -10,7 +10,7 @@ import bencode from 'bencode';
 import { checkRateLimit, updateRateLimit, getAnnounceConfig } from '@/app/lib/ratelimit';
 import { checkAndUpdateRatio } from './ratio';
 import { awardBonusPoints } from './bonus';
-import { checkAndUpdateHitnRun } from './hitnrun';
+import { checkAndUpdateHitAndRun, updateHitAndRun } from '@/app/lib/hit-and-run';
 
 // Toggle for peer list format: 'compact' (production) or 'dictionary' (debug)
 const PEER_LIST_FORMAT: 'compact' | 'dictionary' = 'compact';
@@ -283,10 +283,13 @@ export async function GET(request: NextRequest) {
       return new NextResponse(failure, { status: 403, headers: { 'Content-Type': 'text/plain' } });
     }
 
-    // Enforce hit'n'run rule (use Progress aggregation)
-    const hitnrunResult = await checkAndUpdateHitnRun(user.id);
-    if (!hitnrunResult.allowed) {
-      const failure = bencode.encode({ 'failure reason': hitnrunResult.failureReason });
+    // Update hit and run tracking based on seeding time
+    await updateHitAndRun(user.id, torrent.id, leftNum, event);
+
+    // Enforce hit and run rule (check threshold)
+    const hitAndRunResult = await checkAndUpdateHitAndRun(user.id);
+    if (!hitAndRunResult.allowed) {
+      const failure = bencode.encode({ 'failure reason': hitAndRunResult.failureReason });
       return new NextResponse(failure, { status: 403, headers: { 'Content-Type': 'text/plain' } });
     }
 

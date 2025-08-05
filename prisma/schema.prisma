@@ -57,6 +57,7 @@ model User {
   sessions            Session[]
   torrentCompletions  TorrentCompletion[]
   announceRateLimits  AnnounceRateLimit[]
+  hitAndRuns          HitAndRun[]
   bookmarks           Bookmark[]
   comments            Comment[]
   createdInvites      InviteCode[]         @relation("CreatedInvites")
@@ -108,6 +109,7 @@ model Torrent {
   peers              Peer[]
   torrentCompletions TorrentCompletion[]
   announceRateLimits AnnounceRateLimit[]
+  hitAndRuns         HitAndRun[]
   bookmarks          Bookmark[]
   comments           Comment[]
   user               User                @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
@@ -167,6 +169,10 @@ model Configuration {
   value     String
   updatedAt DateTime @updatedAt
 }
+
+// Configuración para el sistema de hit and run basado en tiempo de seeding
+// REQUIRED_SEEDING_MINUTES: Tiempo mínimo de seeding en minutos (default: 4320 = 72 horas)
+// HIT_AND_RUN_THRESHOLD: Número máximo de hit and runs permitidos (default: 5)
 
 model InviteCode {
   id        String    @id @default(cuid())
@@ -251,6 +257,22 @@ model Progress {
   @@index([userId])
   @@index([infoHash])
   @@index([lastSeen])
+}
+
+model HitAndRun {
+  id              String   @id @default(uuid())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+  torrent         Torrent  @relation(fields: [torrentId], references: [id], onDelete: Cascade)
+  torrentId       String
+  downloadedAt    DateTime @default(now())
+  lastSeededAt    DateTime?
+  totalSeedingTime Int     @default(0) // en minutos
+  isHitAndRun     Boolean  @default(false)
+
+  @@index([userId])
+  @@index([torrentId])
+  @@unique([userId, torrentId])
 }
 
 enum UserStatus {
