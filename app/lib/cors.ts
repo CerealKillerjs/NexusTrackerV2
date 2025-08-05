@@ -2,16 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Configuración de CORS
 const CORS_CONFIG = {
-  // Dominios permitidos
+  // Dominios permitidos - completamente configurable desde .env
   allowedOrigins: [
+    // Desarrollo local
     'http://localhost:3000',
     'http://localhost:3001',
     'http://127.0.0.1:3000',
     'http://127.0.0.1:3001',
-    // Agregar aquí los dominios de producción
+    // Dominios de producción desde variables de entorno
     process.env.NEXT_PUBLIC_SITE_URL,
     process.env.NEXT_PUBLIC_TRACKER_URL,
-  ].filter(Boolean), // Remover valores undefined/null
+    process.env.CORS_ALLOWED_ORIGINS?.split(',').map(origin => origin.trim()) || [],
+  ].flat().filter(Boolean), // Remover valores undefined/null y aplanar array
 
   // Métodos HTTP permitidos
   allowedMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { handlePreflight, needsCORS } from '@/app/lib/cors';
+import { handlePreflight } from '@/app/lib/cors';
 
 // Rutas públicas que están bloqueadas ya que el tracker es siempre privado
 const PUBLIC_ROUTES = [
@@ -9,10 +9,11 @@ const PUBLIC_ROUTES = [
   '/search',
 ];
 
-// Rutas que necesitan CORS especial (como el endpoint de announce)
+// Rutas que necesitan CORS especial
 const CORS_ROUTES = [
   '/api/announce',
   '/announce',
+  '/api/auth',
 ];
 
 export async function middleware(request: NextRequest) {
@@ -39,5 +40,8 @@ export const config = {
     '/torrents/public/:path*',
     '/api/torrent/public/:path*',
     '/search',
+    '/api/announce',
+    '/announce',
+    '/api/auth/:path*',
   ],
 }; 
