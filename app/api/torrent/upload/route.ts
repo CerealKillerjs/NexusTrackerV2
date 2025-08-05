@@ -15,16 +15,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/app/lib/auth';
 import { prisma } from '@/app/lib/prisma';
 import bencode from 'bencode';
+import { handleCORS } from '@/app/lib/cors';
 
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
     const session = await auth();
     if (!session?.user) {
-      return NextResponse.json(
+      const errorResponse = NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       );
+      return handleCORS(request, errorResponse);
     }
 
     // Check upload permissions
@@ -34,10 +36,11 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user || (user.role !== 'USER' && user.role !== 'MODERATOR' && user.role !== 'ADMIN')) {
-      return NextResponse.json(
+      const errorResponse = NextResponse.json(
         { error: 'Forbidden - Insufficient permissions' },
         { status: 403 }
       );
+      return handleCORS(request, errorResponse);
     }
 
     // Parse form data
@@ -59,10 +62,11 @@ export async function POST(request: NextRequest) {
       }
     } catch (error) {
       console.error('Error parsing tags:', error);
-      return NextResponse.json(
+      const errorResponse = NextResponse.json(
         { error: 'Invalid tags format' },
         { status: 400 }
       );
+      return handleCORS(request, errorResponse);
     }
     
     const anonymous = formData.get('anonymous') === 'true';
@@ -74,10 +78,11 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!torrentFile || !name || !description || !category || !source) {
-      return NextResponse.json(
+      const errorResponse = NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
+      return handleCORS(request, errorResponse);
     }
 
     // Validate file type
@@ -395,7 +400,7 @@ export async function POST(request: NextRequest) {
     //   }
     // });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       message: 'Torrent uploaded successfully',
       torrentId: torrent.id,
       infoHash: torrent.infoHash,
@@ -403,20 +408,26 @@ export async function POST(request: NextRequest) {
       size: totalSize,
       files: files.length
     }, { status: 201 });
+    
+    return handleCORS(request, response);
 
   } catch (error) {
     console.error('Error uploading torrent:', error);
     
+    let errorResponse: NextResponse;
+    
     if (error instanceof Error) {
-      return NextResponse.json(
+      errorResponse = NextResponse.json(
         { error: `Upload failed: ${error.message}` },
+        { status: 500 }
+      );
+    } else {
+      errorResponse = NextResponse.json(
+        { error: 'Internal server error' },
         { status: 500 }
       );
     }
     
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleCORS(request, errorResponse);
   }
 } 

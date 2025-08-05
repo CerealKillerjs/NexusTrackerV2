@@ -52,12 +52,12 @@ model User {
   bonusPoints         Int                  @default(0)
   availableInvites    Int                  @default(0)
   accounts            Account[]
+  hitAndRuns          HitAndRun[]
   peers               Peer[]
   Progress            Progress[]
   sessions            Session[]
   torrentCompletions  TorrentCompletion[]
   announceRateLimits  AnnounceRateLimit[]
-  hitAndRuns          HitAndRun[]
   bookmarks           Bookmark[]
   comments            Comment[]
   createdInvites      InviteCode[]         @relation("CreatedInvites")
@@ -106,10 +106,10 @@ model Torrent {
   freeleech          Boolean             @default(false)
   tags               String[]
   anonymous          Boolean             @default(false)
+  hitAndRuns         HitAndRun[]
   peers              Peer[]
   torrentCompletions TorrentCompletion[]
   announceRateLimits AnnounceRateLimit[]
-  hitAndRuns         HitAndRun[]
   bookmarks          Bookmark[]
   comments           Comment[]
   user               User                @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
@@ -119,18 +119,18 @@ model Torrent {
 }
 
 model Comment {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   content   String
   userId    String
   torrentId String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   parentId  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  torrent   Torrent? @relation(fields: [torrentId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  votes     Vote[]
-  parent    Comment? @relation("CommentToReplies", fields: [parentId], references: [id])
+  parent    Comment?  @relation("CommentToReplies", fields: [parentId], references: [id])
   replies   Comment[] @relation("CommentToReplies")
+  torrent   Torrent?  @relation(fields: [torrentId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  votes     Vote[]
 
   @@map("comments")
 }
@@ -169,10 +169,6 @@ model Configuration {
   value     String
   updatedAt DateTime @updatedAt
 }
-
-// Configuración para el sistema de hit and run basado en tiempo de seeding
-// REQUIRED_SEEDING_MINUTES: Tiempo mínimo de seeding en minutos (default: 4320 = 72 horas)
-// HIT_AND_RUN_THRESHOLD: Número máximo de hit and runs permitidos (default: 5)
 
 model InviteCode {
   id        String    @id @default(cuid())
@@ -215,8 +211,8 @@ model TorrentCompletion {
   userId      String
   peerId      String
   completedAt DateTime @default(now())
-  uploaded    BigInt   // New: uploaded at completion
-  downloaded  BigInt   // New: downloaded at completion
+  downloaded  BigInt
+  uploaded    BigInt
   torrent     Torrent  @relation(fields: [torrentId], references: [id], onDelete: Cascade)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -246,12 +242,12 @@ model Progress {
   userId     String
   infoHash   String
   peerId     String
-  mode       String   // 'download', 'upload', 'seeding', etc.
   uploaded   Json
   downloaded Json
   left       BigInt   @default(0)
   lastSeen   DateTime @default(now())
   updatedAt  DateTime
+  mode       String
   User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -260,19 +256,19 @@ model Progress {
 }
 
 model HitAndRun {
-  id              String   @id @default(uuid())
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          String
-  torrent         Torrent  @relation(fields: [torrentId], references: [id], onDelete: Cascade)
-  torrentId       String
-  downloadedAt    DateTime @default(now())
-  lastSeededAt    DateTime?
-  totalSeedingTime Int     @default(0) // en minutos
-  isHitAndRun     Boolean  @default(false)
+  id               String    @id @default(uuid())
+  userId           String
+  torrentId        String
+  downloadedAt     DateTime  @default(now())
+  lastSeededAt     DateTime?
+  totalSeedingTime Int       @default(0)
+  isHitAndRun      Boolean   @default(false)
+  torrent          Torrent   @relation(fields: [torrentId], references: [id], onDelete: Cascade)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, torrentId])
   @@index([userId])
   @@index([torrentId])
-  @@unique([userId, torrentId])
 }
 
 enum UserStatus {

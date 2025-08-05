@@ -11,6 +11,7 @@ import { checkRateLimit, updateRateLimit, getAnnounceConfig } from '@/app/lib/ra
 import { checkAndUpdateRatio } from './ratio';
 import { awardBonusPoints } from './bonus';
 import { checkAndUpdateHitAndRun, updateHitAndRun } from '@/app/lib/hit-and-run';
+import { handleCORS } from '@/app/lib/cors';
 
 // Toggle for peer list format: 'compact' (production) or 'dictionary' (debug)
 const PEER_LIST_FORMAT: 'compact' | 'dictionary' = 'compact';
@@ -69,7 +70,8 @@ export async function GET(request: NextRequest) {
     if (!passkey || !encodedInfoHash || !peerId || !port) {
       // Return bencoded failure reason
       const failure = bencode.encode({ 'failure reason': 'Missing required parameters' });
-      return new NextResponse(failure, { status: 400, headers: { 'Content-Type': 'text/plain' } });
+      const errorResponse = new NextResponse(failure, { status: 400, headers: { 'Content-Type': 'text/plain' } });
+      return handleCORS(request, errorResponse);
     }
 
     const user = await prisma.user.findFirst({
@@ -78,7 +80,8 @@ export async function GET(request: NextRequest) {
     });
     if (!user) {
       const failure = bencode.encode({ 'failure reason': 'Invalid passkey' });
-      return new NextResponse(failure, { status: 403, headers: { 'Content-Type': 'text/plain' } });
+      const errorResponse = new NextResponse(failure, { status: 403, headers: { 'Content-Type': 'text/plain' } });
+      return handleCORS(request, errorResponse);
     }
 
     const infoHashHex = percentDecodeToBuffer(encodedInfoHash).toString('hex').toLowerCase();
@@ -88,7 +91,8 @@ export async function GET(request: NextRequest) {
     });
     if (!torrent) {
       const failure = bencode.encode({ 'failure reason': 'Torrent not found' });
-      return new NextResponse(failure, { status: 404, headers: { 'Content-Type': 'text/plain' } });
+      const errorResponse = new NextResponse(failure, { status: 404, headers: { 'Content-Type': 'text/plain' } });
+      return handleCORS(request, errorResponse);
     }
 
     // Get peer IP address (IPv4 or IPv6)
@@ -105,13 +109,14 @@ export async function GET(request: NextRequest) {
         'failure reason': 'Rate limit exceeded',
         'retry after': rateLimitCheck.retryAfter
       });
-      return new NextResponse(failure, { 
+      const errorResponse = new NextResponse(failure, { 
         status: 429, 
         headers: { 
           'Content-Type': 'text/plain',
           'Retry-After': rateLimitCheck.retryAfter.toString()
         } 
       });
+      return handleCORS(request, errorResponse);
     }
 
     // Handle announce events
@@ -280,7 +285,8 @@ export async function GET(request: NextRequest) {
     const ratioResult = await checkAndUpdateRatio(user.id);
     if (!ratioResult.allowed) {
       const failure = bencode.encode({ 'failure reason': ratioResult.failureReason });
-      return new NextResponse(failure, { status: 403, headers: { 'Content-Type': 'text/plain' } });
+      const errorResponse = new NextResponse(failure, { status: 403, headers: { 'Content-Type': 'text/plain' } });
+      return handleCORS(request, errorResponse);
     }
 
     // Update hit and run tracking based on seeding time
@@ -290,7 +296,8 @@ export async function GET(request: NextRequest) {
     const hitAndRunResult = await checkAndUpdateHitAndRun(user.id);
     if (!hitAndRunResult.allowed) {
       const failure = bencode.encode({ 'failure reason': hitAndRunResult.failureReason });
-      return new NextResponse(failure, { status: 403, headers: { 'Content-Type': 'text/plain' } });
+      const errorResponse = new NextResponse(failure, { status: 403, headers: { 'Content-Type': 'text/plain' } });
+      return handleCORS(request, errorResponse);
     }
 
     // Award bonus points (use Progress upload delta)
@@ -381,13 +388,19 @@ export async function GET(request: NextRequest) {
     response['peers count'] = allPeers.length;
 
     const bencoded = bencode.encode(response);
-    return new NextResponse(bencoded, {
+    const nextResponse = new NextResponse(bencoded, {
       status: 200,
       headers: { 'Content-Type': 'text/plain' },
     });
+    
+    // Agregar headers de CORS
+    return handleCORS(request, nextResponse);
   } catch (error) {
     console.error('Error in announce endpoint:', error);
     const failure = bencode.encode({ 'failure reason': 'Internal server error' });
-    return new NextResponse(failure, { status: 500, headers: { 'Content-Type': 'text/plain' } });
+    const errorResponse = new NextResponse(failure, { status: 500, headers: { 'Content-Type': 'text/plain' } });
+    
+    // Agregar headers de CORS incluso en caso de error
+    return handleCORS(request, errorResponse);
   }
 } 

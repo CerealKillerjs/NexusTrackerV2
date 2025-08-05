@@ -43,7 +43,19 @@ export async function GET() {
     }
 
     // Get hit and run statistics using the new system
-    const hitAndRunStats = await getUserHitAndRunStats(user.id);
+    let hitAndRunStats;
+    try {
+      hitAndRunStats = await getUserHitAndRunStats(user.id);
+    } catch (error) {
+      console.error('Error getting hit and run stats:', error);
+      // Fallback a valores por defecto si hay error
+      hitAndRunStats = {
+        totalHitAndRuns: 0,
+        activeHitAndRuns: 0,
+        totalSeedingTime: 0,
+        requiredSeedingTime: 4320 // 72 horas por defecto
+      };
+    }
 
     return NextResponse.json({
       user: {
@@ -53,6 +65,9 @@ export async function GET() {
         ratio: user.ratio,
         bonusPoints: user.bonusPoints,
         createdInvites: user._count.createdInvites,
+        // Mantener compatibilidad con el frontend existente
+        hitnrunCount: hitAndRunStats.activeHitAndRuns,
+        // También incluir las estadísticas completas para uso futuro
         hitAndRunStats
       }
     });
